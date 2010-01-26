@@ -1,0 +1,16 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="game">
+    <groups>
+    </groups>
+    <test name="net.kalaha.game.json.ActionTransformerTest">
+      <class name="net.kalaha.game.json.ActionTransformerTest">
+        <test-method status="PASS" signature="fromString()" name="fromString" duration-ms="128" started-at="2010-01-26T20:19:49Z" finished-at="2010-01-26T20:19:49Z">
+        </test-method>
+        <test-method status="PASS" signature="testToString()" name="testToString" duration-ms="3" started-at="2010-01-26T20:19:49Z" finished-at="2010-01-26T20:19:49Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

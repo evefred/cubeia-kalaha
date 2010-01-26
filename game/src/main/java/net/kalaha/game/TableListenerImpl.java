@@ -1,0 +1,36 @@
+package net.kalaha.game;
+
+import net.kalaha.game.action.State;
+import net.kalaha.game.json.ActionUtil;
+
+import com.cubeia.firebase.api.action.GameDataAction;
+import com.cubeia.firebase.api.game.player.GenericPlayer;
+import com.cubeia.firebase.api.game.player.PlayerStatus;
+import com.cubeia.firebase.api.game.table.Table;
+import com.cubeia.firebase.api.game.table.TableListener;
+
+public class TableListenerImpl implements TableListener {
+
+	@Override
+	public void playerJoined(Table table, GenericPlayer player) { 
+		State s = (State)table.getGameState().getState();
+		GameDataAction gda = ActionUtil.toDataAction(player.getPlayerId(), table.getId(), s);
+		table.getNotifier().sendToClient(player.getPlayerId(), gda);
+	}
+
+	@Override
+	public void playerLeft(Table arg0, int arg1) { }
+
+	@Override
+	public void playerStatusChanged(Table arg0, int arg1, PlayerStatus arg2) { }
+
+	@Override
+	public void seatReserved(Table arg0, GenericPlayer arg1) { }
+
+	@Override
+	public void watcherJoined(Table arg0, int arg1) { }
+
+	@Override
+	public void watcherLeft(Table arg0, int arg1) { }
+
+}
