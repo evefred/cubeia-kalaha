@@ -2,14 +2,13 @@ package net.kalaha.game.logic;
 
 public class KalahaBoard {
 
-	int[] holes;
-	final int startingStones;
+	int[] pits;
+	final static int NUMBER_OF_PITS = 6;
 	
 	public KalahaBoard(int stones) {
-		startingStones = stones;
-		holes = new int[stones * 2 + 2];
-		for (int i = 0; i < holes.length; i++) {
-			holes[i] = stones;
+		pits = new int[stones * 2 + 2];
+		for (int i = 0; i < pits.length; i++) {
+			pits[i] = stones;
 		}
 		setStonesInKalaha(0, 0);
 		setStonesInKalaha(1, 0);
@@ -17,25 +16,25 @@ public class KalahaBoard {
 
 	public int getStonesInKalaha(int player) {
 		if (player == 0) {
-			return holes[startingStones];
+			return pits[NUMBER_OF_PITS];
 		} else {
-			return holes[holes.length - 1];
+			return pits[pits.length - 1];
 		}
 	}
 	
 	public void setStonesInKalaha(int player, int stones) {
 		if (player == 0) {
-			holes[startingStones] = stones;
+			pits[NUMBER_OF_PITS] = stones;
 		} else {
-			holes[holes.length - 1] = stones;
+			pits[pits.length - 1] = stones;
 		}		
 	}
 
 	public int getStonesInHole(int hole, int player) {
 		if (player == 0) {
-			return holes[hole];
+			return pits[hole];
 		} else {
-			return holes[startingStones + hole + 1];
+			return pits[NUMBER_OF_PITS + hole + 1];
 		}
 	}
 
@@ -43,15 +42,15 @@ public class KalahaBoard {
 		int stonesToMove = getStonesInHole(hole, player);
 		setStonesInHole(hole, player, 0);
 		for (int i = hole + 1; i < hole + stonesToMove + 1; i++) {
-			holes[i]++;
+			pits[i]++;
 		}
 	}
 
 	private void setStonesInHole(int hole, int player, int stones) {
 		if (player == 0) {
-			holes[hole] = stones;
+			pits[hole] = stones;
 		} else {
-			holes[startingStones + hole + 1] = stones;
+			pits[NUMBER_OF_PITS + hole + 1] = stones;
 		}		
 	}
 
