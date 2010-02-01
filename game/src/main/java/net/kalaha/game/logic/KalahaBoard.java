@@ -10,8 +10,8 @@ public class KalahaBoard {
 		for (int i = 0; i < pits.length; i++) {
 			pits[i] = stones;
 		}
-		setStonesInKalaha(Player.SOUTH, 0);
-		setStonesInKalaha(Player.NORTH, 0);
+		setStonesInKalaha(0, Player.SOUTH);
+		setStonesInKalaha(0, Player.NORTH);
 	}
 
 	public int getStonesInKalaha(Player player) {
@@ -22,7 +22,7 @@ public class KalahaBoard {
 		}
 	}
 	
-	public void setStonesInKalaha(Player player, int stones) {
+	public void setStonesInKalaha(int stones, Player player) {
 		if (player == Player.SOUTH) {
 			pits[NUMBER_OF_PITS] = stones;
 		} else {
@@ -30,27 +30,27 @@ public class KalahaBoard {
 		}		
 	}
 
-	public int getStonesInHole(int hole, Player player) {
+	public int getStonesInPit(int pit, Player player) {
 		if (player == Player.SOUTH) {
-			return pits[hole];
+			return pits[pit];
 		} else {
-			return pits[NUMBER_OF_PITS + hole + 1];
+			return pits[NUMBER_OF_PITS + pit + 1];
 		}
 	}
 
-	public void moveStones(int hole, Player player) {
-		int stonesToMove = getStonesInHole(hole, player);
-		setStonesInPit(hole, player, 0);
-		for (int i = hole + 1; i < hole + stonesToMove + 1; i++) {
+	public void moveStones(int pit, Player player) {
+		int stonesToMove = getStonesInPit(pit, player);
+		setStonesInPit(0, pit, player);
+		for (int i = pit + 1; i < pit + stonesToMove + 1; i++) {
 			pits[i]++;
 		}
 	}
 
-	private void setStonesInPit(int hole, Player player, int stones) {
+	private void setStonesInPit(int stones, int pit, Player player) {
 		if (player == Player.SOUTH) {
-			pits[hole] = stones;
+			pits[pit] = stones;
 		} else {
-			pits[NUMBER_OF_PITS + hole + 1] = stones;
+			pits[NUMBER_OF_PITS + pit + 1] = stones;
 		}		
 	}
 
