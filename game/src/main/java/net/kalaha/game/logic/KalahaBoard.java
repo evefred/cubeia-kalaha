@@ -17,19 +17,11 @@ public class KalahaBoard {
 	}
 
 	public int getStonesInKalaha(Player player) {
-		if (player == Player.SOUTH) {
-			return pits[SOUTH_KALAHA];
-		} else {
-			return pits[NORTH_KALAHA];
-		}
+		return pits[player.kalaha()];
 	}
 	
 	public void setStonesInKalaha(int stones, Player player) {
-		if (player == Player.SOUTH) {
-			pits[SOUTH_KALAHA] = stones;
-		} else {
-			pits[NORTH_KALAHA] = stones;
-		}		
+		pits[player.kalaha()] = stones;
 	}
 
 	public int getStonesInPit(int pit, Player player) {
@@ -47,17 +39,18 @@ public class KalahaBoard {
 		for (int i = pit + 1; i < pit + stonesToMove + 1; i++) {
 			int currentPit = (i + skippedKalahas) % pits.length;
 			
-			// Refactor this
-			if (currentPit == SOUTH_KALAHA && player == Player.NORTH) {
-				skippedKalahas++;
-				currentPit = (i + skippedKalahas) % pits.length;
-			} else if (currentPit == NORTH_KALAHA && player == Player.SOUTH) {
+			if (oppentsKalaha(currentPit, player)) {
 				skippedKalahas++;
 				currentPit = (i + skippedKalahas) % pits.length;
 			}
 			
 			pits[currentPit]++;
 		}
+	}
+
+	private boolean oppentsKalaha(int currentPit, Player player) {
+		return (currentPit == SOUTH_KALAHA && player == Player.NORTH) || 
+			   (currentPit == NORTH_KALAHA && player == Player.SOUTH);		
 	}
 
 	public void setStonesInPit(int stones, int pit, Player player) {
