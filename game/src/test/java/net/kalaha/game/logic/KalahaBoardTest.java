@@ -32,4 +32,51 @@ public class KalahaBoardTest extends TestCase {
 		assertEquals(7, kb.getStonesInPit(5, Player.SOUTH));
 		assertEquals(1, kb.getStonesInKalaha(Player.SOUTH));
 	}
+	
+	public void testMoveFromSouthToNorth() {
+		KalahaBoard kb = new KalahaBoard(6);
+		
+		kb.moveStones(5, Player.SOUTH);
+		
+		assertEquals(0, kb.getStonesInPit(5, Player.SOUTH));
+		assertEquals(7, kb.getStonesInPit(0, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(1, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(2, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(3, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(4, Player.NORTH));
+		assertEquals(1, kb.getStonesInKalaha(Player.SOUTH));
+	}
+	
+	public void testSouthSkipsNorthsKalaha() {
+		KalahaBoard kb = new KalahaBoard(6);
+		kb.setStonesInPit(10, 5, Player.SOUTH);
+		kb.moveStones(5, Player.SOUTH);
+		
+		assertEquals(0, kb.getStonesInPit(5, Player.SOUTH));
+		assertEquals(7, kb.getStonesInPit(0, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(1, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(2, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(3, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(4, Player.NORTH));
+		assertEquals(7, kb.getStonesInPit(5, Player.NORTH));
+		
+		
+		assertEquals(1, kb.getStonesInKalaha(Player.SOUTH));
+		assertEquals(0, kb.getStonesInKalaha(Player.NORTH));
+		
+		assertEquals(7, kb.getStonesInPit(0, Player.SOUTH));
+		assertEquals(7, kb.getStonesInPit(1, Player.SOUTH));
+		assertEquals(7, kb.getStonesInPit(2, Player.SOUTH));		
+	}
+	
+	public void testNorthSkipsSouthsKalaha() {
+		KalahaBoard kb = new KalahaBoard(6);
+		kb.setStonesInPit(20, 5, Player.NORTH);
+		
+		kb.moveStones(5, Player.NORTH);
+		
+		assertEquals(0, kb.getStonesInKalaha(Player.SOUTH));
+		assertEquals(2, kb.getStonesInKalaha(Player.NORTH));
+	}		
+	
 }

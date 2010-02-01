@@ -4,6 +4,8 @@ public class KalahaBoard {
 
 	int[] pits;
 	final static int NUMBER_OF_PITS = 6;
+	final static int SOUTH_KALAHA = 6;
+	final static int NORTH_KALAHA = 13;
 	
 	public KalahaBoard(int stones) {
 		pits = new int[stones * 2 + 2];
@@ -16,17 +18,17 @@ public class KalahaBoard {
 
 	public int getStonesInKalaha(Player player) {
 		if (player == Player.SOUTH) {
-			return pits[NUMBER_OF_PITS];
+			return pits[SOUTH_KALAHA];
 		} else {
-			return pits[pits.length - 1];
+			return pits[NORTH_KALAHA];
 		}
 	}
 	
 	public void setStonesInKalaha(int stones, Player player) {
 		if (player == Player.SOUTH) {
-			pits[NUMBER_OF_PITS] = stones;
+			pits[SOUTH_KALAHA] = stones;
 		} else {
-			pits[pits.length - 1] = stones;
+			pits[NORTH_KALAHA] = stones;
 		}		
 	}
 
@@ -34,19 +36,31 @@ public class KalahaBoard {
 		if (player == Player.SOUTH) {
 			return pits[pit];
 		} else {
-			return pits[NUMBER_OF_PITS + pit + 1];
+			return pits[SOUTH_KALAHA + 1 + pit];
 		}
 	}
 
 	public void moveStones(int pit, Player player) {
 		int stonesToMove = getStonesInPit(pit, player);
 		setStonesInPit(0, pit, player);
+		int skippedKalahas = 0;
 		for (int i = pit + 1; i < pit + stonesToMove + 1; i++) {
-			pits[i]++;
+			int currentPit = (i + skippedKalahas) % pits.length;
+			
+			// Refactor this
+			if (currentPit == SOUTH_KALAHA && player == Player.NORTH) {
+				skippedKalahas++;
+				currentPit = (i + skippedKalahas) % pits.length;
+			} else if (currentPit == NORTH_KALAHA && player == Player.SOUTH) {
+				skippedKalahas++;
+				currentPit = (i + skippedKalahas) % pits.length;
+			}
+			
+			pits[currentPit]++;
 		}
 	}
 
-	private void setStonesInPit(int stones, int pit, Player player) {
+	public void setStonesInPit(int stones, int pit, Player player) {
 		if (player == Player.SOUTH) {
 			pits[pit] = stones;
 		} else {
