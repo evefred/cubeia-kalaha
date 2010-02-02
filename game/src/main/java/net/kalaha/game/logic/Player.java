@@ -19,5 +19,5 @@ public enum Player {
 	public int kalaha() {
 		return kalahaPit;
 	}
-	
+
 }

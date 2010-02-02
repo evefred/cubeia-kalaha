@@ -44,8 +44,20 @@ public class KalahaBoard {
 				currentPit = (i + skippedKalahas) % pits.length;
 			}
 			
-			pits[currentPit]++;
-		}
+			// Steal opponent's stones if last stone lands in empty pit.
+			if (i == (pit + stonesToMove) && pits[currentPit] == 0) {
+				int currentStonesInKalaha = getStonesInKalaha(player);
+				int stonesInOpponentPit = getStonesInPit(currentPit, getOpponent(player));
+				setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
+				setStonesInPit(currentPit, 0, getOpponent(player));
+			} else {
+				pits[currentPit]++;
+			}
+		}		
+	}
+
+	private Player getOpponent(Player player) {
+		return (player == Player.SOUTH) ? Player.NORTH : Player.SOUTH;
 	}
 
 	private boolean oppentsKalaha(int currentPit, Player player) {

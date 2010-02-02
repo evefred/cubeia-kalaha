@@ -77,6 +77,17 @@ public class KalahaBoardTest extends TestCase {
 		
 		assertEquals(0, kb.getStonesInKalaha(Player.SOUTH));
 		assertEquals(2, kb.getStonesInKalaha(Player.NORTH));
-	}		
+	}
+	
+	public void testLandingInEmptyPitStealsOpponentsStones() {
+		KalahaBoard kb = new KalahaBoard(6);
+		kb.setStonesInPit(1, 0, Player.SOUTH);
+		kb.setStonesInPit(0, 1, Player.SOUTH);
+		
+		kb.moveStones(0, Player.SOUTH);
+		
+		assertEquals(7, kb.getStonesInKalaha(Player.SOUTH));
+		assertEquals(0, kb.getStonesInKalaha(Player.NORTH));		
+	}
 	
 }
