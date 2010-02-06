@@ -1,6 +1,9 @@
 package net.kalaha.game.action;
 
-public class Sow extends AbstractAction {
+import net.kalaha.game.logic.KalahaBoard;
+import net.kalaha.game.logic.Player;
+
+public class Sow extends KalahaAction {
 
 	private int playerId;
 	private int house;
@@ -18,6 +21,14 @@ public class Sow extends AbstractAction {
 	}
 	
 	public void setHouse(int house) {
+		if(house < 0 || house > 5) {
+			throw new IllegalActionException("House " + house + " is illegal, must be between 0-5, was: " + house);
+		}
 		this.house = house;
+	}
+	
+	public void perform(KalahaBoard board) {
+		Player p = board.getPlayerForId(playerId);
+		board.moveStones(house, p);
 	}
 }

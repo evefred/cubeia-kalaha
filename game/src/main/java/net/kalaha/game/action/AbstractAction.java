@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public abstract class AbstractAction {
-
+	
 	// --- COMMONS OBJECT METHODS --- //
 	
 	@Override

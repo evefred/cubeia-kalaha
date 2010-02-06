@@ -55,7 +55,7 @@ public class Handler extends AbstractClientPacketHandler {
 	
 	@Override
 	public void visit(GameTransportPacket packet) {
-	    Object action = JsonTransformer.fromUTF8Data(packet.gamedata);
+	    Object action = new JsonTransformer().fromUTF8Data(packet.gamedata);
 	    System.out.println("Action from ["+packet.pid+"] : " + action);
 	}
 

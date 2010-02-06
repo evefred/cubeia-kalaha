@@ -1,28 +1,18 @@
 package net.kalaha.game.action;
 
 import java.io.Serializable;
-import java.util.Map;
 
 public class State extends AbstractAction implements Serializable {
 
 	private static final long serialVersionUID = -2115183643846951929L;
 	
-	private int[] seed;
-	private Map<Integer, Integer> kalaha;
+	private int[] pits = new int[14];
 	
-	public int[] getSeed() {
-		return seed;
+	public int[] getPits() {
+		return pits;
 	}
 	
-	public void setSeed(int[] seed) {
-		this.seed = seed;
-	}
-	
-	public Map<Integer, Integer> getKalaha() {
-		return kalaha;
-	}
-	
-	public void setKalaha(Map<Integer, Integer> kalaha) {
-		this.kalaha = kalaha;
+	public void setPits(int[] pits) {
+		this.pits = pits;
 	}
 }

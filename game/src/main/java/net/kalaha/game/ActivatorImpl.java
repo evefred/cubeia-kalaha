@@ -1,5 +1,7 @@
 package net.kalaha.game;
 
+import net.kalaha.game.logic.KalahaBoard;
+
 import org.apache.log4j.Logger;
 
 import com.cubeia.firebase.api.game.activator.ActivatorContext;
@@ -19,7 +21,7 @@ public class ActivatorImpl extends DefaultActivator {
 			@Override
 			public void tableCreated(Table table, LobbyTableAttributeAccessor acc) {
 				log.debug("Setting state of newly created table: " + table.getId());
-				table.getGameState().setState(new net.kalaha.game.action.State());
+				table.getGameState().setState(new KalahaBoard(6));
 				super.tableCreated(table, acc);
 			}		
 		});

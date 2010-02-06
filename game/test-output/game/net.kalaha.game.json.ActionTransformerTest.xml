@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="net.kalaha.game.json.ActionTransformerTest" failures="0" tests="2" time="0.149" errors="0">
-  <properties/>
-  <testcase name="fromString" time="0.128" classname="net.kalaha.game.json.ActionTransformerTest"/>
-  <testcase name="testToString" time="0.0030" classname="net.kalaha.game.json.ActionTransformerTest"/>
-</testsuite>

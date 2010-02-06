@@ -1,7 +1,7 @@
 package net.kalaha.game;
 
-import net.kalaha.game.action.State;
 import net.kalaha.game.json.ActionUtil;
+import net.kalaha.game.logic.KalahaBoard;
 
 import com.cubeia.firebase.api.action.GameDataAction;
 import com.cubeia.firebase.api.game.player.GenericPlayer;
@@ -17,9 +17,15 @@ public class TableListenerImpl implements TableListener {
 	
 	@Override
 	public void playerJoined(Table table, GenericPlayer player) { 
-		State s = (State)table.getGameState().getState();
-		GameDataAction gda = util.toDataAction(player.getPlayerId(), table.getId(), s);
+		KalahaBoard s = (KalahaBoard)table.getGameState().getState();
+		GameDataAction gda = util.toDataAction(player.getPlayerId(), table.getId(), s.getState());
 		table.getNotifier().sendToClient(player.getPlayerId(), gda);
+		int seatId = player.getSeatId();
+		if(seatId == 0) {
+			s.setSouthPlayerId(player.getPlayerId());
+		} else {
+			s.setNorthPlayerId(player.getPlayerId());
+		}
 	}
 
 	@Override

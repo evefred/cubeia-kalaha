@@ -51,7 +51,7 @@ public class Client extends SimpleTextClient {
 	    	   Sow s = new Sow();
 	    	   s.setHouse(Integer.parseInt(args[2]));
 	    	   s.setPlayerId(context.getPlayerId());
-	    	   buf = ByteBuffer.wrap(JsonTransformer.toUTF8Data(s));
+	    	   buf = ByteBuffer.wrap(new JsonTransformer().toUTF8Data(s));
 	       } else {
 	    	   throw new IllegalActionException("No such action: " + action);
 	       }
