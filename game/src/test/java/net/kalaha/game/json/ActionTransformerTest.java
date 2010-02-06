@@ -12,7 +12,7 @@ public class ActionTransformerTest {
 		Sow s = new Sow();
 		s.setPlayerId(99);
 		s.setHouse(2);
-		String string = ActionTransformer.toString(s);
+		String string = new JsonTransformer().toString(s);
 		Assert.assertEquals(string, "[\"Sow\",{\"house\":2,\"playerId\":99}]");
 	}
 	
@@ -22,7 +22,7 @@ public class ActionTransformerTest {
 		Sow test = new Sow();
 		test.setPlayerId(99);
 		test.setHouse(2);
-		Object action = ActionTransformer.fromString(json);
+		Object action = new JsonTransformer().fromString(json);
 		Assert.assertEquals(action, test);
 	}
 }

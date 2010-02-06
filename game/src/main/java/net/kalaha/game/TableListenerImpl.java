@@ -8,13 +8,17 @@ import com.cubeia.firebase.api.game.player.GenericPlayer;
 import com.cubeia.firebase.api.game.player.PlayerStatus;
 import com.cubeia.firebase.api.game.table.Table;
 import com.cubeia.firebase.api.game.table.TableListener;
+import com.google.inject.Inject;
 
 public class TableListenerImpl implements TableListener {
 
+	@Inject
+	private ActionUtil util;
+	
 	@Override
 	public void playerJoined(Table table, GenericPlayer player) { 
 		State s = (State)table.getGameState().getState();
-		GameDataAction gda = ActionUtil.toDataAction(player.getPlayerId(), table.getId(), s);
+		GameDataAction gda = util.toDataAction(player.getPlayerId(), table.getId(), s);
 		table.getNotifier().sendToClient(player.getPlayerId(), gda);
 	}
 

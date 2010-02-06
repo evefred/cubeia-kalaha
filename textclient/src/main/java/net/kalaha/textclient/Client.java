@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import net.kalaha.game.action.IllegalActionException;
 import net.kalaha.game.action.Sow;
-import net.kalaha.game.json.ActionTransformer;
+import net.kalaha.game.json.JsonTransformer;
 
 import com.cubeia.firebase.clients.java.connector.text.SimpleTextClient;
 
@@ -51,7 +51,7 @@ public class Client extends SimpleTextClient {
 	    	   Sow s = new Sow();
 	    	   s.setHouse(Integer.parseInt(args[2]));
 	    	   s.setPlayerId(context.getPlayerId());
-	    	   buf = ByteBuffer.wrap(ActionTransformer.toUTF8Data(s));
+	    	   buf = ByteBuffer.wrap(JsonTransformer.toUTF8Data(s));
 	       } else {
 	    	   throw new IllegalActionException("No such action: " + action);
 	       }

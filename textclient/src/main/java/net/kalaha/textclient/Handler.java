@@ -1,6 +1,6 @@
 package net.kalaha.textclient;
 
-import net.kalaha.game.json.ActionTransformer;
+import net.kalaha.game.json.JsonTransformer;
 
 import com.cubeia.firebase.clients.java.connector.text.AbstractClientPacketHandler;
 import com.cubeia.firebase.io.protocol.CreateTableResponsePacket;
@@ -55,7 +55,7 @@ public class Handler extends AbstractClientPacketHandler {
 	
 	@Override
 	public void visit(GameTransportPacket packet) {
-	    Object action = ActionTransformer.fromUTF8Data(packet.gamedata);
+	    Object action = JsonTransformer.fromUTF8Data(packet.gamedata);
 	    System.out.println("Action from ["+packet.pid+"] : " + action);
 	}
 
