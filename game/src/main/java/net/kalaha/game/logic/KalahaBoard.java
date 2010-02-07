@@ -78,12 +78,14 @@ public class KalahaBoard implements Serializable {
 	public void moveStones(int pit, Player player) {
 		int stonesToMove = getStonesInPit(pit, player);
 		setStonesInPit(0, pit, player);
+		
 		int skippedKalahas = 0;
 		int offset = (player == Player.NORTH) ? NUMBER_OF_PITS + 1 : 0;
 		for (int i = pit + 1; i < pit + stonesToMove + 1; i++) {
 			int currentPit = (i + skippedKalahas + offset) % state.getPits().length;
 			
-			if (getOpponent(player).isMyKalaha(currentPit)) {
+			// Skip opponent's kalaha
+			if (isOpponentKalaha(player, currentPit)) {
 				skippedKalahas++;
 				currentPit = (i + skippedKalahas + offset) % state.getPits().length;
 			}
@@ -92,15 +94,23 @@ public class KalahaBoard implements Serializable {
 			boolean lastStone = i == (pit + stonesToMove);
 			boolean myEmptyPit = player.isMyPit(currentPit) && state.getPits()[currentPit] == 0;
 			if (lastStone && myEmptyPit) {
-				int currentStonesInKalaha = getStonesInKalaha(player);
-				int stonesInOpponentPit = getStonesInPit(player.toLocalPit(currentPit), getOpponent(player));
-				setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
-				setStonesInPit(currentPit, 0, getOpponent(player));
+				stealOpponentsStones(player, currentPit);
 			} else {
 				state.getPits()[currentPit]++;
 			}
 		}		
 		checkGameEnd(player);
+	}
+
+	private void stealOpponentsStones(Player player, int currentPit) {
+		int currentStonesInKalaha = getStonesInKalaha(player);
+		int stonesInOpponentPit = getStonesInPit(player.toLocalPit(currentPit), getOpponent(player));
+		setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
+		setStonesInPit(currentPit, 0, getOpponent(player));
+	}
+
+	private boolean isOpponentKalaha(Player player, int currentPit) {
+		return getOpponent(player).isMyKalaha(currentPit);
 	}
 
 	private void checkGameEnd(Player player) {

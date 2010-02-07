@@ -21,7 +21,7 @@ public class Sow extends KalahaAction {
 	}
 	
 	public void setHouse(int house) {
-		if(house < 0 || house > 5) {
+		if (house < 0 || house > 5) {
 			throw new IllegalActionException("House " + house + " is illegal, must be between 0-5, was: " + house);
 		}
 		this.house = house;
