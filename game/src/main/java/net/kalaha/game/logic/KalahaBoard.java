@@ -22,7 +22,6 @@ public class KalahaBoard implements Serializable {
 	
 	public KalahaBoard(int stones) {
 		this.state = new State();
-		// pits = new int[stones * 2 + 2];
 		for (int i = 0; i < state.getPits().length; i++) {
 			state.getPits()[i] = stones;
 		}
@@ -68,7 +67,6 @@ public class KalahaBoard implements Serializable {
 		state.getPits()[player.kalaha()] = stones;
 	}
 
-	// Test method
 	int getStonesInPit(int pit, Player player) {
 		if (player == Player.SOUTH) {
 			return state.getPits()[pit];
@@ -85,22 +83,27 @@ public class KalahaBoard implements Serializable {
 		for (int i = pit + 1; i < pit + stonesToMove + 1; i++) {
 			int currentPit = (i + skippedKalahas + offset) % state.getPits().length;
 			
-			if (oppentsKalaha(currentPit, player)) {
+			if (getOpponent(player).isMyKalaha(currentPit)) {
 				skippedKalahas++;
 				currentPit = (i + skippedKalahas + offset) % state.getPits().length;
 			}
 			
-			// Steal opponent's stones if last stone lands in empty pit.
-			if (!myKalaha(currentPit, player) && i == (pit + stonesToMove) && state.getPits()[currentPit] == 0) {
+			// Steal opponent's stones if last stone lands in one of my empty pits.
+			boolean lastStone = i == (pit + stonesToMove);
+			boolean myEmptyPit = player.isMyPit(currentPit) && state.getPits()[currentPit] == 0;
+			if (lastStone && myEmptyPit) {
 				int currentStonesInKalaha = getStonesInKalaha(player);
-				int stonesInOpponentPit = getStonesInPit(currentPit, getOpponent(player));
+				int stonesInOpponentPit = getStonesInPit(player.toLocalPit(currentPit), getOpponent(player));
 				setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
 				setStonesInPit(currentPit, 0, getOpponent(player));
 			} else {
 				state.getPits()[currentPit]++;
 			}
 		}		
-		// Check game end
+		checkGameEnd(player);
+	}
+
+	private void checkGameEnd(Player player) {
 		if(!canPlayerMove(getOpponent(player))) {
 			endTransfer(player);
 			gameEnded = true;
@@ -132,16 +135,6 @@ public class KalahaBoard implements Serializable {
 
 	private Player getOpponent(Player player) {
 		return (player == Player.SOUTH) ? Player.NORTH : Player.SOUTH;
-	}
-
-	private boolean oppentsKalaha(int currentPit, Player player) {
-		return (currentPit == SOUTH_KALAHA && player == Player.NORTH) || 
-			   (currentPit == NORTH_KALAHA && player == Player.SOUTH);		
-	}
-	
-	private boolean myKalaha(int currentPit, Player player) {
-		return (currentPit == SOUTH_KALAHA && player == Player.SOUTH) || 
-			   (currentPit == NORTH_KALAHA && player == Player.NORTH);		
 	}
 
 	// Test method
