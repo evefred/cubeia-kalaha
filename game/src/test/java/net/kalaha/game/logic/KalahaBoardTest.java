@@ -135,6 +135,8 @@ public class KalahaBoardTest {
 		
 		kb.moveStones(0, Player.SOUTH);
 		
+		assertEquals(0, kb.getStonesInPit(4, Player.NORTH));
+		assertEquals(0, kb.getStonesInPit(1, Player.SOUTH));
 		assertEquals(7, kb.getStonesInKalaha(Player.SOUTH));
 		assertEquals(0, kb.getStonesInKalaha(Player.NORTH));		
 	}
@@ -146,10 +148,12 @@ public class KalahaBoardTest {
 		kb.setStonesInPit(0, 1, Player.NORTH);
 		
 		kb.moveStones(0, Player.NORTH);
-		
+
+		assertEquals(0, kb.getStonesInPit(4, Player.SOUTH));
+		assertEquals(0, kb.getStonesInPit(1, Player.NORTH));		
 		assertEquals(7, kb.getStonesInKalaha(Player.NORTH));
 		assertEquals(0, kb.getStonesInKalaha(Player.SOUTH));		
-	}	
+	}
 	
 	@Test
 	public void testOnlyStealIfEmptyPitIsMyPit() {

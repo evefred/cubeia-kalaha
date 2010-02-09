@@ -104,9 +104,10 @@ public class KalahaBoard implements Serializable {
 
 	private void stealOpponentsStones(Player player, int currentPit) {
 		int currentStonesInKalaha = getStonesInKalaha(player);
-		int stonesInOpponentPit = getStonesInPit(player.toLocalPit(currentPit), getOpponent(player));
+		int opponentPit = player.toLocalPit(currentPit);
+		int stonesInOpponentPit = getStonesInPit(opponentPit, getOpponent(player));
 		setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
-		setStonesInPit(currentPit, 0, getOpponent(player));
+		setStonesInPit(0, 5 - opponentPit, getOpponent(player));
 	}
 
 	private boolean isOpponentKalaha(Player player, int currentPit) {
