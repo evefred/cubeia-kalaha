@@ -2,7 +2,7 @@ package net.kalaha.game.logic;
 
 import org.testng.annotations.Test; 
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
 public class KalahaBoardTest {
 
@@ -175,8 +175,8 @@ public class KalahaBoardTest {
 	private void assertStones(KalahaBoard kb, Player player, int ... stones) {
 		int i = 0;
 		for (int pit : stones) {
-			assertEquals("Expected " + pit + " stones in pit " + i,
-					pit, kb.getStonesInPit(i++, player));
+		    // assertEquals("Expected " + pit + " stones in pit " + i, pit, kb.getStonesInPit(i++, player));
+		    assertEquals(pit, kb.getStonesInPit(i++, player), "Expected " + pit + " stones in pit " + i);
 		}
 	}	
 }

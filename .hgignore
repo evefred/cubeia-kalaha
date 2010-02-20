@@ -7,3 +7,34 @@ logs/*
 .classpath
 .settings/*
 test-output/*
+
+syntax: regexp
+^target$
+syntax: regexp
+^logs$
+syntax: regexp
+^target$
+syntax: regexp
+^test-output$
+syntax: regexp
+^debug\.log$
+syntax: regexp
+^temp-testng-customsuite\.xml$
+syntax: regexp
+^target$
+syntax: regexp
+^target$
+syntax: regexp
+^target$
+syntax: regexp
+^logs$
+syntax: regexp
+^target$
+syntax: regexp
+^debug\.log$
+syntax: regexp
+^debug\.log$
+syntax: regexp
+^debug\.log$
+syntax: regexp
+^temp-testng-customsuite\.xml$

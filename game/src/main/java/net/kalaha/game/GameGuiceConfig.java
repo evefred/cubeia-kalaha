@@ -5,9 +5,9 @@ import net.kalaha.game.logic.KalahaBoard;
 import com.cubeia.firebase.api.game.GameProcessor;
 import com.cubeia.firebase.api.game.table.TableInterceptor;
 import com.cubeia.firebase.api.game.table.TableListener;
-import com.cubeia.firebase.guice.game.Configuration;
+import com.cubeia.firebase.guice.game.ConfigurationAdapter;
 
-public class GameGuiceConfig implements Configuration {
+public class GameGuiceConfig extends ConfigurationAdapter {
 
 	@Override
 	public Class<? extends GameProcessor> getGameProcessorClass() {

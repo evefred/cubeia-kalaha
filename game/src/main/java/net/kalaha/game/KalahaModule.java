@@ -1,9 +1,9 @@
 package net.kalaha.game;
 
-import net.kalaha.game.json.ActionTransformer;
+import net.kalaha.game.json.ActionTransformer; 
 import net.kalaha.game.json.JsonTransformer;
 
-import com.cubeia.firebase.guice.inject.EventScoped;
+import com.cubeia.firebase.guice.game.EventScoped;
 import com.google.inject.AbstractModule;
 
 public class KalahaModule extends AbstractModule {
