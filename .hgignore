@@ -6,35 +6,9 @@ logs/*
 .project
 .classpath
 .settings/*
-test-output/*
+.metadata/*
+facebook-web/debug.log
+user-service/debug.log
+user-service/temp-testng-customsuite.xml
+user-service/test-output
 
-syntax: regexp
-^target$
-syntax: regexp
-^logs$
-syntax: regexp
-^target$
-syntax: regexp
-^test-output$
-syntax: regexp
-^debug\.log$
-syntax: regexp
-^temp-testng-customsuite\.xml$
-syntax: regexp
-^target$
-syntax: regexp
-^target$
-syntax: regexp
-^target$
-syntax: regexp
-^logs$
-syntax: regexp
-^target$
-syntax: regexp
-^debug\.log$
-syntax: regexp
-^debug\.log$
-syntax: regexp
-^debug\.log$
-syntax: regexp
-^temp-testng-customsuite\.xml$
