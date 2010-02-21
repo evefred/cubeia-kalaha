@@ -5,6 +5,6 @@ import com.cubeia.firebase.api.service.Contract;
 
 public interface UserService extends Contract, LoginLocator { 
 	
-	public UserManager getUserManager();
+	// public UserManager getUserManager();
 	
 }

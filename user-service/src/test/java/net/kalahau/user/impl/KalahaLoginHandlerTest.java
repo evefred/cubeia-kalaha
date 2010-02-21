@@ -1,6 +1,6 @@
 package net.kalahau.user.impl;
 
-import net.kalaha.user.api.Session;
+import net.kalaha.entities.Session;
 import net.kalaha.user.impl.KalahaLoginHandler;
 
 import org.testng.Assert;

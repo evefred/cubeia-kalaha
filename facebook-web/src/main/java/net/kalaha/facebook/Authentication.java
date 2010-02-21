@@ -2,8 +2,8 @@ package net.kalaha.facebook;
 
 import javax.security.auth.login.FailedLoginException;
 
-import net.kalaha.user.api.Session;
-import net.kalaha.user.api.UserManager;
+import net.kalaha.data.manager.UserManager;
+import net.kalaha.entities.Session;
 
 import org.apache.wicket.Request;
 

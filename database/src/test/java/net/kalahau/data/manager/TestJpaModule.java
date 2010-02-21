@@ -1,4 +1,4 @@
-package net.kalahau.user.impl;
+package net.kalahau.data.manager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,7 +13,7 @@ public class TestJpaModule extends AbstractModule {
 	protected void configure() {
 		bind(EntityManager.class).toProvider(new Provider<EntityManager>() {
 
-			private EntityManagerFactory fact = Persistence.createEntityManagerFactory("userJpaUnit");
+			private EntityManagerFactory fact = Persistence.createEntityManagerFactory("testUnit");
 			
 			@Override
 			public EntityManager get() {

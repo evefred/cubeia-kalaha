@@ -2,8 +2,8 @@ package net.kalaha.user.impl;
 
 import java.util.List;
 
+import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.user.api.UserService;
-import net.kalaha.user.api.UserManager;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
 import com.cubeia.firebase.api.login.LoginHandler;
@@ -29,10 +29,10 @@ public class ServiceImpl extends GuiceService implements  UserService {
 		return guice(LoginLocator.class).locateLoginHandler(req);
 	}
 	
-	@Override
+	/*@Override
 	public UserManager getUserManager() {
 		return guice(UserManager.class);
-	}
+	}*/
 	
 	
 	// --- CONFIGURATION --- //
@@ -40,6 +40,6 @@ public class ServiceImpl extends GuiceService implements  UserService {
 	@Override
 	protected void preInjectorCreation(List<Module> modules) {
 		modules.add(new ServiceModule(context.getParentRegistry(), true));
-		modules.add(new UserModule());
+		modules.add(new ManagerModule());
 	}
 }

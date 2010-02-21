@@ -1,6 +1,7 @@
-package net.kalahau.user.impl;
+package net.kalahau.data.manager;
 
-import net.kalaha.data.manager.UserManager; 
+import net.kalaha.data.manager.GameManager;
+import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.manager.ManagerModule;
 
 import org.testng.annotations.BeforeMethod;
@@ -13,7 +14,8 @@ import com.google.inject.Injector;
 public class JpaTestBase {
 
 	protected Injector injector;
-	protected UserManager manager;
+	protected UserManager userManager;
+	protected GameManager gameManager;
 	
 	@BeforeMethod
 	public void setUp() throws Exception {
@@ -22,6 +24,7 @@ public class JpaTestBase {
 							new TestJpaModule(),
 							new ManagerModule());
 	
-		manager = injector.getInstance(UserManager.class);
+		userManager = injector.getInstance(UserManager.class);
+		gameManager = injector.getInstance(GameManager.class);
 	}
 }

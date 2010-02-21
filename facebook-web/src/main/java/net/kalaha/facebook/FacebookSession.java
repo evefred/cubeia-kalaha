@@ -1,6 +1,6 @@
 package net.kalaha.facebook;
 
-import net.kalaha.user.api.Session;
+import net.kalaha.entities.Session;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebSession;

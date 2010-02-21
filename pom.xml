@@ -14,6 +14,7 @@
     <module>persistence</module>
     <module>uar</module>
     <module>facebook-web</module>
+    <module>database</module>
   </modules>
 
   <dependencies>

@@ -2,7 +2,7 @@ package net.kalaha.user.impl;
 
 import org.apache.log4j.Logger;
 
-import net.kalaha.user.api.UserManager;
+import net.kalaha.data.manager.UserManager;
 
 import com.cubeia.firebase.api.action.service.ServiceAction;
 import com.cubeia.firebase.api.service.RoutableService;

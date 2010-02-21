@@ -11,4 +11,5 @@ facebook-web/debug.log
 user-service/debug.log
 user-service/temp-testng-customsuite.xml
 user-service/test-output
-
+database/temp-testng-customsuite.xml
+database/test-output

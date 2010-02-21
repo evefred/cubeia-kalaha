@@ -15,7 +15,7 @@
     </init-param>
     <init-param>
       <param-name>module</param-name>
-      <param-value>net.kalaha.facebook.FacebookModule,net.kalaha.user.impl.UserModule</param-value>
+      <param-value>net.kalaha.facebook.FacebookModule,net.kalaha.data.manager.ManagerModule</param-value>
     </init-param>
   </filter>
 
