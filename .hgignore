@@ -3,10 +3,12 @@ syntax:glob
 *.orig
 target/*
 logs/*
+test-output/*
 .project
 .classpath
 .settings/*
 .metadata/*
+bin/*
 facebook-web/debug.log
 user-service/debug.log
 user-service/temp-testng-customsuite.xml

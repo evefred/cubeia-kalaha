@@ -135,10 +135,10 @@ public class KalahaBoardTest {
 		
 		kb.moveStones(0, Player.SOUTH);
 		
-		assertEquals(0, kb.getStonesInPit(4, Player.NORTH));
-		assertEquals(0, kb.getStonesInPit(1, Player.SOUTH));
-		assertEquals(7, kb.getStonesInKalaha(Player.SOUTH));
-		assertEquals(0, kb.getStonesInKalaha(Player.NORTH));		
+		assertEquals(kb.getStonesInPit(4, Player.NORTH), 0);
+		assertEquals(kb.getStonesInPit(1, Player.SOUTH), 0);
+		assertEquals(kb.getStonesInKalaha(Player.SOUTH), 7);
+		assertEquals(kb.getStonesInKalaha(Player.NORTH), 0);		
 	}
 	
 	@Test
@@ -164,8 +164,26 @@ public class KalahaBoardTest {
 		kb.moveStones(5, Player.SOUTH);
 		
 		assertEquals(1, kb.getStonesInKalaha(Player.SOUTH));
-	}	
+	}
 	
+	@Test
+	public void testStealAddsStonesInKalahaCorrectly() {
+		KalahaBoard kb = new KalahaBoard(6);
+		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);
+		             //0,10,10,0,1,6,7, 10,0,0,12,5,6,11]
+		kb.moveStones(1, Player.NORTH);
+		assertEquals(kb.getStonesInKalaha(Player.NORTH), 4);
+	}
+	
+	private void setupState(KalahaBoard board, int ... pits) {
+		for (int i = 0; i < 6; i++) {
+			board.setStonesInPit(pits[i], i, Player.SOUTH);
+			board.setStonesInPit(pits[i+7], i, Player.NORTH);
+		}
+		board.setStonesInKalaha(pits[6], Player.SOUTH);
+		board.setStonesInKalaha(pits[13], Player.NORTH);
+	}
+
 	/**
 	 * Asserts the stones for a player.
 	 * @param kb the board
