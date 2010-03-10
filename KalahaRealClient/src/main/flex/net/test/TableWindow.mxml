@@ -38,6 +38,7 @@
 			import mx.managers.PopUpManager;
 			
 			private var side:String;
+			private var allPits:Array;
 			
 			public function pitClicked(pit:int):void
 			{
@@ -61,10 +62,28 @@
 				// setup packet data handler
 				KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
 				KalahaRealClient.firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);
+				
+				allPits = new Array();
+				allPits.add(b0);
+				allPits.add(b1);
+				allPits.add(b2);
+				allPits.add(b3);
+				allPits.add(b4);
+				allPits.add(b5);
+				allPits.add(b6);
+				allPits.add(b7);
+				allPits.add(b8);
+				allPits.add(b9);
+				allPits.add(b10);
+				allPits.add(b11);
+				allPits.add(b12);
+				allPits.add(b13);								
 			}
 			
 			private function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
 			{
+				var reverseView:Boolean = KalahaRealClient.seat != 0;
+				
 				var data:ByteArray = gamePacketEvent.getPacketData();
 				var bytes:int = data.bytesAvailable;
 				var msg:String = data.readUTFBytes(bytes);
@@ -81,13 +100,18 @@
 				chatOutput.htmlText += "<font color=\"#000080\">pits " + pits + "</font><br>";
 				chatOutput.htmlText += "<font color=\"#000080\">pits[0] " + pits.pits + "</font><br>";
 				chatOutput.htmlText += "<font color=\"#000080\">pits[0] " + pits.pits[0] + "</font><br>";
-				b0.label = "" + pits.pits[0];
+				
+				var offset:int = reverseView ? 7 : 0;
+								
+				b0.label = "" + pits.pits[(0 + offset) % 14];
 				b1.label = "" + pits.pits[1];
 				b2.label = "" + pits.pits[2];
 				b3.label = "" + pits.pits[3];
 				b4.label = "" + pits.pits[4];
 				b5.label = "" + pits.pits[5];
 				b6.label = "" + pits.pits[6];
+				//b6.label = "SOUTH_KALAHA";
+				
 				b7.label = "" + pits.pits[7];
 				b8.label = "" + pits.pits[8];
 				b9.label = "" + pits.pits[9];
@@ -95,6 +119,7 @@
 				b11.label = "" + pits.pits[11];
 				b12.label = "" + pits.pits[12];
 				b13.label = "" + pits.pits[13];
+				//b13.label = "NORTH_KALAHA";
 			}					
 			
 			private function onPacketReceived(packetEvent:PacketEvent):void
@@ -105,37 +130,38 @@
 					case TableChatPacket.CLASSID :
 						handleTableChatPacket(TableChatPacket(protocolObject));
 						break;
-					case SeatInfoPacket.CLASSID:
-						handleSeatInfo(SeatInfoPacket(protocolObject));
-						break;
+//					case SeatInfoPacket.CLASSID:
+//						handleSeatInfo(SeatInfoPacket(protocolObject));
+//						break;
 				} 
 			}
 			
-			private function handleSeatInfo(seatInfo:SeatInfoPacket):void
-			{
-				var seatId:int = seatInfo.seat;
-				if (seatId == 0 && KalahaRealClient.playerInfo.pid == seatInfo.player.pid)
-				{
-					side = "SOUTH";
-				}
-				else
-				{
-					b0.enabled = false;
-					b1.enabled = false;
-					b2.enabled = false;
-					b3.enabled = false;
-					b4.enabled = false;
-					b5.enabled = false;
-					
-					b7.enabled = true;
-					b8.enabled = true;
-					b9.enabled = true;
-					b10.enabled = true;
-					b11.enabled = true;
-					b12.enabled = true;					
-					side = "NORTH";
-				}
-			}
+//			private function handleSeatInfo(seatInfo:SeatInfoPacket):void
+//			{
+//				var seatId:int = seatInfo.seat;
+//				var s:int = KalahaRealClient.seat;
+//				if (seatId == 0 && KalahaRealClient.playerInfo.pid == seatInfo.player.pid)
+//				{
+//					side = "SOUTH";
+//				}
+//				else
+//				{
+//					b0.enabled = false;
+//					b1.enabled = false;
+//					b2.enabled = false;
+//					b3.enabled = false;
+//					b4.enabled = false;
+//					b5.enabled = false;
+//					
+//					b7.enabled = true;
+//					b8.enabled = true;
+//					b9.enabled = true;
+//					b10.enabled = true;
+//					b11.enabled = true;
+//					b12.enabled = true;					
+//					side = "NORTH";
+//				}
+//			}
 			
 			private function onSendChatMessage():void
 			{
@@ -209,12 +235,12 @@
 	<mx:Button x="196" y="56" label="3" width="49" height="43" id="b3" click="pitClicked(3)"/>
 	<mx:Button x="244" y="56" label="4" width="49" height="43" id="b4" click="pitClicked(4)"/>
 	<mx:Button x="292" y="56" label="5" width="49" height="43" id="b5" click="pitClicked(5)"/>
-	<mx:Button x="341" y="0" label="k1" width="54" height="99" id="b6" enabled="false"/> <!-- kalaha for player 2 -->
+	<mx:Button x="341" y="0" label="SOUTH_KALAHA" width="54" height="99" id="b6" enabled="false"/> <!-- kalaha for player 1 -->
 	<mx:Button x="53" y="0" label="12" width="49" height="43" id="b12" enabled="false" click="pitClicked(5)" />
 	<mx:Button x="100" y="0" label="11" width="49" height="43" id="b11" enabled="false" click="pitClicked(4)" />
 	<mx:Button x="148" y="0" label="10" width="49" height="43" id="b10" enabled="false" click="pitClicked(3)" />
 	<mx:Button x="196" y="0" label="9" width="49" height="43" id="b9" enabled="false" click="pitClicked(2)" />
 	<mx:Button x="244" y="0" label="8" width="49" height="43" id="b8" enabled="false" click="pitClicked(1)" />
 	<mx:Button x="292" y="0" label="7" width="49" height="43" id="b7" enabled="false" click="pitClicked(0)" />
-	<mx:Button x="0" y="0" label="k2" width="54" height="99" id="b13" enabled="false"/> <!-- kalaha for player 2 -->
+	<mx:Button x="0" y="0" label="NORTH_KALAHA" width="54" height="99" id="b13" enabled="false"/> <!-- kalaha for player 2 -->
 </mx:Canvas>

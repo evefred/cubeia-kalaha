@@ -19,14 +19,20 @@ public class KalahaBoard implements Serializable {
 	private int northPlayerId;
 
 	private boolean gameEnded;
+	private Player playerToAct;
 	
 	public KalahaBoard(int stones) {
+		this(stones, Player.SOUTH);
+	}
+	
+	public KalahaBoard(int stones, Player startingPlayer) {
 		this.state = new State();
 		for (int i = 0; i < state.getPits().length; i++) {
 			state.getPits()[i] = stones;
 		}
 		setStonesInKalaha(0, Player.SOUTH);
 		setStonesInKalaha(0, Player.NORTH);
+		playerToAct = startingPlayer;
 	}
 	
 	public State getState() {
@@ -76,6 +82,10 @@ public class KalahaBoard implements Serializable {
 	}
 	
 	public void moveStones(int pit, Player player) {
+		if (!playerToAct(player)) {
+			return;
+		}
+		boolean endedInKalaha = false;
 		int stonesToMove = getStonesInPit(pit, player);
 		setStonesInPit(0, pit, player);
 		
@@ -93,13 +103,31 @@ public class KalahaBoard implements Serializable {
 			// Steal opponent's stones if last stone lands in one of my empty pits.
 			boolean lastStone = i == (pit + stonesToMove);
 			boolean myEmptyPit = player.isMyPit(currentPit) && state.getPits()[currentPit] == 0;
+			boolean myKalaha = player.isMyKalaha(currentPit);
+			
 			if (lastStone && myEmptyPit) {
 				stealOpponentsStones(player, currentPit);
+				endedInKalaha = true;
 			} else {
+				if (lastStone && myKalaha) {
+					endedInKalaha = true;
+				}
 				state.getPits()[currentPit]++;
 			}
-		}		
+		}
+		
+		updatePlayerToAct(player, endedInKalaha);
 		checkGameEnd(player);
+	}
+
+	private void updatePlayerToAct(Player playerWhoActed, boolean endedInKalaha) {
+		if (!endedInKalaha) {
+			playerToAct = getOpponent(playerWhoActed);
+		}
+	}
+
+	private boolean playerToAct(Player player) {
+		return playerToAct == player;
 	}
 
 	private void stealOpponentsStones(Player player, int currentPit) {
@@ -115,7 +143,7 @@ public class KalahaBoard implements Serializable {
 	}
 
 	private void checkGameEnd(Player player) {
-		if(!canPlayerMove(getOpponent(player))) {
+		if (!canPlayerMove(getOpponent(player))) {
 			endTransfer(player);
 			gameEnded = true;
 		}
@@ -173,5 +201,9 @@ public class KalahaBoard implements Serializable {
 		} else {
 			return -1;
 		}
+	}
+
+	public Player getPlayerToAct() {
+		return playerToAct;
 	}
 }
