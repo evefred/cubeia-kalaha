@@ -82,7 +82,7 @@ public class KalahaBoardTest {
 
 	@Test
 	public void testNorthMovesSixKalahas() {
-		KalahaBoard kb = new KalahaBoard(6);
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
 		
 		kb.moveStones(1, Player.NORTH);
 		
@@ -118,7 +118,7 @@ public class KalahaBoardTest {
 	
 	@Test
 	public void testNorthSkipsSouthsKalaha() {
-		KalahaBoard kb = new KalahaBoard(6);
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
 		kb.setStonesInPit(20, 5, Player.NORTH);
 		
 		kb.moveStones(5, Player.NORTH);
@@ -143,7 +143,7 @@ public class KalahaBoardTest {
 	
 	@Test
 	public void testNorthSteal() {
-		KalahaBoard kb = new KalahaBoard(6);
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
 		kb.setStonesInPit(1, 0, Player.NORTH);
 		kb.setStonesInPit(0, 1, Player.NORTH);
 		
@@ -168,11 +168,42 @@ public class KalahaBoardTest {
 	
 	@Test
 	public void testStealAddsStonesInKalahaCorrectly() {
-		KalahaBoard kb = new KalahaBoard(6);
-		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);
-		             //0,10,10,0,1,6,7, 10,0,0,12,5,6,11]
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
+		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(1, Player.NORTH);
 		assertEquals(kb.getStonesInKalaha(Player.NORTH), 4);
+	}
+	
+	@Test
+	public void ignoresActionFromPlayerNotInTurn() {
+		KalahaBoard kb = new KalahaBoard(6);
+		kb.moveStones(0, Player.NORTH);
+		assertStones(kb, Player.NORTH, 6, 6, 6, 6, 6, 6, 0);
+	}
+	
+	@Test
+	public void updatesPlayerToActAfterPlayerActs() {
+		KalahaBoard kb = new KalahaBoard(6);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
+		kb.moveStones(1, Player.SOUTH);
+		assertEquals(kb.getPlayerToAct(), Player.NORTH);
+	}
+	
+	@Test
+	public void playerGetsToActAgainWhenEndingInOwnKalaha() {
+		KalahaBoard kb = new KalahaBoard(6);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
+		kb.setStonesInPit(1, 5, Player.NORTH);
+		kb.moveStones(0, Player.SOUTH);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
+	}
+	
+	@Test
+	public void playerGetsToActAgainAfterSteal() {
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
+		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
+		kb.moveStones(1, Player.NORTH);
+		assertEquals(kb.getPlayerToAct(), Player.NORTH);
 	}
 	
 	private void setupState(KalahaBoard board, int ... pits) {
