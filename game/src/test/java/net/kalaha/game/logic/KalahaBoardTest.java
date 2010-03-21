@@ -238,7 +238,6 @@ public class KalahaBoardTest {
 		assertEquals(kb.getPlayerToAct(), Player.NORTH);
 	}
 	
-	
 	// --- PRIVATE METHODS --- //
 	
 	private void setupState(KalahaBoard board, int ... pits) {
