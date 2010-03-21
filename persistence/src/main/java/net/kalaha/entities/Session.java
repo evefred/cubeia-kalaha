@@ -1,20 +1,12 @@
 package net.kalaha.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 @Entity
-public class Session implements Serializable {
+public class Session {
 
-	private static final long serialVersionUID = 4423722263843312260L;
-	
 	@Id
 	private String id;
 	
@@ -93,21 +85,58 @@ public class Session implements Serializable {
 		this.ttl = ttl;
 	}
 
-	
-	// --- COMMONS OBJECT METHODS --- //
-
 	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (created ^ (created >>> 32));
+		result = prime * result
+				+ ((externalId == null) ? 0 : externalId.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
+		result = prime * result + operatorId;
+		result = prime * result + (int) (ttl ^ (ttl >>> 32));
+		result = prime * result + userId;
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Session other = (Session) obj;
+		if (created != other.created)
+			return false;
+		if (externalId == null) {
+			if (other.externalId != null)
+				return false;
+		} else if (!externalId.equals(other.externalId))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (lastModified != other.lastModified)
+			return false;
+		if (operatorId != other.operatorId)
+			return false;
+		if (ttl != other.ttl)
+			return false;
+		if (userId != other.userId)
+			return false;
+		return true;
 	}
 
 	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+	public String toString() {
+		return "Session [created=" + created + ", externalId=" + externalId
+				+ ", id=" + id + ", lastModified=" + lastModified
+				+ ", operatorId=" + operatorId + ", ttl=" + ttl + ", userId="
+				+ userId + "]";
 	}
 }

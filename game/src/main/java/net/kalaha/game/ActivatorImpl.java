@@ -7,6 +7,7 @@ import net.kalaha.entities.Game;
 import net.kalaha.entities.GameForm;
 import net.kalaha.entities.GameType;
 import net.kalaha.entities.User;
+import net.kalaha.game.logic.KalahaBoard;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +31,6 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 
 	private Injector injector;
 	private GameManager gameManager;
-
 	private UserManager userManager;
 
 	@Override
@@ -56,7 +56,8 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 			log.debug("Creating new game for player id: " + pid);
 			GameForm form = getKalahaGameForm(atts);
 			User user = userManager.getUser(pid);
-			Game game = gameManager.createGame(GameType.KALAHA, form, user, null, -1);
+			User opponent = getOpponent(atts);
+			Game game = gameManager.createGame(GameType.KALAHA, form, user, opponent, -1, KalahaBoard.getInitState(6));
 			return new Participant(game);
 		} else {
 			log.debug("Ressurecting new game " + gameId + " for player id " + pid);
@@ -66,9 +67,9 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 		}
 	}
 
-	
-	// --- TEST METHODS --- //
 
+	// --- TEST METHODS --- //
+	
 	UserManager getUserManager() {
 		return userManager;
 	}
@@ -79,6 +80,16 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 	
 
 	// --- PRIVATE METHODS --- //
+	
+	private User getOpponent(Attribute[] atts) {
+		for (Attribute a : atts) {
+			if(a.name.equals("opponent")) {
+				int oppId = a.value.getIntValue();
+				return userManager.getUser(oppId);
+			}
+		}
+		return null;
+	}
 	
 	private GameForm getKalahaGameForm(Attribute[] atts) {
 		for (Attribute a : atts) {
@@ -111,7 +122,7 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 
 		@Override
 		public void tableCreated(Table table, LobbyTableAttributeAccessor atts) {
-			table.getGameState().setState(new net.kalaha.game.action.State(game.getState()));
+			table.getGameState().setState(new KalahaBoard(game));
 			atts.setIntAttribute("gameId", game.getId());
 		}
 		

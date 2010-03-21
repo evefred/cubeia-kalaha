@@ -1,14 +1,19 @@
 package net.kalaha.entities;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 
 @Entity
 public class Game {
@@ -29,10 +34,12 @@ public class Game {
 	@Column(nullable=true)
 	private GameResult result;
 	
-	@Column(nullable=false)
+	@ManyToOne
+	@JoinColumn(name="ownerId", nullable=false)
 	private User owner;
 	
-	@Column(nullable=true)
+	@ManyToOne
+	@JoinColumn(name="opponentId", nullable=true)
 	private User opponent;
 	
 	@Column(nullable=false)
@@ -45,20 +52,21 @@ public class Game {
 	private long moveTimeout;
 	
 	@Column(nullable=false)
-	private boolean ownersMove;
+	private boolean ownersMove = true;
 	
 	@Column(nullable=true)
 	private int winningUser;
 	
-	@Column(nullable=true)
-	private int[] state;
-
-	public int[] getState() {
-		return state;
+	@OrderBy("id")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="game")
+	private List<GameState> states = new LinkedList<GameState>();
+	
+	public List<GameState> getStates() {
+		return states;
 	}
 	
-	public void setState(int[] state) {
-		this.state = state;
+	public void setStates(List<GameState> states) {
+		this.states = states;
 	}
 	
 	public GameResult getResult() {
@@ -157,21 +165,104 @@ public class Game {
 		this.ownersMove = ownersMove;
 	}
 	
-	
-	// --- COMMONS OBJECT METHODS --- //
-
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+	@Transient
+	public void updateGameState(int[] pits) {
+		states.add(new GameState(this, pits));
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
+	
+	@Transient
+	public GameState getCurrentGameState() {
+		return (states.size() == 0 ? null : states.get(states.size() - 1));
 	}
 
 	@Override
 	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (created ^ (created >>> 32));
+		result = prime * result + ((form == null) ? 0 : form.hashCode());
+		result = prime * result + id;
+		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
+		result = prime * result + (int) (moveTimeout ^ (moveTimeout >>> 32));
+		result = prime * result
+				+ ((opponent == null) ? 0 : opponent.hashCode());
+		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+		result = prime * result + (ownersMove ? 1231 : 1237);
+		result = prime * result
+				+ ((this.result == null) ? 0 : this.result.hashCode());
+		// result = prime * result + ((states == null) ? 0 : states.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + winningUser;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Game other = (Game) obj;
+		if (created != other.created)
+			return false;
+		if (form == null) {
+			if (other.form != null)
+				return false;
+		} else if (!form.equals(other.form))
+			return false;
+		if (id != other.id)
+			return false;
+		if (lastModified != other.lastModified)
+			return false;
+		if (moveTimeout != other.moveTimeout)
+			return false;
+		if (opponent == null) {
+			if (other.opponent != null)
+				return false;
+		} else if (!opponent.equals(other.opponent))
+			return false;
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		if (ownersMove != other.ownersMove)
+			return false;
+		if (result == null) {
+			if (other.result != null)
+				return false;
+		} else if (!result.equals(other.result))
+			return false;
+		/*if (states == null) {
+			if (other.states != null)
+				return false;
+		} else if (!states.equals(other.states))
+			return false;*/
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		if (winningUser != other.winningUser)
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Game [created=" + created + ", form=" + form + ", id=" + id
+				+ ", lastModified=" + lastModified + ", moveTimeout="
+				+ moveTimeout + ", opponent=" + opponent + ", owner=" + owner
+				+ ", ownersMove=" + ownersMove + ", result=" + result + ", states=" + states + ", status="
+				+ status + ", type=" + type + ", winningUser=" + winningUser
+				+ "]";
 	}
 }

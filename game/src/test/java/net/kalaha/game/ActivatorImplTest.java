@@ -43,7 +43,7 @@ public class ActivatorImplTest {
 		User u = i.getUserManager().createUser("olle", 0);
 		
 		// create "existing" game
-		Game g = i.getGameManager().createGame(GameType.KALAHA, GameForm.LIVE, u, null, -1);
+		Game g = i.getGameManager().createGame(GameType.KALAHA, GameForm.LIVE, u, null, -1, null);
 		
 		// create table for the above game
 		i.getParticipantForRequest(u.getId(), 2, attributes(GameForm.LIVE, g.getId()));

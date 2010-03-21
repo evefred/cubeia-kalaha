@@ -2,6 +2,10 @@ package net.kalaha.game.logic;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+
+import net.kalaha.entities.Game;
+import net.kalaha.entities.GameStatus;
 import net.kalaha.game.action.State;
 
 public class KalahaBoard implements Serializable {
@@ -17,6 +21,7 @@ public class KalahaBoard implements Serializable {
 	
 	private int southPlayerId;
 	private int northPlayerId;
+	private int gameId;
 
 	private boolean gameEnded;
 	private Player playerToAct;
@@ -25,14 +30,46 @@ public class KalahaBoard implements Serializable {
 		this(stones, Player.SOUTH);
 	}
 	
+	public static int[] getInitState(int stones) {
+		return new KalahaBoard(stones).getState().getPits();
+	}
+	
+	public KalahaBoard(Game game) {
+		this.gameId = game.getId();
+		this.southPlayerId = game.getOwner().getId();
+		if(game.getOpponent() != null) {
+			this.northPlayerId = game.getOpponent().getId();
+		}
+		this.gameEnded = (game.getStatus() == GameStatus.ACTIVE ? false : true);
+		this.playerToAct = (game.isOwnersMove() ? Player.SOUTH : Player.NORTH);
+		this.state = new State(game.getCurrentGameState().getRealState());
+	}
+	
 	public KalahaBoard(int stones, Player startingPlayer) {
 		this.state = new State();
+		initState(stones);
+		playerToAct = startingPlayer;
+	}
+
+	private void initState(int stones) {
 		for (int i = 0; i < state.getPits().length; i++) {
 			state.getPits()[i] = stones;
 		}
 		setStonesInKalaha(0, Player.SOUTH);
 		setStonesInKalaha(0, Player.NORTH);
-		playerToAct = startingPlayer;
+	}
+	
+	public void updateGame(Game game) {
+		game.setLastModified(System.currentTimeMillis());
+		game.updateGameState(state.getPits());
+		game.setOwnersMove(playerToAct == Player.SOUTH);
+		if(gameEnded) {
+			game.setStatus(GameStatus.FINISHED);
+		}
+	}
+	
+	public int getGameId() {
+		return gameId;
 	}
 	
 	public State getState() {
@@ -83,6 +120,7 @@ public class KalahaBoard implements Serializable {
 	
 	public void moveStones(int pit, Player player) {
 		if (!playerToAct(player)) {
+			Logger.getLogger(getClass()).debug("Skipping player " + player + " silently, it's not his turn...");
 			return;
 		}
 		boolean endedInKalaha = false;

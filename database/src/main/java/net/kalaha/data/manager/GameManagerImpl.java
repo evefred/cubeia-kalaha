@@ -27,7 +27,7 @@ public class GameManagerImpl implements GameManager {
 	private Logger log;
 
 	@Override
-	public Game createGame(GameType type, GameForm form, User owner, User opponent, long moveTimeout) {
+	public Game createGame(GameType type, GameForm form, User owner, User opponent, long moveTimeout, int[] initState) {
 		trans.enter();
 		try {
 			long now = System.currentTimeMillis();
@@ -38,9 +38,12 @@ public class GameManagerImpl implements GameManager {
 			g.setMoveTimeout(moveTimeout);
 			g.setOwner(owner);
 			g.setOpponent(opponent);
-			g.setOwnersMove(false);
+			g.setOwnersMove(true);
 			g.setStatus(GameStatus.ACTIVE);
 			g.setType(type);
+			if(initState != null) {
+				g.updateGameState(initState);
+			}
 			trans.current().persist(g);
 			trans.commit();
 			return g;
@@ -52,6 +55,20 @@ public class GameManagerImpl implements GameManager {
 			trans.exit();
 		}
 	}
+	
+	/*@Override
+	public void updateState(int gameId, int[] state) {
+		trans.enter();
+		try {
+			getGame(gameId).updateGameState(state);
+			trans.commit();
+		} catch(Exception e) {
+			log.error("Failed transaction", e);
+			trans.rollback();
+		} finally {
+			trans.exit();
+		}
+	}*/
 
 	@Override
 	public Game getGame(int gameId) {

@@ -13,7 +13,7 @@ import com.google.inject.Inject;
 public class TableListenerImpl implements TableListener {
 
 	@Inject
-	private ActionUtil util;
+	private ActionUtil util;	
 	
 	@Override
 	public void playerJoined(Table table, GenericPlayer player) { 

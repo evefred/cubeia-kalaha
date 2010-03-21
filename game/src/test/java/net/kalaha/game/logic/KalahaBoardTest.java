@@ -1,5 +1,9 @@
 package net.kalaha.game.logic;
 
+import net.kalaha.entities.Game;
+import net.kalaha.entities.GameStatus;
+import net.kalaha.entities.User;
+
 import org.testng.annotations.Test; 
 
 import static org.testng.Assert.*;
@@ -62,6 +66,34 @@ public class KalahaBoardTest {
 		assertTrue(kb.isGameEnded());
 	}
 	
+	@Test
+	public void gameEndWithEntity() {
+		User u1 = createUser(1, 0);
+		User u2 = createUser(2, 0);
+		Game g = createGame(u1, u2);
+		KalahaBoard kb = new KalahaBoard(g);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
+		assertEquals(kb.getSouthPlayerId(), u1.getId());
+		assertEquals(kb.getNorthPlayerId(), u2.getId());
+		for (int i = 0; i < 6; i++) {
+			kb.setStonesInPit(0, i, Player.NORTH);
+		}
+		kb.setStonesInPit(1, 5, Player.SOUTH);
+		kb.moveStones(5, Player.SOUTH);
+		assertTrue(kb.isGameEnded());
+		kb.updateGame(g);
+		assertEquals(g.getStatus(), GameStatus.FINISHED);
+	}
+
+
+	private Game createGame(User owner, User opponent) {
+		Game g = new Game();
+		g.updateGameState(KalahaBoard.getInitState(6));
+		g.setOpponent(opponent);
+		g.setOwner(owner);
+		return g;
+	}
+
 	@Test
 	public void testNewBoardHasSixStonesInEachPit() {
 		KalahaBoard kb = new KalahaBoard(6);
@@ -206,6 +238,9 @@ public class KalahaBoardTest {
 		assertEquals(kb.getPlayerToAct(), Player.NORTH);
 	}
 	
+	
+	// --- PRIVATE METHODS --- //
+	
 	private void setupState(KalahaBoard board, int ... pits) {
 		for (int i = 0; i < 6; i++) {
 			board.setStonesInPit(pits[i], i, Player.SOUTH);
@@ -228,4 +263,12 @@ public class KalahaBoardTest {
 		    assertEquals(pit, kb.getStonesInPit(i++, player), "Expected " + pit + " stones in pit " + i);
 		}
 	}	
+	
+	private User createUser(int id, int operator) {
+		User u = new User();
+		u.setId(id);
+		u.setOperatorId(operator);
+		u.setExternalId(String.valueOf(id));
+		return u;
+	}
 }
