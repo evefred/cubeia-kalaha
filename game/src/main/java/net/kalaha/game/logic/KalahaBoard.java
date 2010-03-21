@@ -185,7 +185,7 @@ public class KalahaBoard implements Serializable {
 		return opponentPit;
 	}
 	
-	private boolean isOpponentKalaha(Player player, int currentPit) {
+	private boolean isOpponentKalaha(Player pla yer, int currentPit) {
 		return getOpponent(player).isMyKalaha(currentPit);
 	}
 
