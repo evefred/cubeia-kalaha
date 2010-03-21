@@ -37,7 +37,7 @@ public class KalahaBoard implements Serializable {
 	public KalahaBoard(Game game) {
 		this.gameId = game.getId();
 		this.southPlayerId = game.getOwner().getId();
-		if(game.getOpponent() != null) {
+		if (game.getOpponent() != null) {
 			this.northPlayerId = game.getOpponent().getId();
 		}
 		this.gameEnded = (game.getStatus() == GameStatus.ACTIVE ? false : true);
