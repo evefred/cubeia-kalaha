@@ -204,7 +204,11 @@ public class KalahaBoard implements Serializable {
 
 	
 	private void checkGameEnd(Player player) {
-		if (!canPlayerMove(getOpponent(player))) {
+		if (!canPlayerMove(player)) {
+			if (playerToAct == player || rules.endGameWhenEitherPlayerRunsOutOfStones()) {
+				gameEnded = true;
+			}
+		} else if (!canPlayerMove(getOpponent(player))) {
 			endTransfer(player);
 			gameEnded = true;
 		}

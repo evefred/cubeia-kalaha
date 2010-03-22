@@ -7,4 +7,9 @@ public class DefaultRules implements SpecialRules {
 		return false;
 	}
 
+	@Override
+	public boolean endGameWhenEitherPlayerRunsOutOfStones() {
+		return false;
+	}
+
 }

@@ -4,4 +4,6 @@ public interface SpecialRules {
 
 	public boolean allowStealingFromEmptyPit();
 
+	public boolean endGameWhenEitherPlayerRunsOutOfStones();
+
 }

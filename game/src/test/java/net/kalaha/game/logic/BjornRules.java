@@ -7,4 +7,9 @@ public class BjornRules implements SpecialRules {
 		return true;
 	}
 
+	@Override
+	public boolean endGameWhenEitherPlayerRunsOutOfStones() {
+		return true;
+	}
+
 }

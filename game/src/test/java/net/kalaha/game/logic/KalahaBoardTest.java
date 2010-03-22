@@ -240,6 +240,28 @@ public class KalahaBoardTest {
 		assertEquals(kb.getPlayerToAct(), Player.NORTH);
 	}
 	
+	@Test
+	public void finishingInKalahaHavingNoMoreStonesEndsGame() {
+		setupState(kb, 0,0,0,0,0,1,7, 10,1,0,12,5,11,3);		
+		kb.moveStones(5, Player.SOUTH);
+		assertTrue(kb.isGameEnded());
+	}
+	
+	@Test
+	public void eitherPlayerOutOfStonesEndsGameWhenSpecialRuleOn() {
+		KalahaBoard kb = new KalahaBoard(6, Player.SOUTH, new BjornRules());
+		setupState(kb, 0,0,0,0,0,2,7, 10,1,0,12,5,11,3);		
+		kb.moveStones(5, Player.SOUTH);
+		assertTrue(kb.isGameEnded());
+	}
+	
+	@Test
+	public void eitherPlayerOutOfStonesDoesNotEndGameWhenSpecialRuleOff() {
+		setupState(kb, 0,0,0,0,0,2,7, 10,1,0,12,5,11,3);		
+		kb.moveStones(5, Player.SOUTH);
+		assertFalse(kb.isGameEnded());
+	}		
+	
 	// --- PRIVATE METHODS --- //
 	
 	private void setupState(KalahaBoard board, int ... pits) {
