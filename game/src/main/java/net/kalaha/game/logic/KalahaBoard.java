@@ -274,4 +274,8 @@ public class KalahaBoard implements Serializable {
 		}
 		return sb.toString();
 	}
+
+	public void setPlayerToAct(Player player) {
+		playerToAct = player;
+	}
 }
