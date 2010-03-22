@@ -200,11 +200,21 @@ public class KalahaBoardTest {
 	
 	@Test
 	public void testStealAddsStonesInKalahaCorrectly() {
-		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH, new BjornRules());
 		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(1, Player.NORTH);
 		assertEquals(kb.getStonesInKalaha(Player.NORTH), 4);
+		assertEquals(kb.getPlayerToAct(), Player.NORTH);
 	}
+	
+	@Test
+	public void testNoStealWhenOppositePitEmptyAndSpecialRuleOff() {
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
+		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
+		kb.moveStones(1, Player.NORTH);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
+		assertEquals(kb.getStonesInKalaha(Player.NORTH), 3);
+	}	
 	
 	@Test
 	public void ignoresActionFromPlayerNotInTurn() {
@@ -232,7 +242,7 @@ public class KalahaBoardTest {
 	
 	@Test
 	public void playerGetsToActAgainAfterSteal() {
-		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH, new BjornRules());
 		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(1, Player.NORTH);
 		assertEquals(kb.getPlayerToAct(), Player.NORTH);

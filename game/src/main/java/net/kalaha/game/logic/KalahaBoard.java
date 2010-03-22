@@ -10,6 +10,8 @@ import net.kalaha.game.action.State;
 
 public class KalahaBoard implements Serializable {
 
+	private static final Logger log = Logger.getLogger(KalahaBoard.class);
+
 	private static final long serialVersionUID = -3348427879794771338L;
 
 	private final static int NUMBER_OF_PITS = 6;
@@ -25,13 +27,11 @@ public class KalahaBoard implements Serializable {
 
 	private boolean gameEnded;
 	private Player playerToAct;
+
+	private SpecialRules rules;
 	
-	public KalahaBoard(int stones) {
+	public KalahaBoard(int stones) {		
 		this(stones, Player.SOUTH);
-	}
-	
-	public static int[] getInitState(int stones) {
-		return new KalahaBoard(stones).getState().getPits();
 	}
 	
 	public KalahaBoard(Game game) {
@@ -46,10 +46,19 @@ public class KalahaBoard implements Serializable {
 	}
 	
 	public KalahaBoard(int stones, Player startingPlayer) {
+		this(stones, startingPlayer, new DefaultRules());
+	}
+	
+	public KalahaBoard(int stones, Player startingPlayer, SpecialRules rules) {
 		this.state = new State();
 		initState(stones);
 		playerToAct = startingPlayer;
+		this.rules = rules;		
 	}
+
+	public static int[] getInitState(int stones) {
+		return new KalahaBoard(stones).getState().getPits();
+	}	
 
 	private void initState(int stones) {
 		for (int i = 0; i < state.getPits().length; i++) {
@@ -120,7 +129,7 @@ public class KalahaBoard implements Serializable {
 	
 	public void moveStones(int pit, Player player) {
 		if (!playerToAct(player)) {
-			Logger.getLogger(getClass()).debug("Skipping player " + player + " silently, it's not his turn...");
+			log.debug("Skipping player " + player + " silently, it's not his turn...");
 			return;
 		}
 		boolean endedInKalaha = false;
@@ -144,8 +153,7 @@ public class KalahaBoard implements Serializable {
 			boolean myKalaha = player.isMyKalaha(currentPit);
 			
 			if (lastStone && myEmptyPit) {				
-				stealOpponentsStones(player, currentPit);
-				endedInKalaha = true;
+				endedInKalaha = stealOpponentsStones(player, currentPit);
 			} else {
 				if (lastStone && myKalaha) {
 					endedInKalaha = true;
@@ -168,11 +176,16 @@ public class KalahaBoard implements Serializable {
 		return playerToAct == player;
 	}
 
-	private void stealOpponentsStones(Player player, int currentPit) {
+	private boolean stealOpponentsStones(Player player, int currentPit) {
+		boolean stole = false;
 		int currentStonesInKalaha = getStonesInKalaha(player);		
 		int stonesInOpponentPit = getStonesInOpponentPit(player, currentPit);
-		setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
-		setStonesInPit(0, getOpponentPit(player, currentPit), getOpponent(player));
+		if (stonesInOpponentPit > 0 || rules.allowStealingFromEmptyPit()) {
+			setStonesInKalaha(currentStonesInKalaha + 1 + stonesInOpponentPit, player);
+			setStonesInPit(0, getOpponentPit(player, currentPit), getOpponent(player));
+			stole = true;
+		}
+		return stole;
 	}
 
 	private int getStonesInOpponentPit(Player player, int currentPit) {
@@ -189,6 +202,7 @@ public class KalahaBoard implements Serializable {
 		return getOpponent(player).isMyKalaha(currentPit);
 	}
 
+	
 	private void checkGameEnd(Player player) {
 		if (!canPlayerMove(getOpponent(player))) {
 			endTransfer(player);
@@ -249,5 +263,15 @@ public class KalahaBoard implements Serializable {
 
 	public Player getPlayerToAct() {
 		return playerToAct;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		
+		for (int pit : state.getPits()) {
+			sb.append(pit + ",");
+		}
+		return sb.toString();
 	}
 }

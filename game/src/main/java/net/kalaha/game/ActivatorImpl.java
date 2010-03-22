@@ -52,7 +52,7 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 	@Override
 	public RequestCreationParticipant getParticipantForRequest(int pid, int seats, Attribute[] atts) throws CreationRequestDeniedException {
 		int gameId = getKalahaGameId(atts);
-		if(gameId == -1) {
+		if (gameId == -1) {
 			log.debug("Creating new game for player id: " + pid);
 			GameForm form = getKalahaGameForm(atts);
 			User user = userManager.getUser(pid);
@@ -62,11 +62,10 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 		} else {
 			log.debug("Ressurecting new game " + gameId + " for player id " + pid);
 			final Game game = gameManager.getGame(gameId);
-			if(game == null) throw new CreationRequestDeniedException(1);
+			if (game == null) throw new CreationRequestDeniedException(1);
 			return new Participant(game);
 		}
 	}
-
 
 	// --- TEST METHODS --- //
 	
@@ -108,7 +107,6 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 		}
 		return -1;
 	}
-	
 	
 	// --- PRIVATE CLASSES --- //
 	
