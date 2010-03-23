@@ -159,6 +159,8 @@ public class KalahaBoard implements Serializable {
 				if (lastStone && myKalaha) {
 					endedInKalaha = true;
 				}
+			}
+			if (!endedInKalaha) {
 				state.getPits()[currentPit]++;
 			}
 		}
