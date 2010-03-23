@@ -22,7 +22,7 @@ public class GameState {
 	@JoinColumn(name="gameId", nullable=false)
 	private Game game;
 	
-	@Column(nullable=false, length=27)
+	@Column(nullable=false, length=100)
 	private String state;
 
 	@Transient
