@@ -17,12 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->	
 
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="604" height="416">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="604" height="478">
 	 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="604" height="360" title="Lobby" borderColor="#AD3333" color="#FFFFFF" fontSize="12" showCloseButton="false" alpha="1.0" backgroundAlpha="0.0" borderAlpha="1" backgroundColor="#540808" defaultButton="{joinButton}" creationComplete="setupLobby()" shadowDirection="right">
 
 	<mx:Script>
 		<![CDATA[
+			import com.cubeia.firebase.util.ParameterUtil;
+			import com.cubeia.firebase.io.protocol.Param;
 			import com.cubeia.firebase.io.protocol.JoinResponsePacket;
 			import com.cubeia.firebase.io.ProtocolObject;
 			import com.cubeia.firebase.model.LobbyDataItem;
@@ -30,6 +32,8 @@
 			import com.cubeia.firebase.events.PacketEvent;
 			import com.cubeia.firebase.events.LobbyEvent;
 			import com.cubeia.firebase.io.protocol.JoinRequestPacket;
+			import com.cubeia.firebase.io.protocol.CreateTableRequestPacket;
+			import com.cubeia.firebase.io.protocol.Param;
 			import mx.managers.PopUpManager;
 			
 			[Bindable]
@@ -142,6 +146,23 @@
 					lobbyUnsubscribe(236); 
 				}
 			}
+			
+			private function onTableRequested():void
+			{
+			}
+			
+			private function onChallenge():void
+			{
+				var requestTablePacket:CreateTableRequestPacket = new CreateTableRequestPacket();
+				requestTablePacket.gameid = 236;
+				requestTablePacket.seats = 2;
+				requestTablePacket.seq = 1;
+				requestTablePacket.invitees = new Array();
+				var param:Param = ParameterUtil.makeIntegerParam("opponent", int (opponentId.text));
+				requestTablePacket.params = [param];
+				
+				KalahaRealClient.firebaseClient.send(requestTablePacket);																
+			}
 
 
 			
@@ -158,4 +179,8 @@
 
 </mx:TitleWindow>
 	<mx:Button x="277.5" y="384" label="Join" id="joinButton" click="onTableSelected()" enabled="{lobbyGrid.selectedItem != null}" tabIndex="2" themeColor="#AD3333" color="#FFFFFF" fillAlphas="[1.0, 1.0]" fillColors="[#AD3333, #460A0A]"/>
+	<mx:Button x="291" y="414" label="Challenge playerId" click="onChallenge()"/>
+	<mx:TextInput id = "gameId" x="123" y="446"/>
+	<mx:TextInput id = "opponentId" x="123" y="414"/>
+	<mx:Button x="291" y="446" label="Request table for gameId" click="onTableRequested()"/>
 </mx:Canvas>
