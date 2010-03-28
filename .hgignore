@@ -1,0 +1,22 @@
+syntax:glob
+
+*.orig
+target/*
+logs/*
+test-output/*
+.project
+.classpath
+.settings/*
+.metadata/*
+bin/*
+facebook-web/debug.log
+user-service/debug.log
+user-service/temp-testng-customsuite.xml
+user-service/test-output
+database/temp-testng-customsuite.xml
+database/test-output
+
+syntax: regexp
+^debug\.log$
+syntax: regexp
+\.log$
