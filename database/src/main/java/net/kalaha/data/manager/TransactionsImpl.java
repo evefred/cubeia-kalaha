@@ -33,6 +33,9 @@ public class TransactionsImpl implements Transactions {
 					commit();
 				}
 				log.trace("Closing transaction " + h.id);
+				if(h.closeCommit) {
+					h.transaction.commit();
+				}
 				h.manager.close();
 				set(null);
 			} else {
@@ -75,11 +78,11 @@ public class TransactionsImpl implements Transactions {
 				if(h.rollbackOnly) {
 					log.warn("Transaction " + h.id + " marked as rollback only, aborting commit for rollback");
 					h.forceCommit = false;
-					h.transaction.rollback();
+					h.rollback();
 				} else {
 					log.trace("Commiting transaction " + h.id);
 					h.forceCommit = false;
-					h.transaction.commit();
+					h.commit();
 				}
 			} else {
 				log.debug("Marking transaction " + h.id + " as force commit");
@@ -97,7 +100,7 @@ public class TransactionsImpl implements Transactions {
 			if(h.callstack == 1) {
 				log.trace("Rolling back transaction " + h.id);
 				h.forceCommit = false;
-				h.transaction.rollback();
+				h.rollback();
 			} else {
 				log.debug("Marking transaction " + h.id + " as rollback only");
 				h.forceCommit = true;
@@ -133,11 +136,23 @@ public class TransactionsImpl implements Transactions {
 		private boolean rollbackOnly;
 		private boolean forceCommit;
 		
+		private boolean closeCommit = true;
+		
 		public Handle(EntityManager man) {
 			this.callstack = 1;
 			transaction = man.getTransaction();
 			transaction.begin();
 			manager = man;
+		}
+		
+		public void rollback() {
+			closeCommit = false;
+			transaction.rollback();
+		}
+		
+		public void commit() {
+			closeCommit = false;
+			transaction.commit();
 		}
 	}
 }

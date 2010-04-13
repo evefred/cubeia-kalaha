@@ -1,3 +1,19 @@
+/* Game */
+.gametable {
+	width: 100%;
+	border: 1px solid #cccccc;
+	font-size: 13px;
+	padding: 7px;  
+}
+
+.emtpydivide {
+	height: 10px;	
+}
+
+.gametable thead td {
+    font-weight: bold;  
+}
+
 /* Default Facebook CSS */  
 .fbbody  
 {  
@@ -17,7 +33,8 @@
 .fbbody a:hover  
 {  
     text-decoration: underline;  
-}  
+}
+
 /* Facebook Box Styles */  
 .fbgreybox  
 {  
@@ -54,7 +71,8 @@
     padding: 10px;  
     font-size: 13px;  
     font-weight: bold;  
-}  
+}
+
 /* Content Divider on White Background */  
 .fbcontentdivider  
 {  
@@ -64,6 +82,7 @@
     height: 1px;  
     background-color: #d8dfea;  
 }  
+
 /* Facebook Tab Style */  
 .fbtab  
 {  

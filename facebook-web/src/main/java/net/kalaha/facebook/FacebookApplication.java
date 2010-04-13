@@ -2,6 +2,7 @@ package net.kalaha.facebook;
 
 import javax.security.auth.login.FailedLoginException;
 
+import net.kalaha.data.manager.UserManager;
 import net.kalaha.facebook.page.Index;
 
 import org.apache.log4j.Logger;
@@ -33,6 +34,9 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
     @Log4j
     private Logger log;
     
+    @Inject
+    private UserManager userManager;
+    
     @Override
     protected void init() {
     	super.init();
@@ -40,13 +44,13 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
     }
     
 	@Override
-	public Class<?> getHomePage() {
+	public Class<? extends Page> getHomePage() {
 		return Index.class;
 	}
 	
 	@Override
 	public Session newSession(Request request, Response response) {
-		return new FacebookSession(request);
+		return new FacebookSession(request, userManager);
 	}
 
 	@Override

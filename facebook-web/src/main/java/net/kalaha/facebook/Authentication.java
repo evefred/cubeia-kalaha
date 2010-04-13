@@ -30,6 +30,9 @@ public class Authentication {
 	@Inject
 	private UserManager users;
 	
+	//@Log4j
+	//private Logger log;
+	
 	Authentication() {
 		FacebookXmlRestClient.initJaxbSupport();
 	}
@@ -37,6 +40,7 @@ public class Authentication {
     public void authenticateClient(Request request, FacebookSession session) throws FailedLoginException, FacebookException {
         String authToken = request.getParameter("auth_token");
         String sessionKey = request.getParameter(FacebookParam.SESSION_KEY.toString());
+        // log.debug("Authenticating token " + authToken + " for session " + sessionKey);
         FacebookXmlRestClient fbClient = null;
         if (sessionKey != null) {
             fbClient = new FacebookXmlRestClient(apiKey, secretKey, sessionKey);

@@ -174,6 +174,24 @@ public class Game {
 	public GameState getCurrentGameState() {
 		return (states.size() == 0 ? null : states.get(states.size() - 1));
 	}
+	
+	@Transient
+	public User getMyOpponent(User me) {
+		if(owner.equals(me)) {
+			return opponent;
+		} else {
+			return owner;
+		}
+	}
+	
+	@Transient 
+	public boolean isMyTurn(User me) {
+		if(owner.equals(me)) {
+			return isOwnersMove();
+		} else {
+			return !isOwnersMove();
+		}
+	}
 
 	@Override
 	public int hashCode() {

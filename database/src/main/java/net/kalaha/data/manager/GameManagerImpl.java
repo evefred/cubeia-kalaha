@@ -1,6 +1,6 @@
 package net.kalaha.data.manager;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Query;
 
@@ -107,7 +107,7 @@ public class GameManagerImpl implements GameManager {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Collection<Game> getMyGames(User user, GameStatus status, GameForm form) {
+	public List<Game> getMyGames(User user, GameStatus status, GameForm form) {
 		trans.enter();
 		try {
 			String tmp = "select g from Game g where (g.owner = :own or g.opponent = :opp)";

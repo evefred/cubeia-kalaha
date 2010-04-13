@@ -1,6 +1,6 @@
 package net.kalaha.data.manager;
 
-import java.util.Collection; 
+import java.util.List;
 
 import net.kalaha.entities.Game;
 import net.kalaha.entities.GameForm;
@@ -14,7 +14,7 @@ public interface GameManager {
 	
 	// public void updateState(int gameId, int[] state);
 
-	public Collection<Game> getMyGames(User user, GameStatus status, GameForm form);
+	public List<Game> getMyGames(User user, GameStatus status, GameForm form);
 	
 	public Game createGame(GameType type, GameForm form, User owner, User opponent, long moveTimeout, int[] initState);
 	

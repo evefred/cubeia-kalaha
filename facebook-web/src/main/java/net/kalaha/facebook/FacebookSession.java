@@ -1,6 +1,8 @@
 package net.kalaha.facebook;
 
+import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Session;
+import net.kalaha.entities.User;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebSession;
@@ -16,9 +18,12 @@ public class FacebookSession extends WebSession {
 
 	private long facebookId;
 	private Session session;
+
+	private final UserManager userManager;
 	
-	public FacebookSession(Request request) {
+	public FacebookSession(Request request, UserManager userManager) {
 		super(request);
+		this.userManager = userManager;
 	}
 	
 	public long getFacebookId() {
@@ -27,6 +32,15 @@ public class FacebookSession extends WebSession {
 	
 	public FacebookXmlRestClient getFacebookClient() {
 		return facebookClient;
+	}
+	
+	public int getUserId() {
+		return session.getUserId();
+	}
+	
+	public User getUser() {
+		int uid = session.getUserId();
+		return userManager.getUser(uid);
 	}
 	
 	public void setFacebookClient(FacebookXmlRestClient facebookClient) throws FacebookException {

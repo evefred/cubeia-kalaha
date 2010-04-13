@@ -1,17 +1,32 @@
 <html>
-<!--  link href="../fb.css" rel="stylesheet" type="text/css" / -->
-<body class="fbbody">
-	 <div>
-	 	<h1><i>Kalaha</i></h1>
-	 </div>
-	 <div class="fbinfobox" style="margin-bottom: 10px;">
-	 	Welcome to the Kalaha Test Harness <span wicket:id="name">Kalle Kallesson</span>, your site session token
-	 	is <span wicket:id="token">666</span>.
-	 </div>
-	 <div class="fbgreybox">
-	 	Home |
-	 	My Games | 
-	 	About
-	 </div>
+<body>
+<wicket:extend>
+	
+	<table class="gametable">
+		<thead>
+			<tr>
+				<td>Opponent</td>
+				<td>Created</td>
+				<td>Last Move</td>
+				<td>No. of Moves</td>
+				<td></td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr wicket:id="gameView">
+				<td><fbml:name wicket:id="opponentId"></fbml:name></td>
+				<td><span wicket:id="created"></span></td>
+				<td><span wicket:id="lastMove"></span></td>
+				<td><span wicket:id="noMoves"></span></td>
+				<td><span wicket:id="state"></span></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="emtpydivide"></div>
+	
+	<a wicket:id="inviteLink">Invite a Friend!</a>
+
+</wicket:extend>
 </body>
 </html>

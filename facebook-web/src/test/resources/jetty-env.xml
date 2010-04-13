@@ -5,6 +5,7 @@
     <Arg>jdbc/kalahaDs</Arg>
     <Arg>
       <New class="org.apache.commons.dbcp.BasicDataSource">
+      	<Set name="maxActive">10</Set>
         <Set name="driverClassName">org.hsqldb.jdbcDriver</Set>
         <Set name="url">jdbc:hsqldb:mem:users</Set>
         <Set name="username">sa</Set>
