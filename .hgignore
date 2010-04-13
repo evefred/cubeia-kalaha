@@ -15,6 +15,7 @@ user-service/temp-testng-customsuite.xml
 user-service/test-output
 database/temp-testng-customsuite.xml
 database/test-output
+persistence/temp-testng-customsuite.xml
 
 syntax: regexp
 ^debug\.log$
