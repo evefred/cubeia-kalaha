@@ -1,11 +1,15 @@
 package net.kalaha.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Session {
+public class Session implements Serializable {
+
+	private static final long serialVersionUID = -7104410366479459596L;
 
 	@Id
 	private String id;

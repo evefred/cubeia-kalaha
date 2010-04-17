@@ -14,18 +14,37 @@
 		</thead>
 		<tbody>
 			<tr wicket:id="gameView">
-				<td><fbml:name wicket:id="opponentId"></fbml:name></td>
+				<td><fb:name wicket:id="opponentId"></fb:name></td>
 				<td><span wicket:id="created"></span></td>
 				<td><span wicket:id="lastMove"></span></td>
 				<td><span wicket:id="noMoves"></span></td>
-				<td><span wicket:id="state"></span></td>
+				<td><a wicket:id="gameLink"><span wicket:id="state"></span></a></td>
 			</tr>
 		</tbody>
 	</table>
 
 	<div class="emtpydivide"></div>
 	
-	<a wicket:id="inviteLink">Invite a Friend!</a>
+	<fb:serverFbml style="width: 100%">
+		<script type="text/fbml"> 
+			<fb:fbml>
+
+				<fb:request-form 
+					action="http://kalaha.dynalias.com:8080/facebook-web/Invite" 
+					target="iframe_canvas"
+ 					method="POST" 
+					invite="true" 
+					type="Kalaha" 
+					content="Blah blah... <fb:req-choice url='http://apps.facebook.com/playkalaha/Invite' label='Invite'>" > 
+
+					Challenge a friend: <fb:friend-selector></fb:friend-selector>
+					<fb:request-form-submit></fb:request-form-submit>
+
+				</fb:request-form> 
+			</fb:fbml>
+
+		</script> 
+	</fb:serverFbml>
 
 </wicket:extend>
 </body>

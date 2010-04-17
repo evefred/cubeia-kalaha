@@ -26,12 +26,12 @@ public class Index extends BasePage {
 
 	private void setup() {
 		setupGameTable();
-		setupInviteLink();
+		// setupInviteLink();
 	}	
 	
-	private void setupInviteLink() {
+	/*private void setupInviteLink() {
 		add(new BookmarkablePageLink<Void>("inviteLink", Invite.class));
-	}
+	}*/
 
 	private void setupGameTable() {
 		List<Game> myGames = gameManager.getMyGames(getCurrentUser(), GameStatus.ACTIVE, null);
@@ -43,9 +43,11 @@ public class Index extends BasePage {
 			protected void populateItem(ListItem<Game> item) {
 				Game game = item.getModelObject();
 				User opp = game.getMyOpponent(getCurrentUser());
-				Index.this.addFBAttribute(item, "uid", "uid", opp.getExternalId());
+				Index.this.addFBAttribute(item, "opponentId", "uid", opp.getExternalId());
 				item.add(new Label("created", formatDate(game.getCreated())));
-				item.add(new Label("state", (game.isMyTurn(opp) ? "Waiting... " : "My Turn!")));
+				BookmarkablePageLink<Void> link = new BookmarkablePageLink<Void>("gameLink", Play.class, new PageParameters("gameId=" + game.getId()));
+				link.add(new Label("state", game.isMyTurn(opp) ? "Waiting... " : "My Turn!"));
+				item.add(link);
 				item.add(new Label("lastMove", formatDate(game.getLastModified())));
 				item.add(new Label("noMoves", String.valueOf(game.getStates().size())));
 			}

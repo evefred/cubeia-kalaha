@@ -5,13 +5,14 @@ import javax.security.auth.login.FailedLoginException;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Session;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.Request;
 
-import com.google.code.facebookapi.FacebookException;
-import com.google.code.facebookapi.FacebookParam;
-import com.google.code.facebookapi.FacebookXmlRestClient;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.FacebookException;
 
 public class Authentication {
 
@@ -30,28 +31,14 @@ public class Authentication {
 	@Inject
 	private UserManager users;
 	
-	//@Log4j
-	//private Logger log;
-	
-	Authentication() {
-		FacebookXmlRestClient.initJaxbSupport();
-	}
+	private final Logger log = Logger.getLogger(getClass());
 	
     public void authenticateClient(Request request, FacebookSession session) throws FailedLoginException, FacebookException {
         String authToken = request.getParameter("auth_token");
-        String sessionKey = request.getParameter(FacebookParam.SESSION_KEY.toString());
-        // log.debug("Authenticating token " + authToken + " for session " + sessionKey);
-        FacebookXmlRestClient fbClient = null;
-        if (sessionKey != null) {
-            fbClient = new FacebookXmlRestClient(apiKey, secretKey, sessionKey);
-        } else if (authToken != null) {
-            fbClient = new FacebookXmlRestClient(apiKey, secretKey);
-            fbClient.auth_getSession(authToken);
-        } else {
-            throw new FailedLoginException("Session key not found");
-        }
-        fbClient.setIsDesktop(false);
-        session.setFacebookClient(fbClient);
+        String sessionKey = request.getParameter("fb_sig_session_key");
+        log.info("Authenticating token " + authToken + " for session " + sessionKey);
+        FacebookClient fbClient = new DefaultFacebookClient(apiKey, secretKey);
+        session.setFacebookClient(fbClient, sessionKey);
     }
 
 	public void authenticateSite(FacebookSession ses) {

@@ -1,5 +1,6 @@
 package net.kalaha.entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.persistence.Column;
@@ -12,7 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
-public class GameState {
+public class GameState implements Serializable {
+
+	private static final long serialVersionUID = 5669711273949589971L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

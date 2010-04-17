@@ -1,11 +1,13 @@
 package net.kalaha.entities;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,7 +18,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 @Entity
-public class Game {
+public class Game implements Serializable {
+
+	private static final long serialVersionUID = -6522255809158960549L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -58,7 +62,7 @@ public class Game {
 	private int winningUser;
 	
 	@OrderBy("id")
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="game")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="game", fetch=FetchType.EAGER)
 	private List<GameState> states = new LinkedList<GameState>();
 	
 	public List<GameState> getStates() {

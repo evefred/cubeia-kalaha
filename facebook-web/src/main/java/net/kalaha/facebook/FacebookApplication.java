@@ -4,6 +4,8 @@ import javax.security.auth.login.FailedLoginException;
 
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.facebook.page.Index;
+import net.kalaha.facebook.page.Invite;
+import net.kalaha.facebook.page.Play;
 
 import org.apache.log4j.Logger;
 import org.apache.wicket.Component;
@@ -17,10 +19,9 @@ import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authorization.strategies.page.AbstractPageAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
 
-import com.cubeia.firebase.guice.inject.Log4j;
-import com.google.code.facebookapi.FacebookException;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.restfb.FacebookException;
 
 public class FacebookApplication extends WebApplication implements IUnauthorizedComponentInstantiationListener {    
 
@@ -31,8 +32,7 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
     @Named("facebook-api-key")
     private String apiKey;
     
-    @Log4j
-    private Logger log;
+    private Logger log = Logger.getLogger(getClass());
     
     @Inject
     private UserManager userManager;
@@ -86,6 +86,8 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
 	}
 	
 	private void setup() {
+		mountBookmarkablePage("/Play", Play.class);
+		mountBookmarkablePage("/Invite", Invite.class);
 		getSecuritySettings().setAuthorizationStrategy(new FaceBookAuthorizationStrategy());
         getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 	}
