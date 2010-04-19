@@ -4,6 +4,7 @@ import javax.security.auth.login.FailedLoginException;
 
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Session;
+import net.kalaha.facebook.page.fb.FBSession;
 
 import org.apache.log4j.Logger;
 import org.apache.wicket.Request;
@@ -13,6 +14,7 @@ import com.google.inject.name.Named;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.FacebookException;
+import com.restfb.Parameter;
 
 public class Authentication {
 
@@ -36,8 +38,15 @@ public class Authentication {
     public void authenticateClient(Request request, FacebookSession session) throws FailedLoginException, FacebookException {
         String authToken = request.getParameter("auth_token");
         String sessionKey = request.getParameter("fb_sig_session_key");
+        if(sessionKey == null && authToken == null) throw new FailedLoginException(); // NOT AUTHORIZED
         log.info("Authenticating token " + authToken + " for session " + sessionKey);
         FacebookClient fbClient = new DefaultFacebookClient(apiKey, secretKey);
+        if(sessionKey == null) {
+        	FBSession s = fbClient.execute("auth.getSession", FBSession.class, 
+        						Parameter.with("auth_token ", authToken));
+        	
+        	sessionKey = s.session_key;
+        }
         session.setFacebookClient(fbClient, sessionKey);
     }
 

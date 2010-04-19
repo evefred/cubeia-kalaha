@@ -77,7 +77,7 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
 				authenticator.authenticateClient(page.getRequest(), session);
 				authenticator.authenticateSite(session);
 			} catch(FailedLoginException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				forceLogin(page);
 			} catch(FacebookException e) {
 				log.error("Failed to create facbook client", e);
