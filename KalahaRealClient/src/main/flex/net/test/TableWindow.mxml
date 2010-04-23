@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+ * Copyright (C) 2009 Cubeia Ltd <info@cubeia.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->	
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="472" height="304" xmlns:ns1="*">
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="100%" height="207" title="Table Chat" borderColor="#AD3333" color="#FFFFFF" fontSize="12" showCloseButton="false" alpha="1.0" backgroundAlpha="0.0" borderAlpha="1" backgroundColor="#540808" defaultButton="{sendButton}" creationComplete="setupPacketHandler()" shadowDirection="right" y="97">
+
+	<mx:Script>
+		<![CDATA[
+			import com.cubeia.firebase.io.protocol.SeatInfoPacket;
+			import com.cubeia.firebase.io.protocol.JoinResponsePacket;
+			import com.adobe.serialization.json.JSON;
+			import com.cubeia.firebase.events.GamePacketEvent;
+			import com.cubeia.firebase.io.protocol.LeaveRequestPacket;
+			import com.cubeia.firebase.io.ProtocolObject;
+			import com.cubeia.firebase.events.PacketEvent;
+			import mx.events.FlexEvent;
+			import com.cubeia.firebase.io.protocol.TableChatPacket;
+			import com.cubeia.firebase.io.protocol.GameTransportPacket;
+			
+			import mx.managers.FocusManager;
+			import mx.managers.PopUpManager;
+			
+			private var side:String;
+			
+			public function pitClicked(pit:int):void
+			{
+				var data:ByteArray = new ByteArray();
+				var pid:int = KalahaRealClient.playerInfo.pid;
+				var string:String = "[\"Sow\",{\"house\":" + pit + ",\"playerId\":" + pid + "}]";
+				data.writeUTFBytes(string);
+				
+			    var gameTransportPacket:GameTransportPacket = new GameTransportPacket();
+			    gameTransportPacket.pid = pid;
+			    gameTransportPacket.tableid = KalahaRealClient.tableid;
+			    gameTransportPacket.gamedata = data;
+			    gameTransportPacket.gamedata.position = 0;
+							
+			    // send packet
+			    KalahaRealClient.firebaseClient.send(gameTransportPacket);
+			}
+
+			private function setupPacketHandler():void
+			{
+				// setup packet data handler
+				KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+				KalahaRealClient.firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);				
+			}
+			
+			private function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
+			{
+				var data:ByteArray = gamePacketEvent.getPacketData();
+				var bytes:int = data.bytesAvailable;
+				var msg:String = data.readUTFBytes(bytes);
+				
+				var dec:Array = (JSON.decode(msg) as Array)
+				chatOutput.htmlText += "<font color=\"#000080\">Game packet received! " + msg + " dec = " + dec + "</font><br>";
+				chatOutput.htmlText += "<font color=\"#000080\">dec[0] " + dec[0] + " " + dec[1] + "</font><br>";
+				var className:String = dec[0];
+				if (!className.match("State"))
+				{
+					return;
+				}
+				var pits:Object = dec[1];
+				chatOutput.htmlText += "<font color=\"#000080\">pits " + pits + "</font><br>";
+				chatOutput.htmlText += "<font color=\"#000080\">pits[0] " + pits.pits + "</font><br>";
+				chatOutput.htmlText += "<font color=\"#000080\">pits[0] " + pits.pits[0] + "</font><br>";
+				
+				b0.label = "" + pits.pits[0];
+				b1.label = "" + pits.pits[1];
+				b2.label = "" + pits.pits[2];
+				b3.label = "" + pits.pits[3];
+				b4.label = "" + pits.pits[4];
+				b5.label = "" + pits.pits[5];
+				b6.label = "" + pits.pits[6];
+				//b6.label = "SOUTH_KALAHA";
+				
+				b7.label = "" + pits.pits[7];
+				b8.label = "" + pits.pits[8];
+				b9.label = "" + pits.pits[9];
+				b10.label = "" + pits.pits[10];
+				b11.label = "" + pits.pits[11];
+				b12.label = "" + pits.pits[12];
+				b13.label = "" + pits.pits[13];
+				//b13.label = "NORTH_KALAHA";
+			}					
+			
+			private function onPacketReceived(packetEvent:PacketEvent):void
+			{
+				// packet data received, inspect classId and take appropriate action
+				var protocolObject:ProtocolObject = packetEvent.getObject();
+				switch ( protocolObject.classId() ) {
+					case TableChatPacket.CLASSID :
+						handleTableChatPacket(TableChatPacket(protocolObject));
+						break;
+					case SeatInfoPacket.CLASSID:
+						handleSeatInfo(SeatInfoPacket(protocolObject));
+						break;
+				} 
+			}
+			
+			private function handleSeatInfo(seatInfo:SeatInfoPacket):void
+			{
+				var seatId:int = seatInfo.seat;
+				var s:int = KalahaRealClient.seat;
+				if (seatId == 0 && KalahaRealClient.playerInfo.pid == seatInfo.player.pid)
+				{
+					side = "SOUTH";
+				}
+				else
+				{
+					b0.enabled = false;
+					b1.enabled = false;
+					b2.enabled = false;
+					b3.enabled = false;
+					b4.enabled = false;
+					b5.enabled = false;
+					
+					b7.enabled = true;
+					b8.enabled = true;
+					b9.enabled = true;
+					b10.enabled = true;
+					b11.enabled = true;
+					b12.enabled = true;					
+					side = "NORTH";
+				}
+			}
+			
+			private function onSendChatMessage():void
+			{
+				// create a table chat packet
+				var tableChatPacket:TableChatPacket = new TableChatPacket();
+				tableChatPacket.pid = KalahaRealClient.playerInfo.pid;
+				tableChatPacket.tableid = KalahaRealClient.tableid;
+				tableChatPacket.message = chatInput.text;
+				// send packet
+				KalahaRealClient.firebaseClient.send(tableChatPacket);
+				
+				// clear input text field
+				chatInput.text = "";
+				chatInput.selectionBeginIndex = 0;
+				chatInput.selectionEndIndex = -1;
+				focusManager.setFocus(chatInput);
+			}
+			
+			private function handleTableChatPacket(tableChatPacket:TableChatPacket):void
+			{
+				if ( tableChatPacket.pid == KalahaRealClient.playerInfo.pid ) {
+					// use BLUE color for our own messages 
+					chatOutput.htmlText += "<font color=\"#000080\">" + tableChatPacket.message + "</font><br>";
+				} else {
+					// use RED color for everyone else
+					chatOutput.htmlText += "<font color=\"#800000\">" + tableChatPacket.message + "</font><br>";
+				} 
+			}
+			
+			private function enableAutoScroll(object:EventDispatcher):void
+			{
+				// helper function to make chat output auto scrollable
+				object.addEventListener( FlexEvent.VALUE_COMMIT, autoScrollToBottom );
+			}
+
+
+			private function autoScrollToBottom( event:FlexEvent ):void
+	   		{
+	        	// Auto-scroll to the bottom anytime the text changes
+	        	event.target.validateNow();
+	        	event.target.verticalScrollPosition = event.target.maxVerticalScrollPosition;
+	    	}
+	    	
+	    	private function setInputFocus():void
+	    	{
+	    		focusManager.setFocus(chatInput);
+	    	}
+			
+			private function onLeaveTable():void
+			{
+				// leave pressed, remove packet listener
+				KalahaRealClient.firebaseClient.removeEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+				// create a leave request
+				var leaveRequestPacket:LeaveRequestPacket = new LeaveRequestPacket();
+				leaveRequestPacket.tableid = KalahaRealClient.tableid;
+				// send it to the game server
+				KalahaRealClient.firebaseClient.send(leaveRequestPacket);
+			}
+		]]>
+	</mx:Script>
+
+	<mx:TextArea x="10" y="32" width="432" height="57" editable="false" id="chatOutput" wordWrap="true" creationComplete="enableAutoScroll(chatOutput)" tabIndex="1" themeColor="#AD3333" borderStyle="inset"/>
+	<mx:TextInput x="10" y="97" width="432" id="chatInput" tabIndex="2" themeColor="#AD3333" color="#333333" creationComplete="setInputFocus()"/>
+	<mx:Button x="383" y="197" label="Send" enabled="{chatInput.text.length > 0}" click="onSendChatMessage()" id="sendButton" tabIndex="3"  themeColor="#AD3333" color="#FFFFFF" fillAlphas="[1.0, 1.0]" fillColors="[#AD3333, #460A0A]" visible="false"/>
+	<mx:Button x="193" y="130" label="Leave" id="leaveButton" click="onLeaveTable()" tabIndex="2" themeColor="#AD3333" color="#FFFFFF" fillAlphas="[1.0, 1.0]" fillColors="[#AD3333, #460A0A]"/>
+
+</mx:TitleWindow>
+	<mx:Image source="@Embed(source='kalaha.png')" width="392" maintainAspectRatio="false" height="100" />
+	<mx:Button x="53" y="56" label="0" width="49" height="43" id="b0" click="pitClicked(0)"/>
+	<mx:Button x="100" y="56" label="1" width="49" height="43" id="b1" click="pitClicked(1)"/>
+	<mx:Button x="148" y="56" label="2" width="49" height="43" id="b2" click="pitClicked(2)"/>
+	<mx:Button x="196" y="56" label="3" width="49" height="43" id="b3" click="pitClicked(3)"/>
+	<mx:Button x="244" y="56" label="4" width="49" height="43" id="b4" click="pitClicked(4)"/>
+	<mx:Button x="292" y="56" label="5" width="49" height="43" id="b5" click="pitClicked(5)"/>
+	<mx:Button x="341" y="0" label="SOUTH_KALAHA" width="54" height="99" id="b6" enabled="false"/> <!-- kalaha for player 1 -->
+	<mx:Button x="53" y="0" label="12" width="49" height="43" id="b12" enabled="false" click="pitClicked(5)" />
+	<mx:Button x="100" y="0" label="11" width="49" height="43" id="b11" enabled="false" click="pitClicked(4)" />
+	<mx:Button x="148" y="0" label="10" width="49" height="43" id="b10" enabled="false" click="pitClicked(3)" />
+	<mx:Button x="196" y="0" label="9" width="49" height="43" id="b9" enabled="false" click="pitClicked(2)" />
+	<mx:Button x="244" y="0" label="8" width="49" height="43" id="b8" enabled="false" click="pitClicked(1)" />
+	<mx:Button x="292" y="0" label="7" width="49" height="43" id="b7" enabled="false" click="pitClicked(0)" />
+	<mx:Button x="0" y="0" label="NORTH_KALAHA" width="54" height="99" id="b13" enabled="false"/> <!-- kalaha for player 2 -->
+</mx:Canvas>

@@ -1,0 +1,36 @@
+<html>
+<body>
+<wicket:extend>
+	
+  	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+			id="KalahaRealClient" width="1023" height="100%"
+			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+			<param name="movie" value="KalahaRealClient.swf" />
+			<param name="quality" value="high" />
+			<param name="bgcolor" value="#869ca7" />
+			<param name="allowScriptAccess" value="sameDomain" />
+			<embed src="/facebook-web/KalahaRealClient.swf" quality="high" bgcolor="#869ca7"
+				width="1023" height="100%" name="KalahaRealClient" align="middle"
+				play="true"
+				loop="false"
+				allowScriptAccess="sameDomain"
+				type="application/x-shockwave-flash"
+				pluginspage="http://www.adobe.com/go/getflashplayer">
+			</embed>
+	</object>
+	<div class="fbgreybox">
+	 	This would be a decent place to load the flash. Some parameters may come in handy:
+	 	<ul>
+	 		<li>User name: <span wicket:id="userName"></span> - This should be used as user name in Firebase as well.</li>
+	 		<li>Session token: <span wicket:id="sessionId"></span> - Use as Firebase password!</li>
+	 		<li>Firebase user id: <span wicket:id="userId"></span> - This is the Firebase user ID, double check on login.</li>
+	 		<li>Facebook user id: <span wicket:id="fbUserId"></span> - Facebook user id for reference.</li>
+	 		<li>Game id: <span wicket:id="gameId"></span> - Game ID to look in the Firebase lobby for.</li>
+	 		<li>Firebase host: <span wicket:id="firebaseHost"></span> - Host name for Firebase.</li>
+	 		<li>Firebase port: <span wicket:id="firebasePort"></span> - Client port for Firebase.</li>
+	 	</ul>
+	</div>
+
+</wicket:extend>
+</body>
+</html>
