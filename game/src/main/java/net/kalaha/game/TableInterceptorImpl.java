@@ -29,7 +29,14 @@ public class TableInterceptorImpl implements TableInterceptor {
 	public InterceptionResponse allowJoin(Table table, SeatRequest req) {
 		int gameId = board.getGameId();
 		int playerId = req.getPlayerId();
-		int seat = req.getSeat();
+		if(playerId == board.getSouthPlayerId() || playerId == board.getNorthPlayerId()) {
+			log.debug("Allowing seat for player " + playerId + " at game " + gameId);
+			return new InterceptionResponse(true, 0);
+		} else {
+			log.debug("Denying seat for player " + playerId + " at game " + gameId);
+			return new InterceptionResponse(false, -1);
+		}
+		/*int seat = req.getSeat();
 		if(seat == 0) {
 			if(board.getSouthPlayerId() == playerId) {
 				return new InterceptionResponse(true, 0);
@@ -38,18 +45,13 @@ public class TableInterceptorImpl implements TableInterceptor {
 				return new InterceptionResponse(false, -1);
 			}
 		} else {
-			/*Game game = gameManager.getGame(gameId);
-			if(game.getOpponent() == null) {
-				User user = userManager.getUser(playerId);
-				game.setOpponent(user);
-				return new InterceptionResponse(true, 0);
-			} else*/ if(board.getNorthPlayerId() == playerId) {
+			if(board.getNorthPlayerId() == playerId) {
 				return new InterceptionResponse(true, 0);
 			} else {
 				log.debug("Denying seat for player " + playerId + " at game " + gameId + " position NORTH");
 				return new InterceptionResponse(false, -1);
 			}
-		}
+		}*/
 	}
 
 	@Override

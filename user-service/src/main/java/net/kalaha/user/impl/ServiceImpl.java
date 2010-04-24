@@ -14,7 +14,7 @@ import com.cubeia.firebase.api.service.ServiceRegistry;
 import com.cubeia.firebase.guice.service.GuiceService;
 import com.google.inject.Module;
 
-public class ServiceImpl extends GuiceService implements  UserService {
+public class ServiceImpl extends GuiceService implements UserService {
 
 	@Override
 	public void init(ServiceRegistry reg) { }

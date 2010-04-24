@@ -2,10 +2,12 @@
     <name>user</name>
     <public-id>net.kalaha:user</public-id>
     <contract>net.kalaha.user.api.UserService</contract>
+    <contract>com.cubeia.firebase.api.login.LoginLocator</contract>
     <service>net.kalaha.user.impl.ServiceImpl</service>
     <dependencies />
     <description />
     <exported>
         <package>net.kalaha.user.api.-</package>
+        <package>net.kalaha.entities.-</package>
     </exported>
 </service>

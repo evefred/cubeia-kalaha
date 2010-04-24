@@ -20,12 +20,12 @@ public class TableListenerImpl implements TableListener {
 		KalahaBoard s = (KalahaBoard)table.getGameState().getState();
 		GameDataAction gda = util.toDataAction(player.getPlayerId(), table.getId(), s.getState());
 		table.getNotifier().sendToClient(player.getPlayerId(), gda);
-		int seatId = player.getSeatId();
+		/*int seatId = player.getSeatId();
 		if(seatId == 0) {
 			s.setSouthPlayerId(player.getPlayerId());
 		} else {
 			s.setNorthPlayerId(player.getPlayerId());
-		}
+		}*/
 	}
 
 	@Override
