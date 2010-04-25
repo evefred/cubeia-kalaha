@@ -44,7 +44,7 @@ public class LoginLocatorImpl implements LoginLocator {
 		if(req.getOperatorid() == FACEBOOK) {
 			log.debug("Using facebook login handler");
 			return realHandler;
-		} else if(req.getOperatorid() == -1) {
+		} else if(req.getOperatorid() == 0) {
 			if(allowTrivial) {
 				log.warn("Allowing trivial login handler!");
 				return trivialHandler;
