@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->	
 
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#BE0000, #080707]" width="1023" xmlns:ns1="*" creationComplete="init()">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#BE0000, #080707]" width="1023" xmlns:ns1="*" creationComplete="init()" viewSourceURL="srcview/index.html">
 
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 		
 			import com.cubeia.firebase.io.protocol.LeaveResponsePacket;
 			import com.cubeia.firebase.io.ProtocolObject;
@@ -44,9 +45,15 @@
 			private var lobbyWindow:LobbyWindow;
 			private var tableWindow:TableWindow;
 			
-			// our table and seat
+			private var hasLoggedIn:Boolean;
+			
+			// player info
 			public static var seat:int;
 			public static var tableid:int;
+			private var userName:String;
+			private var sessionToken:String;
+			private var operatorId:int;
+			public static var gameId:int;
 			 
 			private function init():void
 			{								
@@ -57,8 +64,18 @@
 				
 				// Setup packet data listener
 				firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
-								
-				firebaseClient.open("kalaha.dynalias.com", "4123");
+
+				// Assign values to new properties.
+        		var firebaseHost:String = Application.application.parameters.firebaseHost;
+		        var firebasePort:String = Application.application.parameters.firebasePort;
+		        userName = Application.application.parameters.userName;
+		        sessionToken = Application.application.parameters.sessionToken;
+		        var operatorIdS:String = Application.application.parameters.operatorId;
+		        var gameIdS:String = Application.application.parameters.gameId;
+		        operatorId = parseInt(operatorIdS);
+		        gameId = parseInt(gameIdS);
+		        
+				firebaseClient.open(firebaseHost, firebasePort);
 				//firebaseClient.open("localhost", "4123");
 			}	
 			
@@ -67,7 +84,11 @@
 				// we have a connection to the game server, show login window
 				//PopUpManager.removePopUp(connectWindow);
 				//firebaseClient.login("localhost", "1", 1);
-				firebaseClient.login("Viktor Nordling", "e2f3fbb7-2ffa-4eae-9f4b-a3bca8f2f147", 1);
+				firebaseClient.removeEventListener(ConnectEvent.CONNECT, onFirebaseConnect);
+				if (!hasLoggedIn) {
+					hasLoggedIn = true;
+					firebaseClient.login(userName, sessionToken, operatorId);
+				}				
 				//displayLoginWindow();
 			}
 			
@@ -144,6 +165,6 @@
 		]]>
 	</mx:Script>
 	
-	<mx:Image x="0" y="0" source="@Embed(source='header.png')"/>
+	<mx:Image x="40" y="27" source="@Embed(source='header.png')"/>
 	
 </mx:Application>
