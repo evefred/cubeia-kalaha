@@ -151,7 +151,7 @@
 					// show table popup window
 					tableWindow = new TableWindow();
 					PopUpManager.addPopUp(tableWindow, this);
-					PopUpManager.centerPopUp(tableWindow);
+					tableWindow.y = 150
 				} 
 			}
 
@@ -165,6 +165,6 @@
 		]]>
 	</mx:Script>
 	
-	<mx:Image x="40" y="27" source="@Embed(source='header.png')"/>
+	<mx:Image x="0" y="0" source="@Embed(source='header.png')"/>
 	
 </mx:Application>
