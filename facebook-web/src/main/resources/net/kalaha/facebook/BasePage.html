@@ -1,0 +1,31 @@
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+<body class="fbbody">
+<script src="http://static.new.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" type="text/javascript"></script>
+
+	<h1>Kalaha</h1>
+	 
+	<div class="fbinfobox">
+	 	Welcome to the Kalaha Test Harness <fb:name useyou="false" wicket:id="ownerId"></fb:name>, your site session token
+	 	is <span wicket:id="token">666</span>.
+	</div>
+	
+	<div class="emtpydivide"></div>
+	
+	<!-- div class="fbgreybox">
+	 	Home |
+	 	My Games | 
+	 	About
+	</div>
+	
+	<div class="emtpydivide"></div -->
+	 
+	<wicket:child></wicket:child>
+	 
+	<script type="text/javascript">
+	  FB_RequireFeatures(["XFBML"], function() {
+		FB.init(__API_KEY, "/facebook-web/xd_receiver.htm");
+	  });
+	</script>
+
+</body>
+</html>
