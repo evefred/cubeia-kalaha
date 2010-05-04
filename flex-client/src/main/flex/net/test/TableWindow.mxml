@@ -38,10 +38,10 @@
 			private var side:String;
 			
 			public function pitClicked(pit:int):void
-			{
-				var data:ByteArray = new ByteArray();
+			{				
 				var pid:int = KalahaRealClient.playerInfo.pid;
 				var string:String = "[\"Sow\",{\"house\":" + pit + ",\"playerId\":" + pid + "}]";
+				var data:ByteArray = new ByteArray();
 				data.writeUTFBytes(string);
 				
 			    var gameTransportPacket:GameTransportPacket = new GameTransportPacket();

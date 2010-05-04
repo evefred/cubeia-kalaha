@@ -168,6 +168,15 @@
 			
 			private function onTableRequested():void
 			{
+				var requestTablePacket:CreateTableRequestPacket = new CreateTableRequestPacket();
+				requestTablePacket.gameid = 236;
+				requestTablePacket.seats = 2;
+				requestTablePacket.seq = 1;
+				requestTablePacket.invitees = new Array();
+				var param:Param = ParameterUtil.makeIntegerParam("gameId", int (gameId.text));
+				requestTablePacket.params = [param];
+				
+				KalahaRealClient.firebaseClient.send(requestTablePacket);
 			}
 			
 			private function onChallenge():void

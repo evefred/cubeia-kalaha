@@ -21,10 +21,13 @@
 
 	<mx:Script>
 		<![CDATA[
+			import com.cubeia.firebase.io.protocol.ServiceTransportPacket;
 			import mx.controls.Alert;
+			import com.adobe.serialization.json.JSON;
 		
 			import com.cubeia.firebase.io.protocol.LeaveResponsePacket;
 			import com.cubeia.firebase.io.ProtocolObject;
+			import com.cubeia.firebase.io.protocol.JoinRequestPacket
 			import com.cubeia.firebase.events.PacketEvent;
 			import com.cubeia.firebase.io.protocol.JoinResponsePacket;
 			import com.cubeia.firebase.events.LoginResponseEvent;
@@ -75,7 +78,15 @@
 		        operatorId = parseInt(operatorIdS);
 		        gameId = parseInt(gameIdS);
 		        
+		        debug.text += "firebaseHost " + firebaseHost;
+		        debug.text += "\nfirebasePort " + firebasePort;
+		        debug.text += "\nusersssId " + userName;
+		        debug.text += "\ntoken " + sessionToken;
+		        debug.text += "\ngameId " + gameId;
+		        debug.text += "\noperatorId " + operatorId;
+		        
 				firebaseClient.open(firebaseHost, firebasePort);
+				debug.text += "\nConnecting.. ";
 				//firebaseClient.open("localhost", "4123");
 			}	
 			
@@ -87,6 +98,7 @@
 				firebaseClient.removeEventListener(ConnectEvent.CONNECT, onFirebaseConnect);
 				if (!hasLoggedIn) {
 					hasLoggedIn = true;
+					debug.text += "\nConnected, logging in.. ";
 					firebaseClient.login(userName, sessionToken, operatorId);
 				}				
 				//displayLoginWindow();
@@ -110,9 +122,22 @@
 			private function onFirebaseLogin(loginEvent:LoginResponseEvent):void
 			{
 				// user has logged in, save information about the player
+				debug.text += "\nLogged in, opening lobby.. ";
 				playerInfo = loginEvent.getPlayerInfo();
 				// next, we display the lobby
-				openLobbyWindow();			
+				// openLobbyWindow();		
+				var requestTablePacket:ServiceTransportPacket = new ServiceTransportPacket();
+				requestTablePacket.idtype = 1;
+				requestTablePacket.pid = playerInfo.pid;
+				requestTablePacket.seq = 1;
+				requestTablePacket.service = "net.kalaha.table.api.TableManager";
+				
+				var json:String = "{\"gameId\":" + gameId + "}";
+				var data:ByteArray = new ByteArray();
+				data.writeUTFBytes(json);				
+				requestTablePacket.servicedata = data;
+				
+				KalahaRealClient.firebaseClient.send(requestTablePacket); 	
 			}
 			
 			private function openLobbyWindow():void
@@ -123,23 +148,45 @@
 				PopUpManager.centerPopUp(lobbyWindow);
 			}
 			
-
 			private function onPacketReceived(packetEvent:PacketEvent):void
 			{
 				// we have received a packet from the firebase server,
 				// inspect classId and take appropriate action
 				var protocolObject:ProtocolObject = packetEvent.getObject();
 				switch ( protocolObject.classId() ) {
-					case JoinResponsePacket.CLASSID :
+					case JoinResponsePacket.CLASSID:
 						handleJoinResponsePacket(JoinResponsePacket(protocolObject));
 						break;
-					case LeaveResponsePacket.CLASSID :
+					case LeaveResponsePacket.CLASSID:
 						handleLeaveResponsePacket(LeaveResponsePacket(protocolObject));
+						break;
+					case ServiceTransportPacket.CLASSID:
+						handleServiceTransportPacket(ServiceTransportPacket(protocolObject));
 						break;
 					
 				}
 			}
 
+			private function handleServiceTransportPacket(serviceTransportPacket:ServiceTransportPacket):void
+			{
+				var data:ByteArray = serviceTransportPacket.servicedata;
+				var bytes:int = data.bytesAvailable;
+				var msg:String = data.readUTFBytes(bytes);				
+				var decoded:Object = JSON.decode(msg);
+				
+				var tableId:int = decoded.tableId;
+				debug.text += "Got service transport: " + msg;
+				
+				// create a join request packet
+				var joinRequestPacket:JoinRequestPacket = new JoinRequestPacket();
+				// tell server to pick a random seat
+				joinRequestPacket.seat = -1;
+				// table id
+				joinRequestPacket.tableid = tableId;
+				// send the packet to the game server
+				KalahaRealClient.firebaseClient.send(joinRequestPacket); 				
+			}
+	
 			private function handleJoinResponsePacket(joinResponsePacket:JoinResponsePacket):void
 			{
 				if ( joinResponsePacket.status == 0 ) {
@@ -166,5 +213,6 @@
 	</mx:Script>
 	
 	<mx:Image x="0" y="0" source="@Embed(source='header.png')"/>
+	<mx:TextArea x="798" y="170" id="debug" width="215" height="126"/>
 	
 </mx:Application>
