@@ -1,18 +1,18 @@
 package net.kalaha.textclient;
 
-import java.nio.ByteBuffer; 
-import java.util.ArrayList;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
 import net.kalaha.game.action.IllegalActionException;
 import net.kalaha.game.action.Sow;
 import net.kalaha.game.json.JsonTransformer;
+import net.kalaha.table.api.TableManager;
 
-import com.cubeia.firebase.api.util.ParameterUtil;
 import com.cubeia.firebase.clients.java.connector.text.CommandNotifier;
 import com.cubeia.firebase.clients.java.connector.text.SimpleTextClient;
-import com.cubeia.firebase.io.protocol.CreateTableRequestPacket;
-import com.cubeia.firebase.io.protocol.Param;
+import com.cubeia.firebase.io.protocol.Enums;
+import com.cubeia.firebase.io.protocol.ServiceTransportPacket;
 
 public class Client extends SimpleTextClient {
 
@@ -23,11 +23,10 @@ public class Client extends SimpleTextClient {
 		super.commandNotifier = new CommandNotifier(context, this, true) {
 			
 			@Override
-			@SuppressWarnings("unchecked")
 			public void handleCommand(String command) {
-				if(command.startsWith("kc ")) {
+				if(command.startsWith("table ")) {
 					String[] args = command.split(" ");
-					CreateTableRequestPacket packet = new CreateTableRequestPacket();
+					/*CreateTableRequestPacket packet = new CreateTableRequestPacket();
 					packet.gameid = 236;
 					packet.seats = 2;
 					packet.seq = 1;
@@ -37,8 +36,15 @@ public class Client extends SimpleTextClient {
 						String[] vals = s.split("=");
 						Param p = ParameterUtil.createParam(vals[0], new Integer(vals[1]));
 						packet.params.add(p);
-					}
-		           context.getConnector().sendPacket(packet);
+					}*/
+				    String json = "{\"gameId\":" + args[1] + "}";
+				    ServiceTransportPacket p = new ServiceTransportPacket();
+				    p.idtype = (byte) Enums.ServiceIdentifier.CONTRACT.ordinal();
+				    p.pid = context.getPlayerId();
+				    p.seq = 1;
+				    p.service = TableManager.class.getName();
+				    p.servicedata = toUTF8Data(json);
+				    context.getConnector().sendPacket(p);
 				} else {
 					super.handleCommand(command);
 				}
@@ -92,6 +98,22 @@ public class Client extends SimpleTextClient {
 	    } catch (Exception e) {
 	       reportBadCommand(e.toString());
 	    }
+	}
+	
+	public byte[] toUTF8Data(String s) {
+		try {
+			return s.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException("Missing UTF-8?!");
+		}
+	}
+	
+	public String fromUTF8Data(byte[] arr) {
+		try {
+			return new String(arr, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException("Missing UTF-8?!");
+		}
 	}
 
 	private void reportBadCommand(String error) {

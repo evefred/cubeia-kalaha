@@ -1,21 +1,19 @@
 package net.kalaha.game;
 
-import java.util.Collection;
-
+import static org.testng.Assert.assertEquals;
 import net.kalaha.entities.Game;
 import net.kalaha.entities.GameForm;
 import net.kalaha.entities.GameType;
 import net.kalaha.entities.User;
+import net.kalaha.table.api.TableQuery;
 
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
-import com.cubeia.firebase.api.common.Attribute;
-import com.cubeia.firebase.api.common.AttributeValue;
+import com.cubeia.firebase.api.routing.ActivatorAction;
 
 public class ActivatorImplTest {
 
-	@Test
+	/*@Test
 	public void testCreateNewChallenge() throws Exception {
 		ActivatorImpl i = new ActivatorImpl();
 		i.init(new ActivatorContextImpl());
@@ -32,12 +30,13 @@ public class ActivatorImplTest {
 		Game g = games.iterator().next();
 		assertEquals(g.getOwner(), u);
 		assertEquals(g.getForm(), GameForm.CHALLENGE);
-	}
+	}*/
 	
 	@Test
 	public void testCreateExistingLive() throws Exception {
+		ActivatorContextImpl con = new ActivatorContextImpl();
 		ActivatorImpl i = new ActivatorImpl();
-		i.init(new ActivatorContextImpl());
+		i.init(con);
 		
 		// create user
 		User u = i.getUserManager().createUser("olle", 0);
@@ -46,18 +45,16 @@ public class ActivatorImplTest {
 		Game g = i.getGameManager().createGame(GameType.KALAHA, GameForm.LIVE, u, null, -1, null);
 		
 		// create table for the above game
-		i.getParticipantForRequest(u.getId(), 2, attributes(GameForm.LIVE, g.getId()));
+		TableQuery q = new TableQuery(u.getId(), 2, g.getId());
+		ActivatorAction<TableQuery> a = new ActivatorAction<TableQuery>(q);
+		i.onAction(a);
+		//i.getParticipantForRequest(u.getId(), 2, attributes(GameForm.LIVE, g.getId()));
 		
-		// check game
-		Collection<Game> games = i.getGameManager().getMyGames(u, null, null);
-		assertEquals(games.size(), 1);
-		Game tmp = games.iterator().next();
-		assertEquals(tmp.getOwner(), u);
-		assertEquals(tmp.getForm(), GameForm.LIVE);
-		assertEquals(tmp, g);
+		// check table id
+		assertEquals(con.foundTableId, 666);
 	}
 
-	private Attribute[] attributes(GameForm challenge, int gameId) {
+	/*private Attribute[] attributes(GameForm challenge, int gameId) {
 		if(gameId == -1) {
 			return new Attribute[] { new Attribute("form", new AttributeValue(challenge.toString().toLowerCase())) };
 		} else {
@@ -66,5 +63,5 @@ public class ActivatorImplTest {
 					     new Attribute("gameId", new AttributeValue(gameId))
 					   }; 
 		}
-	}
+	}*/
 }

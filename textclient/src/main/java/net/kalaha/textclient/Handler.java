@@ -1,6 +1,9 @@
 package net.kalaha.textclient;
 
+import java.io.UnsupportedEncodingException;
+
 import net.kalaha.game.json.JsonTransformer;
+import net.sf.json.JSONObject;
 
 import com.cubeia.firebase.clients.java.connector.text.AbstractClientPacketHandler;
 import com.cubeia.firebase.io.protocol.CreateTableResponsePacket;
@@ -187,9 +190,18 @@ public class Handler extends AbstractClientPacketHandler {
 	}
 
 	@Override
-	public void visit(ServiceTransportPacket arg0) {
-		// TODO Auto-generated method stub
-
+	public void visit(ServiceTransportPacket p) {
+		String json = fromUTF8Data(p.servicedata);
+		JSONObject o = JSONObject.fromObject(json);
+		System.out.println("Found table [" + o.getInt("tableId") + "] for game [" + o.getInt("gameId") + "]");
+	}
+	
+	private String fromUTF8Data(byte[] arr) {
+		try {
+			return new String(arr, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException("Missing UTF-8?!");
+		}
 	}
 
 	@Override

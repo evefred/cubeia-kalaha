@@ -2,6 +2,7 @@ package net.kalaha.game.json;
 
 import net.kalaha.game.action.IllegalActionException;
 
+
 public interface ActionTransformer {
 
 	public Object fromString(String str);

@@ -1,6 +1,6 @@
 package net.kalaha.entities;
 
-import java.io.Serializable; 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 

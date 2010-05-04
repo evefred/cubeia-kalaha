@@ -1,37 +1,43 @@
 package net.kalaha.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Game;
-import net.kalaha.entities.GameForm;
-import net.kalaha.entities.GameType;
-import net.kalaha.entities.User;
 import net.kalaha.game.logic.KalahaBoard;
+import net.kalaha.table.api.TableManager;
+import net.kalaha.table.api.TableQuery;
 
 import org.apache.log4j.Logger;
 
-import com.cubeia.firebase.api.common.Attribute;
 import com.cubeia.firebase.api.game.GameDefinition;
 import com.cubeia.firebase.api.game.activator.ActivatorContext;
-import com.cubeia.firebase.api.game.activator.CreationRequestDeniedException;
 import com.cubeia.firebase.api.game.activator.GameActivator;
-import com.cubeia.firebase.api.game.activator.RequestAwareActivator;
 import com.cubeia.firebase.api.game.activator.RequestCreationParticipant;
+import com.cubeia.firebase.api.game.activator.TableFactory;
+import com.cubeia.firebase.api.game.lobby.LobbyTable;
 import com.cubeia.firebase.api.game.lobby.LobbyTableAttributeAccessor;
 import com.cubeia.firebase.api.game.table.Table;
 import com.cubeia.firebase.api.lobby.LobbyPath;
+import com.cubeia.firebase.api.routing.ActivatorAction;
+import com.cubeia.firebase.api.routing.RoutableActivator;
 import com.cubeia.firebase.api.server.SystemException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class ActivatorImpl implements GameActivator, RequestAwareActivator {
+public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ RoutableActivator {
 	
 	private final Logger log = Logger.getLogger(getClass());
 
 	private Injector injector;
 	private GameManager gameManager;
 	private UserManager userManager;
+	
+	private Mapping mapping = new Mapping();
+	private ActivatorContext context;
 
 	@Override
 	public void destroy() { }
@@ -41,6 +47,25 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 		injector = Guice.createInjector(new ActivatorModule(context), new ManagerModule());
 		gameManager = injector.getInstance(GameManager.class);
 		userManager = injector.getInstance(UserManager.class);
+		this.context = context;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void onAction(ActivatorAction action) {
+		TableQuery q = (TableQuery) action.getData();
+		int tableId = -1;
+		synchronized(mapping) {
+			tableId = mapping.getTableForGame(q.gameId);
+			if(tableId == -1) {
+				tableId = createTable(q);
+				if(tableId == -1) {
+					// FAILURE, RETURN HERE
+					return;
+				}
+			}
+		}
+		notifyFound(q, tableId);
 	}
 
 	@Override
@@ -48,24 +73,7 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 
 	@Override
 	public void stop() { }
-
-	@Override
-	public RequestCreationParticipant getParticipantForRequest(int pid, int seats, Attribute[] atts) throws CreationRequestDeniedException {
-		int gameId = getKalahaGameId(atts);
-		if (gameId == -1) {
-			log.debug("Creating new game for player id: " + pid);
-			GameForm form = getKalahaGameForm(atts);
-			User user = userManager.getUser(pid);
-			User opponent = getOpponent(atts);
-			Game game = gameManager.createGame(GameType.KALAHA, form, user, opponent, -1, KalahaBoard.getInitState(6));
-			return new Participant(game);
-		} else {
-			log.debug("Ressurecting new game " + gameId + " for player id " + pid);
-			final Game game = gameManager.getGame(gameId);
-			if (game == null) throw new CreationRequestDeniedException(1);
-			return new Participant(game);
-		}
-	}
+	
 
 	// --- TEST METHODS --- //
 	
@@ -80,33 +88,25 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 
 	// --- PRIVATE METHODS --- //
 	
-	private User getOpponent(Attribute[] atts) {
-		for (Attribute a : atts) {
-			if(a.name.equals("opponent")) {
-				int oppId = a.value.getIntValue();
-				return userManager.getUser(oppId);
-			}
-		}
-		return null;
-	}
-	
-	private GameForm getKalahaGameForm(Attribute[] atts) {
-		for (Attribute a : atts) {
-			if(a.name.equals("form")) {
-				return GameForm.valueOf(a.value.getStringValue().toUpperCase());
-			}
-		}
-		return GameForm.CHALLENGE;
+	private void notifyFound(TableQuery q, int tableId) {
+		TableManager manager = context.getServices().getServiceInstance(TableManager.class);
+		manager.tableLocated(q, tableId);
 	}
 
-	private int getKalahaGameId(Attribute[] atts) {
-		for (Attribute a : atts) {
-			if(a.name.equals("gameId")) {
-				return a.value.getIntValue();
-			}
+	private int createTable(TableQuery q) {
+		log.debug("Ressurecting game " + q.gameId + " for player " + q.userId);
+		final Game game = gameManager.getGame(q.gameId);
+		if (game == null) {
+			log.fatal("Received request for game " + q.gameId + " which doesn't exist!");
+			return -1; // EARLY RETURN
 		}
-		return -1;
+		TableFactory fact = context.getTableFactory();
+		LobbyTable table = fact.createTable(2, new Participant(game));
+		log.debug("Table " + table.getTableId() + " created for game " + q.gameId + "; on behalf of player " + q.userId);
+		mapping.put(q.gameId, table.getTableId());
+		return table.getTableId();
 	}
+	
 	
 	// --- PRIVATE CLASSES --- //
 	
@@ -143,7 +143,29 @@ public class ActivatorImpl implements GameActivator, RequestAwareActivator {
 		public int[] modifyInvitees(int[] invitees) {
 			return invitees;
 		}
+	}
+	
+	private static class Mapping {
 		
+		private Map<Integer, Integer> gameToTable = new HashMap<Integer, Integer>();
+		private Map<Integer, Integer> tableToGame = new HashMap<Integer, Integer>();
+	
+		public void put(int gameId, int tableId) {
+			gameToTable.put(gameId, tableId);
+			tableToGame.put(tableId, gameId);
+		}
 		
+		public int getTableForGame(int gameId) {
+			Integer i = gameToTable.get(gameId);
+			return (i == null ? -1 : i.intValue());
+		}
+		
+		@SuppressWarnings("unused")
+		public void removeForTable(int tableId) {
+			Integer i = tableToGame.remove(tableId);
+			if(i != null) {
+				gameToTable.remove(i);
+			}
+		}
 	}
 }
