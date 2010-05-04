@@ -16,6 +16,7 @@ user-service/test-output
 database/temp-testng-customsuite.xml
 database/test-output
 persistence/temp-testng-customsuite.xml
+deploy.sh
 
 syntax: regexp
 ^debug\.log$
