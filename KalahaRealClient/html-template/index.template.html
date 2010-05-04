@@ -83,6 +83,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"height", "${height}",
 			"align", "middle",
 			"id", "${application}",
+			"flashVars", "firebaseHost=localhost&firebasePort=4123&userName=user1&sessionToken=1&operatorId=1&gameId=6",
 			"quality", "high",
 			"bgcolor", "${bgcolor}",
 			"name", "${application}",
@@ -105,6 +106,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			<param name="movie" value="${swf}.swf" />
 			<param name="quality" value="high" />
 			<param name="bgcolor" value="${bgcolor}" />
+			<param name="flashVars" value="firebaseHost=hej&firebasePort=tjo"/>
 			<param name="allowScriptAccess" value="sameDomain" />
 			<embed src="${swf}.swf" quality="high" bgcolor="${bgcolor}"
 				width="${width}" height="${height}" name="${application}" align="middle"

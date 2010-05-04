@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->	
 
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#BE0000, #080707]" width="1023" xmlns:ns1="*" creationComplete="init()">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#BE0000, #080707]" width="1023" xmlns:ns1="*" creationComplete="init()" viewSourceURL="srcview/index.html">
 
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 		
 			import com.cubeia.firebase.io.protocol.LeaveResponsePacket;
 			import com.cubeia.firebase.io.ProtocolObject;
@@ -44,30 +45,51 @@
 			private var lobbyWindow:LobbyWindow;
 			private var tableWindow:TableWindow;
 			
-			// our table and seat
+			private var hasLoggedIn:Boolean;
+			
+			// player info
 			public static var seat:int;
 			public static var tableid:int;
+			private var userName:String;
+			private var sessionToken:String;
+			private var operatorId:int;
+			public static var gameId:int;
 			 
 			private function init():void
-			{
+			{								
 				// Setup connection event listeners
 				firebaseClient.addEventListener(ConnectEvent.CONNECT, onFirebaseConnect);
 				firebaseClient.addEventListener(DisconnectEvent.DISCONNECT, onFirebaseDisconnect);
+				firebaseClient.addEventListener(LoginResponseEvent.LOGIN, onFirebaseLogin);
 				
 				// Setup packet data listener
 				firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
-				
-				// show connection popup window
-				connectWindow = new ConnectWindow();
-				PopUpManager.addPopUp(connectWindow, this);
-				PopUpManager.centerPopUp(connectWindow);
-			}			 
+
+				// Assign values to new properties.
+        		var firebaseHost:String = Application.application.parameters.firebaseHost;
+		        var firebasePort:String = Application.application.parameters.firebasePort;
+		        userName = Application.application.parameters.userName;
+		        sessionToken = Application.application.parameters.sessionToken;
+		        var operatorIdS:String = Application.application.parameters.operatorId;
+		        var gameIdS:String = Application.application.parameters.gameId;
+		        operatorId = parseInt(operatorIdS);
+		        gameId = parseInt(gameIdS);
+		        
+				firebaseClient.open(firebaseHost, firebasePort);
+				//firebaseClient.open("localhost", "4123");
+			}	
 			
 			private function onFirebaseConnect(connectEvent:ConnectEvent):void
 			{
 				// we have a connection to the game server, show login window
-				PopUpManager.removePopUp(connectWindow);
-				displayLoginWindow();
+				//PopUpManager.removePopUp(connectWindow);
+				//firebaseClient.login("localhost", "1", 1);
+				firebaseClient.removeEventListener(ConnectEvent.CONNECT, onFirebaseConnect);
+				if (!hasLoggedIn) {
+					hasLoggedIn = true;
+					firebaseClient.login(userName, sessionToken, operatorId);
+				}				
+				//displayLoginWindow();
 			}
 			
 			private function onFirebaseDisconnect(disconnectEvent:DisconnectEvent):void
@@ -129,7 +151,7 @@
 					// show table popup window
 					tableWindow = new TableWindow();
 					PopUpManager.addPopUp(tableWindow, this);
-					PopUpManager.centerPopUp(tableWindow);
+					tableWindow.y = 150
 				} 
 			}
 

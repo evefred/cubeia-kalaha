@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of KalahaRealClient</title>
+	<nodes>
+		<node label="html-template">
+			<node label="history">
+				<node icon="cssIcon" label="history.css" url="source/html-template/history/history.css.html"/>
+				<node label="history.js" url="source/html-template/history/history.js.txt"/>
+				<node icon="htmlIcon" label="historyFrame.html" url="source/html-template/history/historyFrame.html"/>
+			</node>
+			<node label="AC_OETags.js" url="source/html-template/AC_OETags.js.txt"/>
+			<node icon="htmlIcon" label="index.template.html" url="source/html-template/index.template.html"/>
+			<node icon="swfIcon" label="playerProductInstall.swf" url="source/html-template/playerProductInstall.swf"/>
+		</node>
+		<node label="libs">
+			<node label="as3corelib.swc" url="source/libs/as3corelib.swc"/>
+			<node label="firebase-flash-api-1.7-CE-SNAPSHOT.swc" url="source/libs/firebase-flash-api-1.7-CE-SNAPSHOT.swc"/>
+		</node>
+		<node label="src">
+			<node label="main">
+				<node label="flex">
+					<node label="net">
+						<node icon="classpathIcon" label="test" expanded="true">
+							<node icon="mxmlIcon" label="ConnectWindow.mxml" url="source/ConnectWindow.mxml.html"/>
+							<node icon="imageIcon" label="header.png" url="source/header.png.html"/>
+							<node icon="imageIcon" label="kalaha.png" url="source/kalaha.png.html"/>
+							<node icon="mxmlAppIcon" selected="true" label="KalahaRealClient.mxml" url="source/KalahaRealClient.mxml.html"/>
+							<node icon="mxmlIcon" label="LobbyWindow.mxml" url="source/LobbyWindow.mxml.html"/>
+							<node icon="mxmlIcon" label="LoginWindow.mxml" url="source/LoginWindow.mxml.html"/>
+							<node icon="mxmlIcon" label="TableWindow.mxml" url="source/TableWindow.mxml.html"/>
+						</node>
+					</node>
+				</node>
+			</node>
+		</node>
+	</nodes>
+</index>

@@ -83,6 +83,25 @@
 				item.tableId = lobbyDataItem.tableid;
 				item.address = lobbyDataItem.address;
 				
+				var itemGameId:int = lobbyDataItem.getValue("gameId");
+				var desiredGameId:int = KalahaRealClient.gameId;
+				if (itemGameId == desiredGameId) {
+					_joinPending = true;
+					
+					// setup packet data handler 
+					KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+
+					// create a join request packet
+					var joinRequestPacket:JoinRequestPacket = new JoinRequestPacket();
+					// tell server to pick a random seat
+					joinRequestPacket.seat = -1;
+					// table id
+					joinRequestPacket.tableid = item.tableId;
+					// send the packet to the game server
+					KalahaRealClient.firebaseClient.send(joinRequestPacket); 
+				}
+				
+				
 				// add to lobby data collection
 				lobbyData.addItem(item);
 			}
