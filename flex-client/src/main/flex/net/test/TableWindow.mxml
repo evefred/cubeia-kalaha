@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->	
 
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="192" xmlns:ns1="*">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="192" xmlns:ns1="*" creationComplete="setupPacketHandler()">
 
 	<mx:Script>
 		<![CDATA[
@@ -61,11 +61,16 @@
 				KalahaRealClient.firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);				
 			}
 			
-			private function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
+			public function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
 			{
 				var data:ByteArray = gamePacketEvent.getPacketData();
 				var bytes:int = data.bytesAvailable;
+				if (bytes == 0)
+				{
+					return;
+				}
 				var msg:String = data.readUTFBytes(bytes);
+				
 				
 				var dec:Array = (JSON.decode(msg) as Array)
 				var className:String = dec[0];

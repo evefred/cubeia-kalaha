@@ -21,6 +21,7 @@
 
 	<mx:Script>
 		<![CDATA[
+			import com.cubeia.firebase.events.GamePacketEvent;
 			import com.cubeia.firebase.io.protocol.ServiceTransportPacket;
 			import mx.controls.Alert;
 			import com.adobe.serialization.json.JSON;
@@ -67,6 +68,7 @@
 				
 				// Setup packet data listener
 				firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+				firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);
 
 				// Assign values to new properties.
         		var firebaseHost:String = Application.application.parameters.firebaseHost;
@@ -166,6 +168,11 @@
 					
 				}
 			}
+			
+			private function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
+			{
+				tableWindow.onGamePacketReceived(gamePacketEvent);
+			}
 
 			private function handleServiceTransportPacket(serviceTransportPacket:ServiceTransportPacket):void
 			{
@@ -190,7 +197,7 @@
 			private function handleJoinResponsePacket(joinResponsePacket:JoinResponsePacket):void
 			{
 				if ( joinResponsePacket.status == 0 ) {
-					// successfull join, remove lobby window and open table window
+					// successful join, remove lobby window and open table window
 					PopUpManager.removePopUp(lobbyWindow);
 					// save tableid and seat for later 
 					seat = joinResponsePacket.seat;
@@ -199,6 +206,8 @@
 					tableWindow = new TableWindow();
 					PopUpManager.addPopUp(tableWindow, this);
 					tableWindow.y = 150
+					
+					firebaseClient.removeEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
 				} 
 			}
 
