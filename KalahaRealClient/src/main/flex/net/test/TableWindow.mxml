@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+ * Copyright (C) 2009 Cubeia Ltd <info@cubeia.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->	
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="192" xmlns:ns1="*">
+
+	<mx:Script>
+		<![CDATA[
+			import com.cubeia.firebase.io.protocol.SeatInfoPacket;
+			import com.cubeia.firebase.io.protocol.JoinResponsePacket;
+			import com.adobe.serialization.json.JSON;
+			import com.cubeia.firebase.events.GamePacketEvent;
+			import com.cubeia.firebase.io.protocol.LeaveRequestPacket;
+			import com.cubeia.firebase.io.ProtocolObject;
+			import com.cubeia.firebase.events.PacketEvent;
+			import mx.events.FlexEvent;
+			import com.cubeia.firebase.io.protocol.TableChatPacket;
+			import com.cubeia.firebase.io.protocol.GameTransportPacket;
+			
+			import mx.managers.FocusManager;
+			import mx.managers.PopUpManager;
+			
+			private var side:String;
+			
+			public function pitClicked(pit:int):void
+			{
+				var data:ByteArray = new ByteArray();
+				var pid:int = KalahaRealClient.playerInfo.pid;
+				var string:String = "[\"Sow\",{\"house\":" + pit + ",\"playerId\":" + pid + "}]";
+				data.writeUTFBytes(string);
+				
+			    var gameTransportPacket:GameTransportPacket = new GameTransportPacket();
+			    gameTransportPacket.pid = pid;
+			    gameTransportPacket.tableid = KalahaRealClient.tableid;
+			    gameTransportPacket.gamedata = data;
+			    gameTransportPacket.gamedata.position = 0;
+							
+			    // send packet
+			    KalahaRealClient.firebaseClient.send(gameTransportPacket);
+			}
+
+			private function setupPacketHandler():void
+			{
+				// setup packet data handler
+				KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+				KalahaRealClient.firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);				
+			}
+			
+			private function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
+			{
+				var data:ByteArray = gamePacketEvent.getPacketData();
+				var bytes:int = data.bytesAvailable;
+				var msg:String = data.readUTFBytes(bytes);
+				
+				var dec:Array = (JSON.decode(msg) as Array)
+				var className:String = dec[0];
+				if (!className.match("State"))
+				{
+					return;
+				}
+				var pits:Object = dec[1];
+				
+				b0.label = "" + pits.pits[0];
+				b1.label = "" + pits.pits[1];
+				b2.label = "" + pits.pits[2];
+				b3.label = "" + pits.pits[3];
+				b4.label = "" + pits.pits[4];
+				b5.label = "" + pits.pits[5];
+				b6.label = "" + pits.pits[6];
+				//b6.label = "SOUTH_KALAHA";
+				
+				b7.label = "" + pits.pits[7];
+				b8.label = "" + pits.pits[8];
+				b9.label = "" + pits.pits[9];
+				b10.label = "" + pits.pits[10];
+				b11.label = "" + pits.pits[11];
+				b12.label = "" + pits.pits[12];
+				b13.label = "" + pits.pits[13];
+				//b13.label = "NORTH_KALAHA";
+			}					
+			
+			private function onPacketReceived(packetEvent:PacketEvent):void
+			{
+				// packet data received, inspect classId and take appropriate action
+				var protocolObject:ProtocolObject = packetEvent.getObject();
+				switch ( protocolObject.classId() ) {
+					case SeatInfoPacket.CLASSID:
+						handleSeatInfo(SeatInfoPacket(protocolObject));
+						break;
+				} 
+			}
+			
+			private function handleSeatInfo(seatInfo:SeatInfoPacket):void
+			{
+				var seatId:int = seatInfo.seat;
+				var s:int = KalahaRealClient.seat;
+				if (seatId == 0 && KalahaRealClient.playerInfo.pid == seatInfo.player.pid)
+				{
+					side = "SOUTH";
+				}
+				else
+				{
+					b0.enabled = false;
+					b1.enabled = false;
+					b2.enabled = false;
+					b3.enabled = false;
+					b4.enabled = false;
+					b5.enabled = false;
+					
+					b7.enabled = true;
+					b8.enabled = true;
+					b9.enabled = true;
+					b10.enabled = true;
+					b11.enabled = true;
+					b12.enabled = true;					
+					side = "NORTH";
+				}
+			}
+									
+			private function enableAutoScroll(object:EventDispatcher):void
+			{
+				// helper function to make chat output auto scrollable
+				object.addEventListener( FlexEvent.VALUE_COMMIT, autoScrollToBottom );
+			}
+
+
+			private function autoScrollToBottom( event:FlexEvent ):void
+	   		{
+	        	// Auto-scroll to the bottom anytime the text changes
+	        	event.target.validateNow();
+	        	event.target.verticalScrollPosition = event.target.maxVerticalScrollPosition;
+	    	}
+	    	
+			private function onLeaveTable():void
+			{
+				// leave pressed, remove packet listener
+				KalahaRealClient.firebaseClient.removeEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+				// create a leave request
+				var leaveRequestPacket:LeaveRequestPacket = new LeaveRequestPacket();
+				leaveRequestPacket.tableid = KalahaRealClient.tableid;
+				// send it to the game server
+				KalahaRealClient.firebaseClient.send(leaveRequestPacket);
+			}
+		]]>
+	</mx:Script>
+
+	<mx:Image source="@Embed(source='kalaha.png')" width="640" height="192" maintainAspectRatio="false" />
+	<mx:Button x="91" y="101" label="0" width="75" height="91" id="b0" click="pitClicked(0)"/>
+	<mx:Button x="166" y="101" label="1" width="76" height="91" id="b1" click="pitClicked(1)"/>
+	<mx:Button x="242" y="101" label="2" width="78" height="91" id="b2" click="pitClicked(2)"/>
+	<mx:Button x="319" y="101" label="3" width="78" height="91" id="b3" click="pitClicked(3)"/>
+	<mx:Button x="396" y="101" label="4" width="78" height="91" id="b4" click="pitClicked(4)"/>
+	<mx:Button x="473" y="101" label="5" width="79" height="91" id="b5" click="pitClicked(5)"/>
+	<mx:Button x="551" y="0" label="SOUTH_KALAHA" width="89" height="192" id="b6" enabled="false"/> <!-- kalaha for player 1 -->
+	<mx:Button x="91" y="0" label="12" width="75" height="84" id="b12" enabled="false" click="pitClicked(5)" />
+	<mx:Button x="166" y="0" label="11" width="76" height="84" id="b11" enabled="false" click="pitClicked(4)" />
+	<mx:Button x="242" y="0" label="10" width="78" height="84" id="b10" enabled="false" click="pitClicked(3)" />
+	<mx:Button x="319" y="0" label="9" width="78" height="84" id="b9" enabled="false" click="pitClicked(2)" />
+	<mx:Button x="396" y="0" label="8" width="78" height="84" id="b8" enabled="false" click="pitClicked(1)" />
+	<mx:Button x="473" y="0" label="7" width="79" height="84" id="b7" enabled="false" click="pitClicked(0)" />
+	<mx:Button x="0" y="0" label="NORTH_KALAHA" width="93" height="192" id="b13" enabled="false"/> <!-- kalaha for player 2 -->	
+</mx:Canvas>
