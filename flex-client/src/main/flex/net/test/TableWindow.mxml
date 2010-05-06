@@ -37,6 +37,13 @@
 			
 			private var side:String;
 			
+			private function setupPacketHandler():void
+			{
+				// setup packet data handler
+				KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+				KalahaRealClient.firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);				
+			}
+			
 			public function pitClicked(pit:int):void
 			{				
 				var pid:int = KalahaRealClient.playerInfo.pid;
@@ -54,13 +61,6 @@
 			    KalahaRealClient.firebaseClient.send(gameTransportPacket);
 			}
 
-			private function setupPacketHandler():void
-			{
-				// setup packet data handler
-				KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
-				KalahaRealClient.firebaseClient.addEventListener(GamePacketEvent.PACKET_RECEIVED, onGamePacketReceived);				
-			}
-			
 			public function onGamePacketReceived(gamePacketEvent:GamePacketEvent):void
 			{
 				var data:ByteArray = gamePacketEvent.getPacketData();
@@ -71,14 +71,14 @@
 				}
 				var msg:String = data.readUTFBytes(bytes);
 				
-				
 				var dec:Array = (JSON.decode(msg) as Array)
 				var className:String = dec[0];
 				if (!className.match("State"))
 				{
 					return;
-				}
+				}				
 				var pits:Object = dec[1];
+				chooseSide(pits.southPlayerId, pits.northPlayerId);
 				
 				b0.label = "" + pits.pits[0];
 				b1.label = "" + pits.pits[1];
@@ -105,20 +105,18 @@
 				var protocolObject:ProtocolObject = packetEvent.getObject();
 				switch ( protocolObject.classId() ) {
 					case SeatInfoPacket.CLASSID:
-						handleSeatInfo(SeatInfoPacket(protocolObject));
+						//handleSeatInfo(SeatInfoPacket(protocolObject));
 						break;
 				} 
 			}
 			
-			private function handleSeatInfo(seatInfo:SeatInfoPacket):void
+			private function chooseSide(southId:int, northId:int):void
 			{
-				var seatId:int = seatInfo.seat;
-				var s:int = KalahaRealClient.seat;
-				if (seatId == 0 && KalahaRealClient.playerInfo.pid == seatInfo.player.pid)
+				if (KalahaRealClient.playerInfo.pid == southId)
 				{
 					side = "SOUTH";
 				}
-				else
+				else if (KalahaRealClient.playerInfo.pid == northId)
 				{
 					b0.enabled = false;
 					b1.enabled = false;
@@ -135,6 +133,10 @@
 					b12.enabled = true;					
 					side = "NORTH";
 				}
+				else
+				{
+					trace("I am not in this game.");
+				}
 			}
 									
 			private function enableAutoScroll(object:EventDispatcher):void
@@ -142,7 +144,6 @@
 				// helper function to make chat output auto scrollable
 				object.addEventListener( FlexEvent.VALUE_COMMIT, autoScrollToBottom );
 			}
-
 
 			private function autoScrollToBottom( event:FlexEvent ):void
 	   		{
