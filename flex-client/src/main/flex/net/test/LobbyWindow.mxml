@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+ * Copyright (C) 2009 Cubeia Ltd <info@cubeia.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->	
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="604" height="478">
+	 
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="604" height="360" title="Lobby" borderColor="#AD3333" color="#FFFFFF" fontSize="12" showCloseButton="false" alpha="1.0" backgroundAlpha="0.0" borderAlpha="1" backgroundColor="#540808" defaultButton="{joinButton}" creationComplete="setupLobby()" shadowDirection="right">
+
+	<mx:Script>
+		<![CDATA[
+			import com.cubeia.firebase.util.ParameterUtil;
+			import com.cubeia.firebase.io.protocol.Param;
+			import com.cubeia.firebase.io.protocol.JoinResponsePacket;
+			import com.cubeia.firebase.io.ProtocolObject;
+			import com.cubeia.firebase.model.LobbyDataItem;
+			import mx.collections.ArrayCollection;
+			import com.cubeia.firebase.events.PacketEvent;
+			import com.cubeia.firebase.events.LobbyEvent;
+			import com.cubeia.firebase.io.protocol.JoinRequestPacket;
+			import com.cubeia.firebase.io.protocol.CreateTableRequestPacket;
+			import com.cubeia.firebase.io.protocol.Param;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			private var _joinPending:Boolean = false;
+			
+			[Bindable]
+			private var lobbyData:ArrayCollection = new ArrayCollection();
+			
+			private function setupLobby():void
+			{
+				lobbySubscribe(236);
+			}
+			
+			private function lobbySubscribe(gameId:int):void
+			{
+				// setup lobby event listeners, one for each type
+				KalahaRealClient.firebaseClient.addEventListener(LobbyEvent.TABLE_ADDED, onTableAdded);
+				KalahaRealClient.firebaseClient.addEventListener(LobbyEvent.TABLE_UPDATED, onTableUpdated);
+				KalahaRealClient.firebaseClient.addEventListener(LobbyEvent.TABLE_REMOVED, onTableRemoved);
+				
+				// subscribe to lobby events for gameId
+				KalahaRealClient.firebaseClient.lobbySubscribe(gameId, "/");
+			}
+			
+			private function lobbyUnsubscribe(gameId:int):void
+			{
+				// remove event listeners
+				KalahaRealClient.firebaseClient.removeEventListener(LobbyEvent.TABLE_ADDED, onTableAdded);
+				KalahaRealClient.firebaseClient.removeEventListener(LobbyEvent.TABLE_UPDATED, onTableUpdated);
+				KalahaRealClient.firebaseClient.removeEventListener(LobbyEvent.TABLE_REMOVED, onTableRemoved);
+				// Unsubscribe 
+				KalahaRealClient.firebaseClient.lobbyUnsubscribe(gameId, "/");
+			}
+			
+			private function onTableAdded(lobbyEvent:LobbyEvent):void
+			{
+				// a table was added to the lobby
+				var lobbyDataItem:LobbyDataItem = lobbyEvent.lobbyDataItem;
+
+				// Create a dynamic object to hold table info
+				var item:Object = new Object();
+				
+				// set table info
+				item.name = lobbyDataItem.name;
+				item.capacity = lobbyDataItem.capacity;
+				item.seated = lobbyDataItem.seated;
+				item.tableId = lobbyDataItem.tableid;
+				item.address = lobbyDataItem.address;
+				
+				var itemGameId:int = lobbyDataItem.getValue("gameId");
+				var desiredGameId:int = KalahaRealClient.gameId;
+				if (itemGameId == desiredGameId) {
+					_joinPending = true;
+					
+					// setup packet data handler 
+					KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+
+					// create a join request packet
+					var joinRequestPacket:JoinRequestPacket = new JoinRequestPacket();
+					// tell server to pick a random seat
+					joinRequestPacket.seat = -1;
+					// table id
+					joinRequestPacket.tableid = item.tableId;
+					// send the packet to the game server
+					KalahaRealClient.firebaseClient.send(joinRequestPacket); 
+				}
+				
+				
+				// add to lobby data collection
+				lobbyData.addItem(item);
+			}
+
+			private function onTableUpdated(lobbyEvent:LobbyEvent):void
+			{
+				// a table has been updated in the lobby
+				var lobbyDataItem:LobbyDataItem = lobbyEvent.lobbyDataItem;
+				
+				// locate table
+				for each ( var item:Object in lobbyData ) { 
+					if ( item.tableId == lobbyEvent.tableId ) {
+						// we have a match, update seated count
+						var oldSeated:int = item.seated;
+						item.seated = lobbyDataItem.seated;
+						// Tell all views that this item has been updated
+						lobbyData.itemUpdated(item, "seated", oldSeated, lobbyDataItem.seated);
+						break;
+					}
+				}
+ 			}						
+			
+			private function onTableRemoved(lobbyEvent:LobbyEvent):void
+			{
+				// find table and remove it from the list
+				for each ( var item:Object in lobbyData ) { 
+					if ( item.tableId == lobbyEvent.tableId ) {
+						lobbyData.removeItemAt(lobbyData.getItemIndex(item));
+						break;
+					}
+				}
+			}
+			
+			// Called when a table join has been selected in the lobby grid 
+			private function onTableSelected():void
+			{
+				if ( lobbyGrid.selectedItem != null ) {
+					_joinPending = true;
+					
+					// setup packet data handler 
+					KalahaRealClient.firebaseClient.addEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+
+					// create a join request packet
+					var joinRequestPacket:JoinRequestPacket = new JoinRequestPacket();
+					// tell server to pick a random seat
+					joinRequestPacket.seat = -1;
+					// table id
+					joinRequestPacket.tableid = lobbyGrid.selectedItem.tableId;
+					// send the packet to the game server
+					KalahaRealClient.firebaseClient.send(joinRequestPacket); 
+				}
+			}
+			
+			private function onPacketReceived(packetEvent:PacketEvent):void
+			{
+				// packet received, inspect it
+				var protocolObject:ProtocolObject = packetEvent.getObject();
+				if ( protocolObject.classId() == JoinResponsePacket.CLASSID ) {
+					// player has joined a table, remove packet listener and unsubscribe
+					KalahaRealClient.firebaseClient.removeEventListener(PacketEvent.PACKET_RECEIVED, onPacketReceived);
+					lobbyUnsubscribe(236); 
+				}
+			}
+			
+			private function onTableRequested():void
+			{
+				var requestTablePacket:CreateTableRequestPacket = new CreateTableRequestPacket();
+				requestTablePacket.gameid = 236;
+				requestTablePacket.seats = 2;
+				requestTablePacket.seq = 1;
+				requestTablePacket.invitees = new Array();
+				var param:Param = ParameterUtil.makeIntegerParam("gameId", int (gameId.text));
+				requestTablePacket.params = [param];
+				
+				KalahaRealClient.firebaseClient.send(requestTablePacket);
+			}
+			
+			private function onChallenge():void
+			{
+				var requestTablePacket:CreateTableRequestPacket = new CreateTableRequestPacket();
+				requestTablePacket.gameid = 236;
+				requestTablePacket.seats = 2;
+				requestTablePacket.seq = 1;
+				requestTablePacket.invitees = new Array();
+				var param:Param = ParameterUtil.makeIntegerParam("opponent", int (opponentId.text));
+				requestTablePacket.params = [param];
+				
+				KalahaRealClient.firebaseClient.send(requestTablePacket);																
+			}
+
+
+			
+		]]>
+	</mx:Script>
+	
+	<mx:DataGrid id="lobbyGrid" x="0" y="0" width="100%" height="100%" dataProvider="{lobbyData}" doubleClickEnabled="true" itemDoubleClick="onTableSelected()" tabIndex="1" color="#F2E8E8" headerColors="[#AD3333, #803333]" alternatingItemColors="[#AD3333, #803333]" editable="false" themeColor="#F17612" horizontalGridLineColor="#000000" horizontalGridLines="true" verticalGridLineColor="#000000" borderColor="#000000">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Name" dataField="name"/>
+			<mx:DataGridColumn headerText="Capacity" dataField="capacity"/>
+			<mx:DataGridColumn headerText="Seated" dataField="seated"/> 
+		</mx:columns>
+	</mx:DataGrid>
+
+</mx:TitleWindow>
+	<mx:Button x="277.5" y="384" label="Join" id="joinButton" click="onTableSelected()" enabled="{lobbyGrid.selectedItem != null}" tabIndex="2" themeColor="#AD3333" color="#FFFFFF" fillAlphas="[1.0, 1.0]" fillColors="[#AD3333, #460A0A]"/>
+	<mx:Button x="291" y="414" label="Challenge playerId" click="onChallenge()"/>
+	<mx:TextInput id = "gameId" x="123" y="446"/>
+	<mx:TextInput id = "opponentId" x="123" y="414"/>
+	<mx:Button x="291" y="446" label="Request table for gameId" click="onTableRequested()"/>
+</mx:Canvas>
