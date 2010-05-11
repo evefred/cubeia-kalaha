@@ -228,7 +228,6 @@ public class KalahaBoardTest {
 		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
 	}
 	
-	
 	@Test
 	public void updatesPlayerToActAfterPlayerActs() {
 		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
@@ -272,10 +271,33 @@ public class KalahaBoardTest {
 		setupState(kb, 0,0,0,0,0,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(5, Player.SOUTH);
 		assertFalse(kb.isGameEnded());
-	}		
+	}
+	
+	@Test
+	public void endGame() {
+		setupState(kb, 1,3,1,1,0,0,30,0,0,0,0,0,0,23);
+		kb.moveStones(3, Player.SOUTH);
+		assertTrue(kb.isGameEnded());
+	}
+	
+	@Test
+	public void endingInKalahaAddsStone() {
+		assertEquals(72, sum(6,6,6,6,6,6,0,6,6,6,6,6,6,0));
+		kb.moveStones(0, Player.SOUTH);
+		assertStones(kb, Player.SOUTH, 0, 7, 7, 7, 7, 7);
+		assertEquals(kb.getStonesInKalaha(Player.SOUTH), 1);
+	}
 	
 	// --- PRIVATE METHODS --- //
 	
+	private int sum(int ... numbers) {
+		int result = 0;
+		for (int number : numbers) {
+			result += number;
+		}
+		return result;
+	}
+
 	private void setupState(KalahaBoard board, int ... pits) {
 		for (int i = 0; i < 6; i++) {
 			board.setStonesInPit(pits[i], i, Player.SOUTH);

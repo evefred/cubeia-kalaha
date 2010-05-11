@@ -158,13 +158,16 @@ public class KalahaBoard implements Serializable {
 			boolean lastStone = i == (pit + stonesToMove);
 			boolean myEmptyPit = player.isMyPit(currentPit) && state.getPits()[currentPit] == 0;
 			boolean myKalaha = player.isMyKalaha(currentPit);
+			boolean stole = false;
 			
 			if (lastStone && myEmptyPit) {				
-				endedInKalaha = stealOpponentsStones(player, currentPit);
+				stole = stealOpponentsStones(player, currentPit);
+				endedInKalaha = stole;
 			} else if (lastStone && myKalaha) {
 				endedInKalaha = true;
 			}
-			if (!endedInKalaha) {
+			
+			if (!stole) {
 				state.getPits()[currentPit]++;
 			}
 		}
