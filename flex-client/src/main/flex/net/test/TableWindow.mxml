@@ -79,25 +79,20 @@
 				}				
 				var pits:Object = dec[1];
 				chooseSide(pits.southPlayerId, pits.northPlayerId);
-				
-				b0.label = "" + pits.pits[0];
-				b1.label = "" + pits.pits[1];
-				b2.label = "" + pits.pits[2];
-				b3.label = "" + pits.pits[3];
-				b4.label = "" + pits.pits[4];
-				b5.label = "" + pits.pits[5];
-				b6.label = "" + pits.pits[6];
-				//b6.label = "SOUTH_KALAHA";
-				
-				b7.label = "" + pits.pits[7];
-				b8.label = "" + pits.pits[8];
-				b9.label = "" + pits.pits[9];
-				b10.label = "" + pits.pits[10];
-				b11.label = "" + pits.pits[11];
-				b12.label = "" + pits.pits[12];
-				b13.label = "" + pits.pits[13];
-				//b13.label = "NORTH_KALAHA";
-			}					
+				updateBoard(pits.pits);
+			}
+			
+			private function updateBoard(pits:Array):void {
+				var counter:int = 0;
+				var allChilds:Array = this.getChildren();
+				for each (var o:Object in allChilds) {
+					if (!(o is Button)) {
+						continue;
+					}
+					var b:Button = o as Button;
+					b.label = "" + pits[counter++];
+				}				
+			}								
 			
 			private function onPacketReceived(packetEvent:PacketEvent):void
 			{
@@ -118,25 +113,29 @@
 				}
 				else if (KalahaRealClient.playerInfo.pid == northId)
 				{
-					b0.enabled = false;
-					b1.enabled = false;
-					b2.enabled = false;
-					b3.enabled = false;
-					b4.enabled = false;
-					b5.enabled = false;
-					
-					b7.enabled = true;
-					b8.enabled = true;
-					b9.enabled = true;
-					b10.enabled = true;
-					b11.enabled = true;
-					b12.enabled = true;					
+					enableNorthButtons();	
 					side = "NORTH";
 				}
 				else
 				{
 					trace("I am not in this game.");
 				}
+			}
+			
+			private function enableNorthButtons():void {
+				var allChilds:Array = this.getChildren();
+				for each (var o:Object in allChilds) {
+					if (!(o is Button)) {
+						continue;
+					}
+					var button:Button = o as Button;
+					var pitNumber:int = parseInt(button.id.substr(1, button.id.length));
+					if (pitNumber < 6) {
+						button.enabled = false;
+					} else if (pitNumber > 6 && pitNumber < 13) {
+						button.enabled = true;
+					}
+				}				
 			}
 									
 			private function enableAutoScroll(object:EventDispatcher):void
