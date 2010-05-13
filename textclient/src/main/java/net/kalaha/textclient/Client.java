@@ -2,7 +2,6 @@ package net.kalaha.textclient;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import net.kalaha.game.action.IllegalActionException;
@@ -10,12 +9,9 @@ import net.kalaha.game.action.Sow;
 import net.kalaha.game.json.JsonTransformer;
 import net.kalaha.table.api.TableManager;
 
-import com.cubeia.firebase.api.util.ParameterUtil;
 import com.cubeia.firebase.clients.java.connector.text.CommandNotifier;
 import com.cubeia.firebase.clients.java.connector.text.SimpleTextClient;
-import com.cubeia.firebase.io.protocol.CreateTableRequestPacket;
 import com.cubeia.firebase.io.protocol.Enums;
-import com.cubeia.firebase.io.protocol.Param;
 import com.cubeia.firebase.io.protocol.ServiceTransportPacket;
 
 public class Client extends SimpleTextClient {
