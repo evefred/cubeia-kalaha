@@ -16,6 +16,7 @@
     <module>uar</module>
     <module>facebook-web</module>
     <module>database</module>
+    <module>kalaha-html5</module>
   </modules>
 
   <dependencies>
