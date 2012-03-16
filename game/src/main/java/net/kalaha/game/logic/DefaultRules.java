@@ -11,5 +11,4 @@ public class DefaultRules implements SpecialRules {
 	public boolean endGameWhenEitherPlayerRunsOutOfStones() {
 		return false;
 	}
-
 }

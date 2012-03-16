@@ -13,12 +13,12 @@ public class ActionTransformerTest {
 		s.setPlayerId(99);
 		s.setHouse(2);
 		String string = new JsonTransformer().toString(s);
-		Assert.assertEquals(string, "[\"Sow\",{\"house\":2,\"playerId\":99}]");
+		Assert.assertEquals(string, "{\"_action\":\"Sow\",\"house\":2,\"playerId\":99}");
 	}
 	
 	@Test
 	public void fromString() {
-		String json = "[\"Sow\",{\"house\":2,\"playerId\":99}]";
+		String json = "{\"_action\":\"Sow\",\"house\":2,\"playerId\":99}";
 		Sow test = new Sow();
 		test.setPlayerId(99);
 		test.setHouse(2);

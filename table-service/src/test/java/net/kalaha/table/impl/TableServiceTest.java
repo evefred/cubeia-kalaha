@@ -1,6 +1,9 @@
 package net.kalaha.table.impl;
 
 import static org.testng.Assert.assertEquals;
+
+import java.util.Collection;
+
 import net.kalaha.table.api.TableQuery;
 
 import org.testng.annotations.Test;
@@ -40,6 +43,10 @@ public class TableServiceTest {
 		private ActivatorAction<?> toActivator;
 		private ServiceAction toPlayer;
 
+		
+		@Override
+		public void dispatchToPlayer(int arg0, Collection<? extends GameAction> arg1) { }
+		
 		@Override
 		public void dispatchToGame(int arg0, GameAction arg1) { }
 
@@ -64,6 +71,9 @@ public class TableServiceTest {
 
 		@Override
 		public void dispatchToTournamentActivator(int arg0, ActivatorAction<?> arg1) { }
+
+		@Override
+		public void dispatchToPlayer(int arg0, GameAction arg1) { }
 		
 	}
 }

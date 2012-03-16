@@ -51,8 +51,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public void onAction(ActivatorAction action) {
+	public void onAction(ActivatorAction<?> action) {
 		TableQuery q = (TableQuery) action.getData();
 		int tableId = -1;
 		synchronized(mapping) {
@@ -160,6 +159,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 			return (i == null ? -1 : i.intValue());
 		}
 		
+		@SuppressWarnings("unused")
 		public void removeForTable(int tableId) {
 			Integer i = tableToGame.remove(tableId);
 			if(i != null) {

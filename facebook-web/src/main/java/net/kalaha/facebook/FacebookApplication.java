@@ -98,7 +98,7 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
 	
 	private static class FaceBookAuthorizationStrategy extends AbstractPageAuthorizationStrategy {
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "rawtypes" })
 		protected boolean isPageAuthorized(Class pageClass) {
 			if(LoginRedirect.class.equals(pageClass)) {
 				return true;
