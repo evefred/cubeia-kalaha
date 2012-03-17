@@ -91,12 +91,37 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.5.8</version>
+				<version>1.6.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.5.8</version>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.persistence</groupId>
+				<artifactId>persistence-api</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>apache-httpclient</groupId>
+				<artifactId>commons-httpclient</artifactId>
+				<version>3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.restfb</groupId>
+				<artifactId>restfb</artifactId>
+				<version>1.6.9</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

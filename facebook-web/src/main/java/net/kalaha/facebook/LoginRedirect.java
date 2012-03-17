@@ -10,8 +10,12 @@ import com.google.inject.name.Named;
 public class LoginRedirect extends WebPage {
 	
 	@Inject
-    @Named("facebook-api-key")
-    private String apiKey;
+    @Named("facebook-app-id")
+    private String appId;
+	
+	@Inject
+    @Named("facebook-redirect-uri")
+    private String redirectUri;
 	
 	public LoginRedirect(PageParameters p) {
 		setStatelessHint(true);
@@ -19,6 +23,6 @@ public class LoginRedirect extends WebPage {
 	
 	@Override
 	public void renderHead(HtmlHeaderContainer container) {
-		container.getHeaderResponse().renderJavascript("top.location=\"http://www.facebook.com/login.php?api_key=" + apiKey + "&v=1.0\";", "loginRedirect");
+		container.getHeaderResponse().renderJavascript("top.location=\"https://www.facebook.com/dialog/oauth?client_id=" + appId + "&redirect_uri=" + redirectUri + "&scope=email,publish_stream", "loginRedirect");
 	}
 }

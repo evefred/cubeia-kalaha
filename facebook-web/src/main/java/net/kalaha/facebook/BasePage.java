@@ -5,7 +5,7 @@ import java.util.Date;
 
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.entities.User;
-import net.kalaha.facebook.util.FBUtil;
+import net.kalaha.facebook.util.FacebookUtil;
 
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.PageParameters;
@@ -22,8 +22,8 @@ public class BasePage extends WebPage {
     private static final String DEV_VERSION = "_development";
 
 	@Inject
-    @Named("facebook-api-key")
-    private String apiKey;
+    @Named("facebook-app-id")
+    private String appId;
     
     @Inject
     @Named("css-version")
@@ -51,11 +51,11 @@ public class BasePage extends WebPage {
 	// --- PROTECTED METHODS --- //
 	
 	protected void addFBAttribute(String compId, String attr, String val) {
-		FBUtil.setOrReplaceAttribute(this, compId, attr, val);
+		FacebookUtil.setOrReplaceAttribute(this, compId, attr, val);
 	}
 	
 	protected void addFBAttribute(MarkupContainer cont, String compId, String attr, String val) {
-		FBUtil.setOrReplaceAttribute(cont, compId, attr, val);
+		FacebookUtil.setOrReplaceAttribute(cont, compId, attr, val);
 	}
 	
 	protected User getCurrentUser() {
@@ -74,16 +74,15 @@ public class BasePage extends WebPage {
 	// --- PRIVATE METHODS --- //
 	
 	private void renderApiKey(HtmlHeaderContainer container) {
-		container.getHeaderResponse().renderJavascript("__API_KEY = \"" + apiKey + "\";", "apiKey");
+		container.getHeaderResponse().renderJavascript("__API_KEY = \"" + appId + "\";", "apiKey");
 	}
 	
 	private void setup() { 
-		if(getSession().getSession() == null) return; // NOT AUTH
+		// f(getSession().getSession() == null) return; // NOT AUTH
 		setStatelessHint(false);
 		add(CSSPackageResource.getHeaderContribution(BasePage.class, "fb.css?v=" + getCssVersion()));
 		FacebookSession ses = getSession();
-		long fbId = ses.getFacebookId();	
-		addFBAttribute("ownerId", "uid", String.valueOf(fbId));
+		add(new Label("userName", ses.getFacebookUser().getName()));
 		add(new Label("token", ses.getSession().getId()));
 	}
 

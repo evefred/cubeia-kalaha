@@ -1,40 +1,44 @@
 package net.kalaha.facebook;
 
-import java.util.List;
+import static net.kalaha.facebook.AuthFilter.AUTH_TOKEN;
+
+import javax.servlet.http.HttpSession;
 
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Session;
 import net.kalaha.entities.User;
-import net.kalaha.facebook.page.fb.FBUser;
+import net.kalaha.facebook.page.fb.FacebookUser;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.Request;
+import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebSession;
 
+import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
-import com.restfb.FacebookException;
-import com.restfb.Parameter;
 
 public class FacebookSession extends WebSession {
 
 	private static final long serialVersionUID = -5729324170190182274L;
-
-	private FacebookClient facebookClient;
-
-	private long facebookId;
-	private Session session;
-
-	private final UserManager userManager;
-
-	private String fbSessionKey;
-	private FBUser facebookUser;
+	private static final Logger log = Logger.getLogger(FacebookSession.class);
 	
-	public FacebookSession(Request request, UserManager userManager) {
+	private FacebookClient facebookClient;
+	private UserManager userManager;
+	
+	private Session session;
+	private FacebookUser facebookUser;
+	private AuthToken token;
+	private int operatorId;
+	
+	public FacebookSession(Request request, UserManager userManager, int operatorId) {
 		super(request);
 		this.userManager = userManager;
+		this.operatorId = operatorId;
+		checkCreateClient(request);
 	}
-	
+
 	public long getFacebookId() {
-		return facebookId;
+		return Long.parseLong(getFacebookUser().getId());
 	}
 	
 	public FacebookClient getFacebookClient() {
@@ -49,44 +53,34 @@ public class FacebookSession extends WebSession {
 		int uid = session.getUserId();
 		return userManager.getUser(uid);
 	}
-	
-	public void setFacebookClient(FacebookClient facebookClient, String fbSessionKey) throws FacebookException {
-		this.facebookClient = facebookClient;
-		this.fbSessionKey = fbSessionKey;
-		this.emergeUserId();
-	}
 
 	public boolean isAuthenticated() {
 		return facebookClient != null;
 	}
 
-	public void setSession(Session ses) {
-		this.session = ses;
-	}
-	
 	public Session getSession() {
 		return session;
 	}
 	
-	public FBUser getFBUser() throws FacebookException {
+	public FacebookUser getFacebookUser() {
 		if(facebookUser == null) {
-			List<FBUser> list = facebookClient.executeForList("users.getInfo",  FBUser.class, 
-					Parameter.with("uids", String.valueOf(facebookId)),
-					Parameter.with("fields", "name"));
-			
-			facebookUser = list.get(0);
+			facebookUser = facebookClient.fetchObject("me", FacebookUser.class);
 		}
 		return facebookUser;
 	}
 	
+	
 	// --- PRIVATE METHODS --- //
 	
-	private void emergeUserId() throws FacebookException {
-		if(facebookClient != null) {
-			this.facebookId = facebookClient.execute("users.getLoggedInUser", fbSessionKey, Long.class);
-		} else {
-			this.facebookId = -1L;
+	private void checkCreateClient(Request request) {
+		HttpSession session = ((WebRequest) request).getHttpServletRequest().getSession(false);
+		AuthToken next = (AuthToken) session.getAttribute(AUTH_TOKEN);
+		if(token == null || !token.token.equals(next.token)) {
+			log.debug("Creating new Facebook client for token: " + next.token);
+			facebookClient = new DefaultFacebookClient(next.token);
+			String facebookId = getFacebookUser().getId();
+			this.session = userManager.getSessionByExternalId(facebookId, operatorId);
+			this.token = next;
 		}
 	}
-	
 }

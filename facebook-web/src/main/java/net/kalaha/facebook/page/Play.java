@@ -3,6 +3,8 @@ package net.kalaha.facebook.page;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import net.kalaha.facebook.BasePage;
+
 import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.JavascriptPackageResource;
@@ -11,9 +13,6 @@ import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.restfb.FacebookException;
-
-import net.kalaha.facebook.BasePage;
 
 public class Play extends BasePage {
 	
@@ -35,17 +34,13 @@ public class Play extends BasePage {
 		super(pars);
 		gameId = pars.getString("gameId");
 		add(JavascriptPackageResource.getHeaderContribution("AC_OETags.js"));
-		try {
-			add(new Label("userName", getSession().getFBUser().name));
-			add(new Label("fbUserId", String.valueOf(getSession().getFBUser().uid)));
-			add(new Label("sessionId", getSession().getSession().getId()));
-			add(new Label("userId", String.valueOf(getSession().getUserId())));
-			add(new Label("gameId", gameId));
-			add(new Label("firebaseHost", firebaseHost));
-			add(new Label("firebasePort", String.valueOf(firebasePort)));
-		} catch (FacebookException e) {
-			Logger.getLogger(getClass()).error("Facebook error", e);
-		}
+		add(new Label("userName", getSession().getFacebookUser().getName()));
+		add(new Label("fbUserId", getSession().getFacebookUser().getId()));
+		add(new Label("sessionId", getSession().getSession().getId()));
+		add(new Label("userId", String.valueOf(getSession().getUserId())));
+		add(new Label("gameId", gameId));
+		add(new Label("firebaseHost", firebaseHost));
+		add(new Label("firebasePort", String.valueOf(firebasePort)));
 	}
 	
 	@Override
@@ -62,12 +57,10 @@ public class Play extends BasePage {
 		try {
 			container.getHeaderResponse().renderJavascript("__FIREBASE_HOST = \"" + firebaseHost + "\"; " +
 					"__FIREBASE_PORT = \"" + String.valueOf(firebasePort) + "\"; " +
-					"__USER_NAME = \"" + URLEncoder.encode(getSession().getFBUser().name, "UTF-8") + "\"; " +
+					"__USER_NAME = \"" + URLEncoder.encode(getSession().getFacebookUser().getName(), "UTF-8") + "\"; " +
 					"__SESSION_TOKEN = \"" + getSession().getSession().getId() + "\"; " +
 					"__OPERATOR_ID = \"" + String.valueOf(operatorId) + "\"; " +
 					"__GAME_ID = \"" + gameId + "\";", "firebaseInfo");	
-		} catch (FacebookException e) {
-			Logger.getLogger(getClass()).error("Facebook error", e);
 		} catch (UnsupportedEncodingException e) {
 			Logger.getLogger(getClass()).error("Missing UTF-8?!", e);
 		}

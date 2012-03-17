@@ -1,37 +1,27 @@
 package net.kalaha.facebook;
 
-import javax.security.auth.login.FailedLoginException;
-
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.facebook.page.Index;
 import net.kalaha.facebook.page.Invite;
 import net.kalaha.facebook.page.Play;
 
-import org.apache.log4j.Logger;
-import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
-import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
-import org.apache.wicket.authorization.UnauthorizedInstantiationException;
-import org.apache.wicket.authorization.strategies.page.AbstractPageAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.inject.Inject;
-import com.restfb.FacebookException;
+import com.google.inject.name.Named;
 
-public class FacebookApplication extends WebApplication implements IUnauthorizedComponentInstantiationListener {    
+public class FacebookApplication extends WebApplication {    
 
     @Inject
-    private Authentication authenticator;
+    @Named("facebook-operator-id")
+    private int operatorId;
     
-    /*@Inject
-    @Named("facebook-api-key")
-    private String apiKey;*/
-    
-    private Logger log = Logger.getLogger(getClass());
+    // private Logger log = Logger.getLogger(getClass());
     
     @Inject
     private UserManager userManager;
@@ -39,9 +29,10 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
     @Override
     protected void init() {
     	super.init();
+    	reRouteUtilLog();
     	setup();
     }
-    
+
 	@Override
 	public Class<? extends Page> getHomePage() {
 		return Index.class;
@@ -49,10 +40,10 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
 	
 	@Override
 	public Session newSession(Request request, Response response) {
-		return new FacebookSession(request, userManager);
+		return new FacebookSession(request, userManager, operatorId);
 	}
 
-	@Override
+	/*@Override
 	public void onUnauthorizedInstantiation(Component comp) {
         if (comp instanceof Page) {
         	Page page = (Page)comp;
@@ -60,12 +51,16 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
         } else {
             throw new UnauthorizedInstantiationException(comp.getClass());
         }
-	}
+	}*/
     
     
 	// --- PRIVATE METHODS --- //
 	
-    private void forceLogin(Page page) {
+	private void reRouteUtilLog() {
+		SLF4JBridgeHandler.install();
+	}
+	
+    /*private void forceLogin(Page page) {
     	// throw new RedirectToUrlException("http://www.facebook.com/login.php?api_key=" + apiKey + "&v=1.0");
     	RequestCycle cycle = RequestCycle.get();
     	cycle.setResponsePage(LoginRedirect.class);
@@ -84,19 +79,19 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
 				log.error("Failed to create facbook client", e);
 			} 
 		}
-	}
+	}*/
 	
 	private void setup() {
 		mountBookmarkablePage("/Play", Play.class);
 		mountBookmarkablePage("/Invite", Invite.class);
-		getSecuritySettings().setAuthorizationStrategy(new FaceBookAuthorizationStrategy());
-        getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
+		// getSecuritySettings().setAuthorizationStrategy(new FaceBookAuthorizationStrategy());
+        // getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 	}
 	
 	
 	// --- PRIVATE CLASSES --- //
 	
-	private static class FaceBookAuthorizationStrategy extends AbstractPageAuthorizationStrategy {
+	/*private static class FaceBookAuthorizationStrategy extends AbstractPageAuthorizationStrategy {
 
 		@SuppressWarnings({ "rawtypes" })
 		protected boolean isPageAuthorized(Class pageClass) {
@@ -106,5 +101,5 @@ public class FacebookApplication extends WebApplication implements IUnauthorized
 				return false;
 			}
         }
-    }
+    }*/
 }
