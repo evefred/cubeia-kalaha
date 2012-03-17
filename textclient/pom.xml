@@ -25,6 +25,11 @@
 		</dependency>
 		<dependency>
 			<groupId>net.kalaha</groupId>
+			<artifactId>common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.kalaha</groupId>
 			<artifactId>table-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>

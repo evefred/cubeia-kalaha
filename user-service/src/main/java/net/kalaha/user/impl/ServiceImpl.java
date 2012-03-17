@@ -20,6 +20,8 @@ import com.google.inject.Module;
 
 public class ServiceImpl implements UserService, Service {
 
+	private static final boolean ALLOW_TRIVIAL_LOGIN = false;
+	
 	private Injector injector;
 	private ServiceContext context;
 
@@ -57,7 +59,7 @@ public class ServiceImpl implements UserService, Service {
 	private void createInjector() {
 		List<Module> list = new ArrayList<Module>(5);
 		list.add(new FirebaseModule(context.getParentRegistry()));
-		list.add(new ServiceModule(context.getParentRegistry(), false));
+		list.add(new ServiceModule(context.getParentRegistry(), ALLOW_TRIVIAL_LOGIN));
 		list.add(new ManagerModule());
 		injector = Guice.createInjector(list);
 	}

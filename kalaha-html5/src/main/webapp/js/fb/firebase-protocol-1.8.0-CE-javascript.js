@@ -15,9 +15,12 @@ return a
 this.load=function(a){this.name=a.readString();
 this.value=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.Attribute :";
-a+=" name["+this.name.toString()+"]";
-a+=" value["+this.value.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.Attribute";
+a.details={};
+a.details.name=this.name;
+a.details.value=this.value;
 return a
 }
 };
@@ -33,9 +36,12 @@ return a
 this.load=function(a){this.cmd=a.readByte();
 this.error=a.readByte()
 };
-this.toString=function(){var a="FB_PROTOCOL.BadPacket :";
-a+=" cmd["+this.cmd.toString()+"]";
-a+=" error["+this.error.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.BadPacket";
+a.details={};
+a.details.cmd=this.cmd;
+a.details.error=this.error;
 return a
 }
 };
@@ -54,10 +60,13 @@ this.load=function(a){this.channelid=a.readInt();
 this.targetid=a.readInt();
 this.message=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.ChannelChatPacket :";
-a+=" channelid["+this.channelid.toString()+"]";
-a+=" targetid["+this.targetid.toString()+"]";
-a+=" message["+this.message.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.ChannelChatPacket";
+a.details={};
+a.details.channelid=this.channelid;
+a.details.targetid=this.targetid;
+a.details.message=this.message;
 return a
 }
 };
@@ -101,13 +110,22 @@ for(c=0;
 c<a;
 c++){this.invitees.push(b.readInt())
 }};
-this.toString=function(){var a="FB_PROTOCOL.CreateTableRequestPacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" seats["+this.seats.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-a+=" invitees["+this.invitees.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.CreateTableRequestPacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.gameid=this.gameid;
+a.details.seats=this.seats;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}a.details.invitees=[];
+for(b=0;
+b<this.invitees.length;
+b++){a.details.invitees.push(this.invitees[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.CreateTableRequestPacket.CLASSID=40;FB_PROTOCOL.CreateTableResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.CreateTableResponsePacket.CLASSID
@@ -115,7 +133,7 @@ FB_PROTOCOL.CreateTableRequestPacket.CLASSID=40;FB_PROTOCOL.CreateTableResponseP
 this.seq={};
 this.tableid={};
 this.seat={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.code={};
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.seq);
@@ -131,12 +149,15 @@ this.seat=a.readByte();
 this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(a.readUnsignedByte());
 this.code=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.CreateTableResponsePacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" code["+this.code.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.CreateTableResponsePacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
+a.details.code=this.code;
 return a
 }
 };
@@ -154,10 +175,16 @@ this.load=function(a){this.func=a.readByte();
 var b=a.readInt();
 this.payload=a.readArray(b)
 };
-this.toString=function(){var a="FB_PROTOCOL.EncryptedTransportPacket :";
-a+=" func["+this.func.toString()+"]";
-a+=" payload["+this.payload.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.EncryptedTransportPacket";
+a.details={};
+a.details.func=this.func;
+a.details.payload=[];
+for(b=0;
+b<this.payload.length;
+b++){a.details.payload.push(this.payload[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.EncryptedTransportPacket.CLASSID=105;FB_PROTOCOL.FilteredJoinCancelRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.FilteredJoinCancelRequestPacket.CLASSID
@@ -169,15 +196,18 @@ return a
 };
 this.load=function(a){this.seq=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.FilteredJoinCancelRequestPacket :";
-a+=" seq["+this.seq.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.FilteredJoinCancelRequestPacket";
+a.details={};
+a.details.seq=this.seq;
 return a
 }
 };
 FB_PROTOCOL.FilteredJoinCancelRequestPacket.CLASSID=172;FB_PROTOCOL.FilteredJoinCancelResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.FilteredJoinCancelResponsePacket.CLASSID
 };
 this.seq={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.seq);
 a.writeUnsignedByte(this.status);
@@ -186,9 +216,12 @@ return a
 this.load=function(a){this.seq=a.readInt();
 this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.FilteredJoinCancelResponsePacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.FilteredJoinCancelResponsePacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -204,6 +237,13 @@ case 2:return FB_PROTOCOL.FilteredJoinResponseStatusEnum.DENIED;
 case 3:return FB_PROTOCOL.FilteredJoinResponseStatusEnum.SEATING;
 case 4:return FB_PROTOCOL.FilteredJoinResponseStatusEnum.WAIT_LIST
 }return -1
+};
+FB_PROTOCOL.FilteredJoinResponseStatusEnum.toString=function(a){switch(a){case 0:return"OK";
+case 1:return"FAILED";
+case 2:return"DENIED";
+case 3:return"SEATING";
+case 4:return"WAIT_LIST"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.FilteredJoinTableAvailablePacket=function(){this.classId=function(){return FB_PROTOCOL.FilteredJoinTableAvailablePacket.CLASSID
 };
 this.seq={};
@@ -219,10 +259,13 @@ this.load=function(a){this.seq=a.readInt();
 this.tableid=a.readInt();
 this.seat=a.readByte()
 };
-this.toString=function(){var a="FB_PROTOCOL.FilteredJoinTableAvailablePacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.FilteredJoinTableAvailablePacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
 return a
 }
 };
@@ -256,12 +299,18 @@ b++){d=new FB_PROTOCOL.ParamFilter();
 d.load(a);
 this.params.push(d)
 }};
-this.toString=function(){var a="FB_PROTOCOL.FilteredJoinTableRequestPacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.FilteredJoinTableRequestPacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.gameid=this.gameid;
+a.details.address=this.address;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(this.params[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.FilteredJoinTableRequestPacket.CLASSID=170;FB_PROTOCOL.FilteredJoinTableResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.FilteredJoinTableResponsePacket.CLASSID
@@ -269,7 +318,7 @@ FB_PROTOCOL.FilteredJoinTableRequestPacket.CLASSID=170;FB_PROTOCOL.FilteredJoinT
 this.seq={};
 this.gameid={};
 this.address={};
-this.status={};
+this.status=FB_PROTOCOL.FilteredJoinResponseStatusEnum.makeFilteredJoinResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.seq);
 a.writeInt(this.gameid);
@@ -282,11 +331,14 @@ this.gameid=a.readInt();
 this.address=a.readString();
 this.status=FB_PROTOCOL.FilteredJoinResponseStatusEnum.makeFilteredJoinResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.FilteredJoinTableResponsePacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.FilteredJoinTableResponsePacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.gameid=this.gameid;
+a.details.address=this.address;
+a.details.status=FB_PROTOCOL.FilteredJoinResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -302,9 +354,12 @@ return a
 this.load=function(a){this.code=a.readInt();
 this.message=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.ForcedLogoutPacket :";
-a+=" code["+this.code.toString()+"]";
-a+=" message["+this.message.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.ForcedLogoutPacket";
+a.details={};
+a.details.code=this.code;
+a.details.message=this.message;
 return a
 }
 };
@@ -340,12 +395,21 @@ b++){e=new FB_PROTOCOL.Attribute();
 e.load(a);
 this.attributes.push(e)
 }};
-this.toString=function(){var a="FB_PROTOCOL.GameTransportPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" pid["+this.pid.toString()+"]";
-a+=" gamedata["+this.gamedata.toString()+"]";
-a+=" attributes["+this.attributes.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.GameTransportPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.pid=this.pid;
+a.details.gamedata=[];
+for(b=0;
+b<this.gamedata.length;
+b++){a.details.gamedata.push(this.gamedata[b].getNormalizedObject())
+}a.details.attributes=[];
+for(b=0;
+b<this.attributes.length;
+b++){a.details.attributes.push(this.attributes[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.GameTransportPacket.CLASSID=100;FB_PROTOCOL.GameVersionPacket=function(){this.classId=function(){return FB_PROTOCOL.GameVersionPacket.CLASSID
@@ -363,10 +427,13 @@ this.load=function(a){this.game=a.readInt();
 this.operatorid=a.readInt();
 this.version=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.GameVersionPacket :";
-a+=" game["+this.game.toString()+"]";
-a+=" operatorid["+this.operatorid.toString()+"]";
-a+=" version["+this.version.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.GameVersionPacket";
+a.details={};
+a.details.game=this.game;
+a.details.operatorid=this.operatorid;
+a.details.version=this.version;
 return a
 }
 };
@@ -382,9 +449,12 @@ return a
 this.load=function(a){this.cmd=a.readByte();
 this.extra=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.GoodPacket :";
-a+=" cmd["+this.cmd.toString()+"]";
-a+=" extra["+this.extra.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.GoodPacket";
+a.details={};
+a.details.cmd=this.cmd;
+a.details.extra=this.extra;
 return a
 }
 };
@@ -409,10 +479,16 @@ for(c=0;
 c<a;
 c++){this.invitees.push(b.readInt())
 }};
-this.toString=function(){var a="FB_PROTOCOL.InvitePlayersRequestPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" invitees["+this.invitees.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.InvitePlayersRequestPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.invitees=[];
+for(b=0;
+b<this.invitees.length;
+b++){a.details.invitees.push(this.invitees[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.InvitePlayersRequestPacket.CLASSID=42;FB_PROTOCOL.JoinChatChannelRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.JoinChatChannelRequestPacket.CLASSID
@@ -424,15 +500,18 @@ return a
 };
 this.load=function(a){this.channelid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.JoinChatChannelRequestPacket :";
-a+=" channelid["+this.channelid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.JoinChatChannelRequestPacket";
+a.details={};
+a.details.channelid=this.channelid;
 return a
 }
 };
 FB_PROTOCOL.JoinChatChannelRequestPacket.CLASSID=120;FB_PROTOCOL.JoinChatChannelResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.JoinChatChannelResponsePacket.CLASSID
 };
 this.channelid={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.channelid);
 a.writeUnsignedByte(this.status);
@@ -441,9 +520,12 @@ return a
 this.load=function(a){this.channelid=a.readInt();
 this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.JoinChatChannelResponsePacket :";
-a+=" channelid["+this.channelid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.JoinChatChannelResponsePacket";
+a.details={};
+a.details.channelid=this.channelid;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -474,18 +556,24 @@ b++){c=new FB_PROTOCOL.Param();
 c.load(a);
 this.params.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.JoinRequestPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.JoinRequestPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}return a
 }
 };
 FB_PROTOCOL.JoinRequestPacket.CLASSID=30;FB_PROTOCOL.JoinResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.JoinResponsePacket.CLASSID
 };
 this.tableid={};
 this.seat={};
-this.status={};
+this.status=FB_PROTOCOL.JoinResponseStatusEnum.makeJoinResponseStatusEnum(0);
 this.code={};
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.tableid);
@@ -499,11 +587,14 @@ this.seat=a.readByte();
 this.status=FB_PROTOCOL.JoinResponseStatusEnum.makeJoinResponseStatusEnum(a.readUnsignedByte());
 this.code=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.JoinResponsePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" code["+this.code.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.JoinResponsePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
+a.details.status=FB_PROTOCOL.JoinResponseStatusEnum.toString(this.status);
+a.details.code=this.code;
 return a
 }
 };
@@ -515,6 +606,11 @@ FB_PROTOCOL.JoinResponseStatusEnum.makeJoinResponseStatusEnum=function(a){switch
 case 1:return FB_PROTOCOL.JoinResponseStatusEnum.FAILED;
 case 2:return FB_PROTOCOL.JoinResponseStatusEnum.DENIED
 }return -1
+};
+FB_PROTOCOL.JoinResponseStatusEnum.toString=function(a){switch(a){case 0:return"OK";
+case 1:return"FAILED";
+case 2:return"DENIED"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.KickPlayerPacket=function(){this.classId=function(){return FB_PROTOCOL.KickPlayerPacket.CLASSID
 };
 this.tableid={};
@@ -527,9 +623,12 @@ return a
 this.load=function(a){this.tableid=a.readInt();
 this.reasonCode=a.readShort()
 };
-this.toString=function(){var a="FB_PROTOCOL.KickPlayerPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" reasonCode["+this.reasonCode.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.KickPlayerPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.reasonCode=this.reasonCode;
 return a
 }
 };
@@ -542,8 +641,11 @@ return a
 };
 this.load=function(a){this.channelid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.LeaveChatChannelPacket :";
-a+=" channelid["+this.channelid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LeaveChatChannelPacket";
+a.details={};
+a.details.channelid=this.channelid;
 return a
 }
 };
@@ -556,15 +658,18 @@ return a
 };
 this.load=function(a){this.tableid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.LeaveRequestPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LeaveRequestPacket";
+a.details={};
+a.details.tableid=this.tableid;
 return a
 }
 };
 FB_PROTOCOL.LeaveRequestPacket.CLASSID=36;FB_PROTOCOL.LeaveResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.LeaveResponsePacket.CLASSID
 };
 this.tableid={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.code={};
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.tableid);
@@ -576,16 +681,19 @@ this.load=function(a){this.tableid=a.readInt();
 this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(a.readUnsignedByte());
 this.code=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.LeaveResponsePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" code["+this.code.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LeaveResponsePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
+a.details.code=this.code;
 return a
 }
 };
 FB_PROTOCOL.LeaveResponsePacket.CLASSID=37;FB_PROTOCOL.LobbyObjectSubscribePacket=function(){this.classId=function(){return FB_PROTOCOL.LobbyObjectSubscribePacket.CLASSID
 };
-this.type={};
+this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(0);
 this.gameid={};
 this.address={};
 this.objectid={};
@@ -601,17 +709,20 @@ this.gameid=a.readInt();
 this.address=a.readString();
 this.objectid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.LobbyObjectSubscribePacket :";
-a+=" type["+this.type.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" objectid["+this.objectid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LobbyObjectSubscribePacket";
+a.details={};
+a.details.type=FB_PROTOCOL.LobbyTypeEnum.toString(this.type);
+a.details.gameid=this.gameid;
+a.details.address=this.address;
+a.details.objectid=this.objectid;
 return a
 }
 };
 FB_PROTOCOL.LobbyObjectSubscribePacket.CLASSID=151;FB_PROTOCOL.LobbyObjectUnsubscribePacket=function(){this.classId=function(){return FB_PROTOCOL.LobbyObjectUnsubscribePacket.CLASSID
 };
-this.type={};
+this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(0);
 this.gameid={};
 this.address={};
 this.objectid={};
@@ -627,11 +738,14 @@ this.gameid=a.readInt();
 this.address=a.readString();
 this.objectid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.LobbyObjectUnsubscribePacket :";
-a+=" type["+this.type.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" objectid["+this.objectid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LobbyObjectUnsubscribePacket";
+a.details={};
+a.details.type=FB_PROTOCOL.LobbyTypeEnum.toString(this.type);
+a.details.gameid=this.gameid;
+a.details.address=this.address;
+a.details.objectid=this.objectid;
 return a
 }
 };
@@ -639,7 +753,7 @@ FB_PROTOCOL.LobbyObjectUnsubscribePacket.CLASSID=152;FB_PROTOCOL.LobbyQueryPacke
 };
 this.gameid={};
 this.address={};
-this.type={};
+this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.gameid);
 a.writeString(this.address);
@@ -650,16 +764,19 @@ this.load=function(a){this.gameid=a.readInt();
 this.address=a.readString();
 this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.LobbyQueryPacket :";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" type["+this.type.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LobbyQueryPacket";
+a.details={};
+a.details.gameid=this.gameid;
+a.details.address=this.address;
+a.details.type=FB_PROTOCOL.LobbyTypeEnum.toString(this.type);
 return a
 }
 };
 FB_PROTOCOL.LobbyQueryPacket.CLASSID=142;FB_PROTOCOL.LobbySubscribePacket=function(){this.classId=function(){return FB_PROTOCOL.LobbySubscribePacket.CLASSID
 };
-this.type={};
+this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(0);
 this.gameid={};
 this.address={};
 this.save=function(){var a=new FIREBASE.ByteArray();
@@ -672,10 +789,13 @@ this.load=function(a){this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(a.re
 this.gameid=a.readInt();
 this.address=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.LobbySubscribePacket :";
-a+=" type["+this.type.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LobbySubscribePacket";
+a.details={};
+a.details.type=FB_PROTOCOL.LobbyTypeEnum.toString(this.type);
+a.details.gameid=this.gameid;
+a.details.address=this.address;
 return a
 }
 };
@@ -685,9 +805,13 @@ FB_PROTOCOL.LobbyTypeEnum.MTT=1;
 FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum=function(a){switch(a){case 0:return FB_PROTOCOL.LobbyTypeEnum.REGULAR;
 case 1:return FB_PROTOCOL.LobbyTypeEnum.MTT
 }return -1
+};
+FB_PROTOCOL.LobbyTypeEnum.toString=function(a){switch(a){case 0:return"REGULAR";
+case 1:return"MTT"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.LobbyUnsubscribePacket=function(){this.classId=function(){return FB_PROTOCOL.LobbyUnsubscribePacket.CLASSID
 };
-this.type={};
+this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(0);
 this.gameid={};
 this.address={};
 this.save=function(){var a=new FIREBASE.ByteArray();
@@ -700,10 +824,13 @@ this.load=function(a){this.type=FB_PROTOCOL.LobbyTypeEnum.makeLobbyTypeEnum(a.re
 this.gameid=a.readInt();
 this.address=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.LobbyUnsubscribePacket :";
-a+=" type["+this.type.toString()+"]";
-a+=" gameid["+this.gameid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LobbyUnsubscribePacket";
+a.details={};
+a.details.type=FB_PROTOCOL.LobbyTypeEnum.toString(this.type);
+a.details.gameid=this.gameid;
+a.details.address=this.address;
 return a
 }
 };
@@ -721,10 +848,16 @@ this.load=function(a){this.seq=a.readInt();
 var b=a.readInt();
 this.servicedata=a.readArray(b)
 };
-this.toString=function(){var a="FB_PROTOCOL.LocalServiceTransportPacket :";
-a+=" seq["+this.seq.toString()+"]";
-a+=" servicedata["+this.servicedata.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LocalServiceTransportPacket";
+a.details={};
+a.details.seq=this.seq;
+a.details.servicedata=[];
+for(b=0;
+b<this.servicedata.length;
+b++){a.details.servicedata.push(this.servicedata[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.LocalServiceTransportPacket.CLASSID=103;FB_PROTOCOL.LoginRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.LoginRequestPacket.CLASSID
@@ -747,19 +880,25 @@ this.operatorid=a.readInt();
 var b=a.readInt();
 this.credentials=a.readArray(b)
 };
-this.toString=function(){var a="FB_PROTOCOL.LoginRequestPacket :";
-a+=" user["+this.user.toString()+"]";
-a+=" password["+this.password.toString()+"]";
-a+=" operatorid["+this.operatorid.toString()+"]";
-a+=" credentials["+this.credentials.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LoginRequestPacket";
+a.details={};
+a.details.user=this.user;
+a.details.password=this.password;
+a.details.operatorid=this.operatorid;
+a.details.credentials=[];
+for(b=0;
+b<this.credentials.length;
+b++){a.details.credentials.push(this.credentials[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.LoginRequestPacket.CLASSID=10;FB_PROTOCOL.LoginResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.LoginResponsePacket.CLASSID
 };
 this.screenname={};
 this.pid={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.code={};
 this.message={};
 this.credentials=[];
@@ -781,14 +920,20 @@ this.message=a.readString();
 var b=a.readInt();
 this.credentials=a.readArray(b)
 };
-this.toString=function(){var a="FB_PROTOCOL.LoginResponsePacket :";
-a+=" screenname["+this.screenname.toString()+"]";
-a+=" pid["+this.pid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" code["+this.code.toString()+"]";
-a+=" message["+this.message.toString()+"]";
-a+=" credentials["+this.credentials.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LoginResponsePacket";
+a.details={};
+a.details.screenname=this.screenname;
+a.details.pid=this.pid;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
+a.details.code=this.code;
+a.details.message=this.message;
+a.details.credentials=[];
+for(b=0;
+b<this.credentials.length;
+b++){a.details.credentials.push(this.credentials[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.LoginResponsePacket.CLASSID=11;FB_PROTOCOL.LogoutPacket=function(){this.classId=function(){return FB_PROTOCOL.LogoutPacket.CLASSID
@@ -800,8 +945,11 @@ return a
 };
 this.load=function(a){this.leaveTables=a.readBoolean()
 };
-this.toString=function(){var a="FB_PROTOCOL.LogoutPacket :";
-a+=" leave_tables["+this.leaveTables.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.LogoutPacket";
+a.details={};
+a.details.leaveTables=this.leaveTables;
 return a
 }
 };
@@ -820,10 +968,13 @@ this.load=function(a){this.mttid=a.readInt();
 this.tableid=a.readInt();
 this.keepWatching=a.readBoolean()
 };
-this.toString=function(){var a="FB_PROTOCOL.MttPickedUpPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" keep_watching["+this.keepWatching.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttPickedUpPacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.tableid=this.tableid;
+a.details.keepWatching=this.keepWatching;
 return a
 }
 };
@@ -851,16 +1002,22 @@ b++){c=new FB_PROTOCOL.Param();
 c.load(a);
 this.params.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.MttRegisterRequestPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttRegisterRequestPacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}return a
 }
 };
 FB_PROTOCOL.MttRegisterRequestPacket.CLASSID=205;FB_PROTOCOL.MttRegisterResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.MttRegisterResponsePacket.CLASSID
 };
 this.mttid={};
-this.status={};
+this.status=FB_PROTOCOL.TournamentRegisterResponseStatusEnum.makeTournamentRegisterResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.mttid);
 a.writeUnsignedByte(this.status);
@@ -869,9 +1026,12 @@ return a
 this.load=function(a){this.mttid=a.readInt();
 this.status=FB_PROTOCOL.TournamentRegisterResponseStatusEnum.makeTournamentRegisterResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.MttRegisterResponsePacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttRegisterResponsePacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.status=FB_PROTOCOL.TournamentRegisterResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -890,10 +1050,13 @@ this.load=function(a){this.mttid=a.readInt();
 this.tableid=a.readInt();
 this.seat=a.readByte()
 };
-this.toString=function(){var a="FB_PROTOCOL.MttSeatedPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttSeatedPacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
 return a
 }
 };
@@ -929,12 +1092,21 @@ c++){e=new FB_PROTOCOL.Attribute();
 e.load(a);
 this.attributes.push(e)
 }};
-this.toString=function(){var a="FB_PROTOCOL.MttTransportPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" pid["+this.pid.toString()+"]";
-a+=" mttdata["+this.mttdata.toString()+"]";
-a+=" attributes["+this.attributes.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttTransportPacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.pid=this.pid;
+a.details.mttdata=[];
+for(b=0;
+b<this.mttdata.length;
+b++){a.details.mttdata.push(this.mttdata[b].getNormalizedObject())
+}a.details.attributes=[];
+for(b=0;
+b<this.attributes.length;
+b++){a.details.attributes.push(this.attributes[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.MttTransportPacket.CLASSID=104;FB_PROTOCOL.MttUnregisterRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.MttUnregisterRequestPacket.CLASSID
@@ -946,15 +1118,18 @@ return a
 };
 this.load=function(a){this.mttid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.MttUnregisterRequestPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttUnregisterRequestPacket";
+a.details={};
+a.details.mttid=this.mttid;
 return a
 }
 };
 FB_PROTOCOL.MttUnregisterRequestPacket.CLASSID=207;FB_PROTOCOL.MttUnregisterResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.MttUnregisterResponsePacket.CLASSID
 };
 this.mttid={};
-this.status={};
+this.status=FB_PROTOCOL.TournamentRegisterResponseStatusEnum.makeTournamentRegisterResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.mttid);
 a.writeUnsignedByte(this.status);
@@ -963,9 +1138,12 @@ return a
 this.load=function(a){this.mttid=a.readInt();
 this.status=FB_PROTOCOL.TournamentRegisterResponseStatusEnum.makeTournamentRegisterResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.MttUnregisterResponsePacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.MttUnregisterResponsePacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.status=FB_PROTOCOL.TournamentRegisterResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -990,12 +1168,15 @@ this.targetid=a.readInt();
 this.nick=a.readString();
 this.message=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.NotifyChannelChatPacket :";
-a+=" pid["+this.pid.toString()+"]";
-a+=" channelid["+this.channelid.toString()+"]";
-a+=" targetid["+this.targetid.toString()+"]";
-a+=" nick["+this.nick.toString()+"]";
-a+=" message["+this.message.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifyChannelChatPacket";
+a.details={};
+a.details.pid=this.pid;
+a.details.channelid=this.channelid;
+a.details.targetid=this.targetid;
+a.details.nick=this.nick;
+a.details.message=this.message;
 return a
 }
 };
@@ -1017,11 +1198,14 @@ this.screenname=a.readString();
 this.tableid=a.readInt();
 this.seat=a.readByte()
 };
-this.toString=function(){var a="FB_PROTOCOL.NotifyInvitedPacket :";
-a+=" inviter["+this.inviter.toString()+"]";
-a+=" screenname["+this.screenname.toString()+"]";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifyInvitedPacket";
+a.details={};
+a.details.inviter=this.inviter;
+a.details.screenname=this.screenname;
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
 return a
 }
 };
@@ -1043,11 +1227,14 @@ this.pid=a.readInt();
 this.nick=a.readString();
 this.seat=a.readByte()
 };
-this.toString=function(){var a="FB_PROTOCOL.NotifyJoinPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" pid["+this.pid.toString()+"]";
-a+=" nick["+this.nick.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifyJoinPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.pid=this.pid;
+a.details.nick=this.nick;
+a.details.seat=this.seat;
 return a
 }
 };
@@ -1063,9 +1250,12 @@ return a
 this.load=function(a){this.tableid=a.readInt();
 this.pid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.NotifyLeavePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" pid["+this.pid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifyLeavePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.pid=this.pid;
 return a
 }
 };
@@ -1087,9 +1277,15 @@ for(c=0;
 c<a;
 c++){this.tournaments.push(b.readInt())
 }};
-this.toString=function(){var a="FB_PROTOCOL.NotifyRegisteredPacket :";
-a+=" tournaments["+this.tournaments.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifyRegisteredPacket";
+a.details={};
+a.details.tournaments=[];
+for(b=0;
+b<this.tournaments.length;
+b++){a.details.tournaments.push(this.tournaments[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.NotifyRegisteredPacket.CLASSID=211;FB_PROTOCOL.NotifySeatedPacket=function(){this.classId=function(){return FB_PROTOCOL.NotifySeatedPacket.CLASSID
@@ -1111,11 +1307,14 @@ this.mttid=a.readInt();
 this.snapshot=new FB_PROTOCOL.TableSnapshotPacket();
 this.snapshot.load(a)
 };
-this.toString=function(){var a="FB_PROTOCOL.NotifySeatedPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" snapshot["+this.snapshot.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifySeatedPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
+a.details.mttid=this.mttid;
+a.details.snapshot=this.snapshot.getNormalizedObject();
 return a
 }
 };
@@ -1128,8 +1327,11 @@ return a
 };
 this.load=function(a){this.tableid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.NotifyWatchingPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.NotifyWatchingPacket";
+a.details={};
+a.details.tableid=this.tableid;
 return a
 }
 };
@@ -1150,11 +1352,17 @@ this.type=b.readByte();
 var a=b.readInt();
 this.value=b.readArray(a)
 };
-this.toString=function(){var a="FB_PROTOCOL.Param :";
-a+=" key["+this.key.toString()+"]";
-a+=" type["+this.type.toString()+"]";
-a+=" value["+this.value.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.Param";
+a.details={};
+a.details.key=this.key;
+a.details.type=this.type;
+a.details.value=[];
+for(b=0;
+b<this.value.length;
+b++){a.details.value.push(this.value[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.Param.CLASSID=5;FB_PROTOCOL.ParamFilter=function(){this.classId=function(){return FB_PROTOCOL.ParamFilter.CLASSID
@@ -1170,9 +1378,12 @@ this.load=function(a){this.param=new FB_PROTOCOL.Param();
 this.param.load(a);
 this.op=a.readByte()
 };
-this.toString=function(){var a="FB_PROTOCOL.ParamFilter :";
-a+=" param["+this.param.toString()+"]";
-a+=" op["+this.op.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.ParamFilter";
+a.details={};
+a.details.param=this.param.getNormalizedObject();
+a.details.op=this.op;
 return a
 }
 };
@@ -1188,6 +1399,13 @@ case 2:return FB_PROTOCOL.ParameterFilterEnum.SMALLER_THAN;
 case 3:return FB_PROTOCOL.ParameterFilterEnum.EQUALS_OR_GREATER_THAN;
 case 4:return FB_PROTOCOL.ParameterFilterEnum.EQUALS_OR_SMALLER_THAN
 }return -1
+};
+FB_PROTOCOL.ParameterFilterEnum.toString=function(a){switch(a){case 0:return"EQUALS";
+case 1:return"GREATER_THAN";
+case 2:return"SMALLER_THAN";
+case 3:return"EQUALS_OR_GREATER_THAN";
+case 4:return"EQUALS_OR_SMALLER_THAN"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.ParameterTypeEnum=function(){};
 FB_PROTOCOL.ParameterTypeEnum.STRING=0;
 FB_PROTOCOL.ParameterTypeEnum.INT=1;
@@ -1196,6 +1414,11 @@ FB_PROTOCOL.ParameterTypeEnum.makeParameterTypeEnum=function(a){switch(a){case 0
 case 1:return FB_PROTOCOL.ParameterTypeEnum.INT;
 case 2:return FB_PROTOCOL.ParameterTypeEnum.DATE
 }return -1
+};
+FB_PROTOCOL.ParameterTypeEnum.toString=function(a){switch(a){case 0:return"STRING";
+case 1:return"INT";
+case 2:return"DATE"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.PingPacket=function(){this.classId=function(){return FB_PROTOCOL.PingPacket.CLASSID
 };
 this.id={};
@@ -1205,8 +1428,11 @@ return a
 };
 this.load=function(a){this.id=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.PingPacket :";
-a+=" id["+this.id.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.PingPacket";
+a.details={};
+a.details.id=this.id;
 return a
 }
 };
@@ -1237,11 +1463,17 @@ b++){c=new FB_PROTOCOL.Param();
 c.load(a);
 this.details.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.PlayerInfoPacket :";
-a+=" pid["+this.pid.toString()+"]";
-a+=" nick["+this.nick.toString()+"]";
-a+=" details["+this.details.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.PlayerInfoPacket";
+a.details={};
+a.details.pid=this.pid;
+a.details.nick=this.nick;
+a.details.details=[];
+for(b=0;
+b<this.details.length;
+b++){a.details.details.push(FIREBASE.Styx.getParam(this.details[b]))
+}return a
 }
 };
 FB_PROTOCOL.PlayerInfoPacket.CLASSID=13;FB_PROTOCOL.PlayerQueryRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.PlayerQueryRequestPacket.CLASSID
@@ -1253,8 +1485,11 @@ return a
 };
 this.load=function(a){this.pid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.PlayerQueryRequestPacket :";
-a+=" pid["+this.pid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.PlayerQueryRequestPacket";
+a.details={};
+a.details.pid=this.pid;
 return a
 }
 };
@@ -1262,7 +1497,7 @@ FB_PROTOCOL.PlayerQueryRequestPacket.CLASSID=16;FB_PROTOCOL.PlayerQueryResponseP
 };
 this.pid={};
 this.nick={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.data=[];
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.pid);
@@ -1278,12 +1513,18 @@ this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(a.readUnsigned
 var b=a.readInt();
 this.data=a.readArray(b)
 };
-this.toString=function(){var a="FB_PROTOCOL.PlayerQueryResponsePacket :";
-a+=" pid["+this.pid.toString()+"]";
-a+=" nick["+this.nick.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" data["+this.data.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.PlayerQueryResponsePacket";
+a.details={};
+a.details.pid=this.pid;
+a.details.nick=this.nick;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
+a.details.data=[];
+for(b=0;
+b<this.data.length;
+b++){a.details.data.push(this.data[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.PlayerQueryResponsePacket.CLASSID=17;FB_PROTOCOL.PlayerStatusEnum=function(){};
@@ -1300,6 +1541,14 @@ case 3:return FB_PROTOCOL.PlayerStatusEnum.LEAVING;
 case 4:return FB_PROTOCOL.PlayerStatusEnum.TABLE_LOCAL;
 case 5:return FB_PROTOCOL.PlayerStatusEnum.RESERVATION
 }return -1
+};
+FB_PROTOCOL.PlayerStatusEnum.toString=function(a){switch(a){case 0:return"CONNECTED";
+case 1:return"WAITING_REJOIN";
+case 2:return"DISCONNECTED";
+case 3:return"LEAVING";
+case 4:return"TABLE_LOCAL";
+case 5:return"RESERVATION"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.ProbePacket=function(){this.classId=function(){return FB_PROTOCOL.ProbePacket.CLASSID
 };
 this.id={};
@@ -1327,11 +1576,17 @@ c++){d=new FB_PROTOCOL.ProbeStamp();
 d.load(a);
 this.stamps.push(d)
 }};
-this.toString=function(){var a="FB_PROTOCOL.ProbePacket :";
-a+=" id["+this.id.toString()+"]";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" stamps["+this.stamps.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.ProbePacket";
+a.details={};
+a.details.id=this.id;
+a.details.tableid=this.tableid;
+a.details.stamps=[];
+for(b=0;
+b<this.stamps.length;
+b++){a.details.stamps.push(this.stamps[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.ProbePacket.CLASSID=201;FB_PROTOCOL.ProbeStamp=function(){this.classId=function(){return FB_PROTOCOL.ProbeStamp.CLASSID
@@ -1346,9 +1601,12 @@ return a
 this.load=function(a){this.clazz=a.readString();
 this.timestamp=a.readLong()
 };
-this.toString=function(){var a="FB_PROTOCOL.ProbeStamp :";
-a+=" clazz["+this.clazz.toString()+"]";
-a+=" timestamp["+this.timestamp.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.ProbeStamp";
+a.details={};
+a.details.clazz=this.clazz;
+a.details.timestamp=this.timestamp;
 return a
 }
 };
@@ -1597,11 +1855,16 @@ FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum=function(a){switch(a){case
 case 1:return FB_PROTOCOL.ResponseStatusEnum.FAILED;
 case 2:return FB_PROTOCOL.ResponseStatusEnum.DENIED
 }return -1
+};
+FB_PROTOCOL.ResponseStatusEnum.toString=function(a){switch(a){case 0:return"OK";
+case 1:return"FAILED";
+case 2:return"DENIED"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.SeatInfoPacket=function(){this.classId=function(){return FB_PROTOCOL.SeatInfoPacket.CLASSID
 };
 this.tableid={};
 this.seat={};
-this.status={};
+this.status=FB_PROTOCOL.PlayerStatusEnum.makePlayerStatusEnum(0);
 this.player={};
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.tableid);
@@ -1616,11 +1879,14 @@ this.status=FB_PROTOCOL.PlayerStatusEnum.makePlayerStatusEnum(a.readUnsignedByte
 this.player=new FB_PROTOCOL.PlayerInfoPacket();
 this.player.load(a)
 };
-this.toString=function(){var a="FB_PROTOCOL.SeatInfoPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seat["+this.seat.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" player["+this.player.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.SeatInfoPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.seat=this.seat;
+a.details.status=FB_PROTOCOL.PlayerStatusEnum.toString(this.status);
+a.details.player=this.player.getNormalizedObject();
 return a
 }
 };
@@ -1630,6 +1896,10 @@ FB_PROTOCOL.ServiceIdentifierEnum.CONTRACT=1;
 FB_PROTOCOL.ServiceIdentifierEnum.makeServiceIdentifierEnum=function(a){switch(a){case 0:return FB_PROTOCOL.ServiceIdentifierEnum.NAMESPACE;
 case 1:return FB_PROTOCOL.ServiceIdentifierEnum.CONTRACT
 }return -1
+};
+FB_PROTOCOL.ServiceIdentifierEnum.toString=function(a){switch(a){case 0:return"NAMESPACE";
+case 1:return"CONTRACT"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.ServiceTransportPacket=function(){this.classId=function(){return FB_PROTOCOL.ServiceTransportPacket.CLASSID
 };
 this.pid={};
@@ -1668,14 +1938,23 @@ c++){e=new FB_PROTOCOL.Attribute();
 e.load(a);
 this.attributes.push(e)
 }};
-this.toString=function(){var a="FB_PROTOCOL.ServiceTransportPacket :";
-a+=" pid["+this.pid.toString()+"]";
-a+=" seq["+this.seq.toString()+"]";
-a+=" service["+this.service.toString()+"]";
-a+=" idtype["+this.idtype.toString()+"]";
-a+=" servicedata["+this.servicedata.toString()+"]";
-a+=" attributes["+this.attributes.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.ServiceTransportPacket";
+a.details={};
+a.details.pid=this.pid;
+a.details.seq=this.seq;
+a.details.service=this.service;
+a.details.idtype=this.idtype;
+a.details.servicedata=[];
+for(b=0;
+b<this.servicedata.length;
+b++){a.details.servicedata.push(this.servicedata[b].getNormalizedObject())
+}a.details.attributes=[];
+for(b=0;
+b<this.attributes.length;
+b++){a.details.attributes.push(this.attributes[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.ServiceTransportPacket.CLASSID=101;FB_PROTOCOL.SystemInfoRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.SystemInfoRequestPacket.CLASSID
@@ -1683,7 +1962,10 @@ FB_PROTOCOL.ServiceTransportPacket.CLASSID=101;FB_PROTOCOL.SystemInfoRequestPack
 this.save=function(){return[]
 };
 this.load=function(a){};
-this.toString=function(){var a="FB_PROTOCOL.SystemInfoRequestPacket :";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.SystemInfoRequestPacket";
+a.details={};
 return a
 }
 };
@@ -1711,10 +1993,16 @@ b++){c=new FB_PROTOCOL.Param();
 c.load(a);
 this.params.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.SystemInfoResponsePacket :";
-a+=" players["+this.players.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.SystemInfoResponsePacket";
+a.details={};
+a.details.players=this.players;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}return a
 }
 };
 FB_PROTOCOL.SystemInfoResponsePacket.CLASSID=19;FB_PROTOCOL.SystemMessagePacket=function(){this.classId=function(){return FB_PROTOCOL.SystemMessagePacket.CLASSID
@@ -1744,12 +2032,18 @@ for(b=0;
 b<c;
 b++){this.pids.push(a.readInt())
 }};
-this.toString=function(){var a="FB_PROTOCOL.SystemMessagePacket :";
-a+=" type["+this.type.toString()+"]";
-a+=" level["+this.level.toString()+"]";
-a+=" message["+this.message.toString()+"]";
-a+=" pids["+this.pids.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.SystemMessagePacket";
+a.details={};
+a.details.type=this.type;
+a.details.level=this.level;
+a.details.message=this.message;
+a.details.pids=[];
+for(b=0;
+b<this.pids.length;
+b++){a.details.pids.push(this.pids[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.SystemMessagePacket.CLASSID=4;FB_PROTOCOL.TableChatPacket=function(){this.classId=function(){return FB_PROTOCOL.TableChatPacket.CLASSID
@@ -1767,10 +2061,13 @@ this.load=function(a){this.tableid=a.readInt();
 this.pid=a.readInt();
 this.message=a.readString()
 };
-this.toString=function(){var a="FB_PROTOCOL.TableChatPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" pid["+this.pid.toString()+"]";
-a+=" message["+this.message.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableChatPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.pid=this.pid;
+a.details.message=this.message;
 return a
 }
 };
@@ -1783,15 +2080,18 @@ return a
 };
 this.load=function(a){this.tableid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.TableQueryRequestPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableQueryRequestPacket";
+a.details={};
+a.details.tableid=this.tableid;
 return a
 }
 };
 FB_PROTOCOL.TableQueryRequestPacket.CLASSID=38;FB_PROTOCOL.TableQueryResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.TableQueryResponsePacket.CLASSID
 };
 this.tableid={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.seats=[];
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.tableid);
@@ -1815,11 +2115,17 @@ b++){c=new FB_PROTOCOL.SeatInfoPacket();
 c.load(a);
 this.seats.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TableQueryResponsePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
-a+=" seats["+this.seats.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableQueryResponsePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
+a.details.seats=[];
+for(b=0;
+b<this.seats.length;
+b++){a.details.seats.push(this.seats[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TableQueryResponsePacket.CLASSID=39;FB_PROTOCOL.TableRemovedPacket=function(){this.classId=function(){return FB_PROTOCOL.TableRemovedPacket.CLASSID
@@ -1831,8 +2137,11 @@ return a
 };
 this.load=function(a){this.tableid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.TableRemovedPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableRemovedPacket";
+a.details={};
+a.details.tableid=this.tableid;
 return a
 }
 };
@@ -1857,9 +2166,15 @@ b++){c=new FB_PROTOCOL.TableSnapshotPacket();
 c.load(a);
 this.snapshots.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TableSnapshotListPacket :";
-a+=" snapshots["+this.snapshots.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableSnapshotListPacket";
+a.details={};
+a.details.snapshots=[];
+for(b=0;
+b<this.snapshots.length;
+b++){a.details.snapshots.push(this.snapshots[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TableSnapshotListPacket.CLASSID=153;FB_PROTOCOL.TableSnapshotPacket=function(){this.classId=function(){return FB_PROTOCOL.TableSnapshotPacket.CLASSID
@@ -1898,14 +2213,20 @@ b++){c=new FB_PROTOCOL.Param();
 c.load(a);
 this.params.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TableSnapshotPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" name["+this.name.toString()+"]";
-a+=" capacity["+this.capacity.toString()+"]";
-a+=" seated["+this.seated.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableSnapshotPacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.address=this.address;
+a.details.name=this.name;
+a.details.capacity=this.capacity;
+a.details.seated=this.seated;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}return a
 }
 };
 FB_PROTOCOL.TableSnapshotPacket.CLASSID=143;FB_PROTOCOL.TableUpdateListPacket=function(){this.classId=function(){return FB_PROTOCOL.TableUpdateListPacket.CLASSID
@@ -1929,9 +2250,15 @@ c++){b=new FB_PROTOCOL.TableUpdatePacket();
 b.load(a);
 this.updates.push(b)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TableUpdateListPacket :";
-a+=" updates["+this.updates.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableUpdateListPacket";
+a.details={};
+a.details.updates=[];
+for(b=0;
+b<this.updates.length;
+b++){a.details.updates.push(this.updates[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TableUpdateListPacket.CLASSID=154;FB_PROTOCOL.TableUpdatePacket=function(){this.classId=function(){return FB_PROTOCOL.TableUpdatePacket.CLASSID
@@ -1971,12 +2298,21 @@ for(c=0;
 c<b;
 c++){this.removedParams.push(a.readString())
 }};
-this.toString=function(){var a="FB_PROTOCOL.TableUpdatePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" seated["+this.seated.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-a+=" removed_params["+this.removedParams.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TableUpdatePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.seated=this.seated;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}a.details.removedParams=[];
+for(b=0;
+b<this.removedParams.length;
+b++){a.details.removedParams.push(this.removedParams[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TableUpdatePacket.CLASSID=144;FB_PROTOCOL.TournamentAttributesEnum=function(){};
@@ -1991,6 +2327,13 @@ case 2:return FB_PROTOCOL.TournamentAttributesEnum.REGISTERED;
 case 3:return FB_PROTOCOL.TournamentAttributesEnum.ACTIVE_PLAYERS;
 case 4:return FB_PROTOCOL.TournamentAttributesEnum.STATUS
 }return -1
+};
+FB_PROTOCOL.TournamentAttributesEnum.toString=function(a){switch(a){case 0:return"NAME";
+case 1:return"CAPACITY";
+case 2:return"REGISTERED";
+case 3:return"ACTIVE_PLAYERS";
+case 4:return"STATUS"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.TournamentRegisterResponseStatusEnum=function(){};
 FB_PROTOCOL.TournamentRegisterResponseStatusEnum.OK=0;
 FB_PROTOCOL.TournamentRegisterResponseStatusEnum.FAILED=1;
@@ -2009,6 +2352,16 @@ case 5:return FB_PROTOCOL.TournamentRegisterResponseStatusEnum.DENIED_NO_ACCESS;
 case 6:return FB_PROTOCOL.TournamentRegisterResponseStatusEnum.DENIED_ALREADY_REGISTERED;
 case 7:return FB_PROTOCOL.TournamentRegisterResponseStatusEnum.DENIED_TOURNAMENT_RUNNING
 }return -1
+};
+FB_PROTOCOL.TournamentRegisterResponseStatusEnum.toString=function(a){switch(a){case 0:return"OK";
+case 1:return"FAILED";
+case 2:return"DENIED";
+case 3:return"DENIED_LOW_FUNDS";
+case 4:return"DENIED_MTT_FULL";
+case 5:return"DENIED_NO_ACCESS";
+case 6:return"DENIED_ALREADY_REGISTERED";
+case 7:return"DENIED_TOURNAMENT_RUNNING"
+}return"INVALID_ENUM_VALUE"
 };FB_PROTOCOL.TournamentRemovedPacket=function(){this.classId=function(){return FB_PROTOCOL.TournamentRemovedPacket.CLASSID
 };
 this.mttid={};
@@ -2018,8 +2371,11 @@ return a
 };
 this.load=function(a){this.mttid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.TournamentRemovedPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TournamentRemovedPacket";
+a.details={};
+a.details.mttid=this.mttid;
 return a
 }
 };
@@ -2044,9 +2400,15 @@ b++){d=new FB_PROTOCOL.TournamentSnapshotPacket();
 d.load(a);
 this.snapshots.push(d)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TournamentSnapshotListPacket :";
-a+=" snapshots["+this.snapshots.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TournamentSnapshotListPacket";
+a.details={};
+a.details.snapshots=[];
+for(b=0;
+b<this.snapshots.length;
+b++){a.details.snapshots.push(this.snapshots[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TournamentSnapshotListPacket.CLASSID=155;FB_PROTOCOL.TournamentSnapshotPacket=function(){this.classId=function(){return FB_PROTOCOL.TournamentSnapshotPacket.CLASSID
@@ -2076,11 +2438,17 @@ b++){c=new FB_PROTOCOL.Param();
 c.load(a);
 this.params.push(c)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TournamentSnapshotPacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" address["+this.address.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TournamentSnapshotPacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.address=this.address;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}return a
 }
 };
 FB_PROTOCOL.TournamentSnapshotPacket.CLASSID=148;FB_PROTOCOL.TournamentUpdateListPacket=function(){this.classId=function(){return FB_PROTOCOL.TournamentUpdateListPacket.CLASSID
@@ -2104,9 +2472,15 @@ b++){d=new FB_PROTOCOL.TournamentUpdatePacket();
 d.load(a);
 this.updates.push(d)
 }};
-this.toString=function(){var a="FB_PROTOCOL.TournamentUpdateListPacket :";
-a+=" updates["+this.updates.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TournamentUpdateListPacket";
+a.details={};
+a.details.updates=[];
+for(b=0;
+b<this.updates.length;
+b++){a.details.updates.push(this.updates[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TournamentUpdateListPacket.CLASSID=156;FB_PROTOCOL.TournamentUpdatePacket=function(){this.classId=function(){return FB_PROTOCOL.TournamentUpdatePacket.CLASSID
@@ -2143,11 +2517,20 @@ for(c=0;
 c<b;
 c++){this.removedParams.push(a.readString())
 }};
-this.toString=function(){var a="FB_PROTOCOL.TournamentUpdatePacket :";
-a+=" mttid["+this.mttid.toString()+"]";
-a+=" params["+this.params.toString()+"]";
-a+=" removed_params["+this.removedParams.toString()+"]";
-return a
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.TournamentUpdatePacket";
+a.details={};
+a.details.mttid=this.mttid;
+a.details.params=[];
+for(b=0;
+b<this.params.length;
+b++){a.details.params.push(FIREBASE.Styx.getParam(this.params[b]))
+}a.details.removedParams=[];
+for(b=0;
+b<this.removedParams.length;
+b++){a.details.removedParams.push(this.removedParams[b].getNormalizedObject())
+}return a
 }
 };
 FB_PROTOCOL.TournamentUpdatePacket.CLASSID=149;FB_PROTOCOL.UnwatchRequestPacket=function(){this.classId=function(){return FB_PROTOCOL.UnwatchRequestPacket.CLASSID
@@ -2159,15 +2542,18 @@ return a
 };
 this.load=function(a){this.tableid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.UnwatchRequestPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.UnwatchRequestPacket";
+a.details={};
+a.details.tableid=this.tableid;
 return a
 }
 };
 FB_PROTOCOL.UnwatchRequestPacket.CLASSID=34;FB_PROTOCOL.UnwatchResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.UnwatchResponsePacket.CLASSID
 };
 this.tableid={};
-this.status={};
+this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.tableid);
 a.writeUnsignedByte(this.status);
@@ -2176,9 +2562,12 @@ return a
 this.load=function(a){this.tableid=a.readInt();
 this.status=FB_PROTOCOL.ResponseStatusEnum.makeResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.UnwatchResponsePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.UnwatchResponsePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.status=FB_PROTOCOL.ResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -2197,10 +2586,13 @@ this.load=function(a){this.game=a.readInt();
 this.operatorid=a.readInt();
 this.protocol=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.VersionPacket :";
-a+=" game["+this.game.toString()+"]";
-a+=" operatorid["+this.operatorid.toString()+"]";
-a+=" protocol["+this.protocol.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.VersionPacket";
+a.details={};
+a.details.game=this.game;
+a.details.operatorid=this.operatorid;
+a.details.protocol=this.protocol;
 return a
 }
 };
@@ -2213,15 +2605,18 @@ return a
 };
 this.load=function(a){this.tableid=a.readInt()
 };
-this.toString=function(){var a="FB_PROTOCOL.WatchRequestPacket :";
-a+=" tableid["+this.tableid.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.WatchRequestPacket";
+a.details={};
+a.details.tableid=this.tableid;
 return a
 }
 };
 FB_PROTOCOL.WatchRequestPacket.CLASSID=32;FB_PROTOCOL.WatchResponsePacket=function(){this.classId=function(){return FB_PROTOCOL.WatchResponsePacket.CLASSID
 };
 this.tableid={};
-this.status={};
+this.status=FB_PROTOCOL.WatchResponseStatusEnum.makeWatchResponseStatusEnum(0);
 this.save=function(){var a=new FIREBASE.ByteArray();
 a.writeInt(this.tableid);
 a.writeUnsignedByte(this.status);
@@ -2230,9 +2625,12 @@ return a
 this.load=function(a){this.tableid=a.readInt();
 this.status=FB_PROTOCOL.WatchResponseStatusEnum.makeWatchResponseStatusEnum(a.readUnsignedByte())
 };
-this.toString=function(){var a="FB_PROTOCOL.WatchResponsePacket :";
-a+=" tableid["+this.tableid.toString()+"]";
-a+=" status["+this.status.toString()+"]";
+this.getNormalizedObject=function(){var a={};
+var b;
+a.summary="FB_PROTOCOL.WatchResponsePacket";
+a.details={};
+a.details.tableid=this.tableid;
+a.details.status=FB_PROTOCOL.WatchResponseStatusEnum.toString(this.status);
 return a
 }
 };
@@ -2246,4 +2644,10 @@ case 1:return FB_PROTOCOL.WatchResponseStatusEnum.FAILED;
 case 2:return FB_PROTOCOL.WatchResponseStatusEnum.DENIED;
 case 3:return FB_PROTOCOL.WatchResponseStatusEnum.DENIED_ALREADY_SEATED
 }return -1
+};
+FB_PROTOCOL.WatchResponseStatusEnum.toString=function(a){switch(a){case 0:return"OK";
+case 1:return"FAILED";
+case 2:return"DENIED";
+case 3:return"DENIED_ALREADY_SEATED"
+}return"INVALID_ENUM_VALUE"
 };

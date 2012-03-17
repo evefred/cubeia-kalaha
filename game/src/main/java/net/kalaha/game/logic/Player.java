@@ -2,21 +2,15 @@ package net.kalaha.game.logic;
 
 public enum Player {
 	
-	SOUTH(0, 0, KalahaBoard.SOUTH_KALAHA), 
-	NORTH(0, KalahaBoard.SOUTH_KALAHA + 1, KalahaBoard.NORTH_KALAHA);
+	SOUTH(0, KalahaBoard.SOUTH_KALAHA), 
+	NORTH(KalahaBoard.SOUTH_KALAHA + 1, KalahaBoard.NORTH_KALAHA);
 	
-	private int id;
 	private int kalahaPit;
 	private int firstPit;
 
-	Player(int id, int firstPit, int kalahaPit) {
-		this.id = id;
+	Player(int firstPit, int kalahaPit) {
 		this.firstPit = firstPit;
 		this.kalahaPit = kalahaPit;
-	}
-	
-	public int getId() {
-		return id;
 	}
 
 	public int kalaha() {

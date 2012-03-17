@@ -26,7 +26,7 @@ public class ServiceModule extends AbstractModule {
 		bind(LoginLocator.class).to(LoginLocatorImpl.class);
 		
 		// CONFIG
-		bindConstant().annotatedWith(Names.named("allow-trivial-login")).to(allowTrivialLogin);
+		// bindConstant().annotatedWith(Names.named("allow-trivial-login")).to(allowTrivialLogin);
 		
 		// JPA
 		bind(EntityManager.class).toProvider(new Provider<EntityManager>() {

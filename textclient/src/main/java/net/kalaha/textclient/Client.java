@@ -4,10 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
-import net.kalaha.game.action.IllegalActionException;
 import net.kalaha.game.action.Sow;
-import net.kalaha.game.json.JsonTransformer;
+import net.kalaha.game.action.Transformer;
+import net.kalaha.json.IllegalActionException;
+import net.kalaha.table.api.CreateGameRequest;
+import net.kalaha.table.api.GetTableRequest;
 import net.kalaha.table.api.TableManager;
+import net.kalaha.table.api.TableRequestAction;
 
 import com.cubeia.firebase.clients.java.connector.text.CommandNotifier;
 import com.cubeia.firebase.clients.java.connector.text.SimpleTextClient;
@@ -15,28 +18,38 @@ import com.cubeia.firebase.io.protocol.Enums;
 import com.cubeia.firebase.io.protocol.ServiceTransportPacket;
 
 public class Client extends SimpleTextClient {
-
+	
 	public Client(String host, int port) {
 		super(host, port);
 		Handler h = new Handler();
 		addPacketHandler(h);
 		super.commandNotifier = new CommandNotifier(context, this, true) {
 			
+			private net.kalaha.table.impl.Transformer serviceTrans = new net.kalaha.table.impl.Transformer();
+			
 			@Override
 			public void handleCommand(String command) {
-				if (command.startsWith("table ")) {
+				if (command.startsWith("gt ")) {
 					String[] args = command.split(" ");
-				    String json = "{\"gameId\":" + args[1] + "}";
-				    ServiceTransportPacket p = new ServiceTransportPacket();
-				    p.idtype = (byte) Enums.ServiceIdentifier.CONTRACT.ordinal();
-				    p.pid = context.getPlayerId();
-				    p.seq = 1;
-				    p.service = TableManager.class.getName();
-				    p.servicedata = toUTF8Data(json);
-				    context.getConnector().sendPacket(p);
+				    GetTableRequest req = new GetTableRequest(context.getPlayerId(), 1, Integer.parseInt(args[1]));
+					sendRequest(req);
+				} else 	if (command.startsWith("cg ")) {
+					String[] args = command.split(" ");
+					CreateGameRequest req = new CreateGameRequest(context.getPlayerId(), Integer.parseInt(args[1]), 1);
+				    sendRequest(req);
 				} else {
 					super.handleCommand(command);
 				}
+			}
+
+			private void sendRequest(TableRequestAction req) {
+				ServiceTransportPacket p = new ServiceTransportPacket();
+				p.idtype = (byte) Enums.ServiceIdentifier.CONTRACT.ordinal();
+				p.pid = context.getPlayerId();
+				p.service = TableManager.class.getName();
+				p.servicedata = serviceTrans.toUTF8Data(req);
+				p.seq = 1;
+				context.getConnector().sendPacket(p);
 			}
 		};
 	}
@@ -75,7 +88,7 @@ public class Client extends SimpleTextClient {
 	    	   Sow s = new Sow();
 	    	   s.setHouse(Integer.parseInt(args[2]));
 	    	   s.setPlayerId(context.getPlayerId());
-	    	   buf = ByteBuffer.wrap(new JsonTransformer().toUTF8Data(s));
+	    	   buf = ByteBuffer.wrap(new Transformer().toUTF8Data(s));
 	       } else {
 	    	   throw new IllegalActionException("No such action: " + action);
 	       }

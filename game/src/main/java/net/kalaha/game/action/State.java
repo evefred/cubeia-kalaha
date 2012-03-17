@@ -2,6 +2,12 @@ package net.kalaha.game.action;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+import net.kalaha.json.AbstractAction;
+
 public class State extends AbstractAction implements Serializable {
 
 	private static final long serialVersionUID = -2115183643846951929L;
@@ -9,16 +15,25 @@ public class State extends AbstractAction implements Serializable {
 	private int[] pits = new int[14];
 	
 	private int southPlayerId;
-	
 	private int northPlayerId;
+	private int playerToAct;
 	
-	public State(int[] state, int southPlayerId, int northPlayerId) {
+	public State(int[] state, int southPlayerId, int northPlayerId, int playerToAct) {
 		this.pits = state;
 		this.southPlayerId = southPlayerId;
 		this.northPlayerId = northPlayerId;
+		this.playerToAct = playerToAct;
 	}
 	
 	public State() { }
+	
+	public int getPlayerToAct() {
+		return playerToAct;
+	}
+	
+	public void setPlayerToAct(int playerToAct) {
+		this.playerToAct = playerToAct;
+	}
 
 	public int[] getPits() {
 		return pits;
@@ -42,5 +57,23 @@ public class State extends AbstractAction implements Serializable {
 	
 	public void setSouthPlayerId(int southPlayerId) {
 		this.southPlayerId = southPlayerId;
+	}
+	
+	
+	// --- COMMONS OBJECT METHODS --- //
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }

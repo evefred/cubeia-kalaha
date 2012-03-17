@@ -1,17 +1,17 @@
-package net.kalaha.game.json;
+package net.kalaha.json;
 
 import java.io.UnsupportedEncodingException;
 
-import net.kalaha.game.action.IllegalActionException;
-import net.kalaha.game.action.Sow;
 import net.sf.json.JSONObject;
 
-public class JsonTransformer implements ActionTransformer {
+public abstract class JsonTransformer implements ActionTransformer {
+	
+	protected abstract String getActionPackage();
 	
 	public Object fromString(String json) throws IllegalActionException {
 		// JSONArray arr = JSONArray.fromObject(json);
 		JSONObject o = JSONObject.fromObject(json);
-		String pack = Sow.class.getPackage().getName();
+		String pack = getActionPackage();
 		String cl = o.getString("_action");
 		try {
 			String name = pack + "." + cl;

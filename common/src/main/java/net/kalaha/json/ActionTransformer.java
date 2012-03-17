@@ -1,7 +1,4 @@
-package net.kalaha.game.json;
-
-import net.kalaha.game.action.IllegalActionException;
-
+package net.kalaha.json;
 
 public interface ActionTransformer {
 

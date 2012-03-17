@@ -1,6 +1,6 @@
 package net.kalaha.game;
 
-import net.kalaha.game.json.ActionUtil;
+import net.kalaha.game.action.util.ActionUtil;
 import net.kalaha.game.logic.KalahaBoard;
 
 import com.cubeia.firebase.api.action.GameDataAction;

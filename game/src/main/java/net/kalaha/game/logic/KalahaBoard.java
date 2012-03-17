@@ -42,7 +42,7 @@ public class KalahaBoard implements Serializable {
 		}
 		this.gameEnded = (game.getStatus() == GameStatus.ACTIVE ? false : true);
 		this.playerToAct = (game.isOwnersMove() ? Player.SOUTH : Player.NORTH);
-		this.state = new State(game.getCurrentGameState().getRealState(), southPlayerId, northPlayerId);
+		this.state = new State(game.getCurrentGameState().getRealState(), southPlayerId, northPlayerId, getPlayerToActId());
 		this.rules = new DefaultRules();
 	}
 	
@@ -60,6 +60,14 @@ public class KalahaBoard implements Serializable {
 	public static int[] getInitState(int stones) {
 		return new KalahaBoard(stones).getState().getPits();
 	}	
+	
+	private int getPlayerToActId() {
+		if(playerToAct == Player.SOUTH) {
+			return southPlayerId;
+		} else {
+			return northPlayerId;
+		}
+	}
 
 	private void initState(int stones) {
 		for (int i = 0; i < state.getPits().length; i++) {

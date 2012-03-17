@@ -18,6 +18,7 @@
 		<module>facebook-web</module>
 		<module>database</module>
 		<module>kalaha-html5</module>
+		<module>common</module>
 	</modules>
 
 	<properties>

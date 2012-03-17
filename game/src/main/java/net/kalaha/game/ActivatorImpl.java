@@ -1,5 +1,8 @@
 package net.kalaha.game;
 
+import static net.kalaha.entities.GameForm.CHALLENGE;
+import static net.kalaha.entities.GameType.KALAHA;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,9 +10,14 @@ import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Game;
+import net.kalaha.entities.User;
 import net.kalaha.game.logic.KalahaBoard;
+import net.kalaha.table.api.CreateGameRequest;
+import net.kalaha.table.api.CreateGameResponse;
+import net.kalaha.table.api.GetTableRequest;
+import net.kalaha.table.api.GetTableResponse;
 import net.kalaha.table.api.TableManager;
-import net.kalaha.table.api.TableQuery;
+import net.kalaha.table.api.TableRequestAction;
 
 import org.apache.log4j.Logger;
 
@@ -52,19 +60,12 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	
 	@Override
 	public void onAction(ActivatorAction<?> action) {
-		TableQuery q = (TableQuery) action.getData();
-		int tableId = -1;
-		synchronized(mapping) {
-			tableId = mapping.getTableForGame(q.gameId);
-			if(tableId == -1) {
-				tableId = createTable(q);
-				if(tableId == -1) {
-					// FAILURE, RETURN HERE
-					return;
-				}
-			}
+		TableRequestAction q = (TableRequestAction) action.getData();
+		if(q instanceof GetTableRequest) {
+			handleGetTable((GetTableRequest)q);
+		} else if(q instanceof CreateGameRequest) {
+			handleCreateGame((CreateGameRequest)q);
 		}
-		notifyFound(q, tableId);
 	}
 
 	@Override
@@ -87,22 +88,55 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 
 	// --- PRIVATE METHODS --- //
 	
-	private void notifyFound(TableQuery q, int tableId) {
-		TableManager manager = context.getServices().getServiceInstance(TableManager.class);
-		manager.tableLocated(q, tableId);
+	private void handleCreateGame(CreateGameRequest q) {
+		User user = userManager.getUser(q.getUserId());
+		User opponent = userManager.getUser(q.getOpponentId());
+		// TODO: Check if users exists...
+		Game game = gameManager.createGame(KALAHA, CHALLENGE, user, opponent, -1, KalahaBoard.getInitState(6));
+		int tableId = getTableForGame(game.getId(), q.getUserId());
+		if(tableId != -1) {
+			dispatch(new CreateGameResponse(q, game.getId(), tableId));
+		} else {
+			// TODO: Handle failure
+		}
+	}
+	
+	private void handleGetTable(GetTableRequest q) {
+		int tableId = getTableForGame(q.getGameId(), q.getUserId());
+		if(tableId != -1) {
+			dispatch(new GetTableResponse(q, tableId));
+		} else {
+			// TODO: Handle failure
+		}
 	}
 
-	private int createTable(TableQuery q) {
-		log.debug("Ressurecting game " + q.gameId + " for player " + q.userId);
-		final Game game = gameManager.getGame(q.gameId);
+	private int getTableForGame(int gameId, int userId) {
+		int tableId = -1;
+		synchronized(mapping) {
+			tableId = mapping.getTableForGame(gameId);
+			if(tableId == -1) {
+				tableId = createTable(gameId, userId);
+			}
+		}
+		return tableId;
+	}
+	
+	private void dispatch(TableRequestAction action) {
+		TableManager manager = context.getServices().getServiceInstance(TableManager.class);
+		manager.sendToClient(action);
+	}
+
+	private int createTable(int gameId, int userId) {
+		log.debug("Ressurecting game " + gameId + " for player " + userId);
+		final Game game = gameManager.getGame(gameId);
 		if (game == null) {
-			log.fatal("Received request for game " + q.gameId + " which doesn't exist!");
+			log.fatal("Received request for game " + gameId + " which doesn't exist!");
 			return -1; // EARLY RETURN
 		}
 		TableFactory fact = context.getTableFactory();
 		LobbyTable table = fact.createTable(2, new Participant(game));
-		log.debug("Table " + table.getTableId() + " created for game " + q.gameId + "; on behalf of player " + q.userId);
-		mapping.put(q.gameId, table.getTableId());
+		log.debug("Table " + table.getTableId() + " created for game " + gameId + "; on behalf of player " + userId);
+		mapping.put(gameId, table.getTableId());
 		return table.getTableId();
 	}
 	

@@ -9,7 +9,6 @@ import com.cubeia.firebase.api.login.LoginLocator;
 import com.cubeia.firebase.api.service.ServiceRegistry;
 import com.cubeia.firebase.guice.inject.Log4j;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 public class LoginLocatorImpl implements LoginLocator {
 
@@ -26,12 +25,11 @@ public class LoginLocatorImpl implements LoginLocator {
 	@Inject
 	private KalahaLoginHandler realHandler;
 	
-	@Inject
-	private TrivialLoginHandler trivialHandler;
+	//@Inject
+	//private TrivialLoginHandler trivialHandler;
 	
 	@Inject
-	@Named("allow-trivial-login")
-	private boolean allowTrivial;
+	private LocalLoginHandler localHandler;
 	
 	@Log4j
 	private Logger log;
@@ -45,12 +43,8 @@ public class LoginLocatorImpl implements LoginLocator {
 			log.debug("Using facebook login handler");
 			return realHandler;
 		} else if(req.getOperatorid() == 0) {
-			if(allowTrivial) {
-				log.warn("Allowing trivial login handler!");
-				return trivialHandler;
-			} else {
-				log.debug("Disalowing trivial login handler");
-			}
+			log.debug("Using local login handler");
+			return localHandler;
 		} 
 		log.debug("Null handler for operator id: " + req.getOperatorid());
 		return NULL_HANDLER;

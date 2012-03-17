@@ -6,8 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import net.kalaha.table.api.GetTableResponse;
 import net.kalaha.table.api.TableManager;
-import net.kalaha.table.api.TableQuery;
+import net.kalaha.table.api.TableRequestAction;
 
 import com.cubeia.firebase.api.action.service.ServiceAction;
 import com.cubeia.firebase.api.common.AttributeValue;
@@ -34,7 +35,7 @@ public class ActivatorContextImpl implements ActivatorContext {
 	public ActivatorRouter getActivatorRouter() {
 		return null;
 	}
-
+ 
 	@Override
 	public ConfigSource getConfigSource() {
 		return null;
@@ -82,8 +83,8 @@ public class ActivatorContextImpl implements ActivatorContext {
 						public void onAction(ServiceAction arg0) { }
 						
 						@Override
-						public void tableLocated(TableQuery query, int tableId) {
-							foundTableId = tableId;
+						public void sendToClient(TableRequestAction action) {
+							foundTableId = ((GetTableResponse) action).getTableId();
 						}
 					};
 				} else {

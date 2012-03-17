@@ -4,9 +4,9 @@ import net.kalaha.data.manager.GameManager;
 import net.kalaha.entities.Game;
 import net.kalaha.game.action.End;
 import net.kalaha.game.action.KalahaAction;
-import net.kalaha.game.json.ActionTransformer;
-import net.kalaha.game.json.ActionUtil;
+import net.kalaha.game.action.util.ActionUtil;
 import net.kalaha.game.logic.KalahaBoard;
+import net.kalaha.json.ActionTransformer;
 
 import org.apache.log4j.Logger;
 

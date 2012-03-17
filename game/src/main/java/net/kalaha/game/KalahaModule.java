@@ -2,8 +2,8 @@ package net.kalaha.game;
 
 import javax.persistence.EntityManager;
 
-import net.kalaha.game.json.ActionTransformer;
-import net.kalaha.game.json.JsonTransformer;
+import net.kalaha.game.action.Transformer;
+import net.kalaha.json.ActionTransformer;
 
 import com.cubeia.firebase.api.service.ServiceRegistry;
 import com.cubeia.firebase.api.service.transaction.SystemTransactionProvider;
@@ -21,7 +21,7 @@ public class KalahaModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(ActionTransformer.class).to(JsonTransformer.class).in(EventScoped.class);
+		bind(ActionTransformer.class).to(Transformer.class).in(EventScoped.class);
 		
 		// JPA
 		bind(EntityManager.class).toProvider(new Provider<EntityManager>() {

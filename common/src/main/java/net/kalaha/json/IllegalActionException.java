@@ -1,4 +1,4 @@
-package net.kalaha.game.action;
+package net.kalaha.json;
 
 public class IllegalActionException extends IllegalStateException {
 

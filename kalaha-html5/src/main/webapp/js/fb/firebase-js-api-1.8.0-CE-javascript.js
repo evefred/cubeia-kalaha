@@ -1,4 +1,5 @@
 var FIREBASE=FIREBASE||{};
+var utf8=utf8||{};
 FIREBASE=FIREBASE||{};
 FIREBASE.ByteArray=function(array){var MAX_INT32=4294967295;
 var MAX_SIGNED_INT32=2147483647;
@@ -53,27 +54,13 @@ if(value<0){value+=MAX_BYTE+1
 this.readString=function(){this.checkBuffer(2);
 var length=this.readShort();
 var byteArray=this.buffer.splice(this.position,length);
-var str="";
-var i;
-for(i=0;
-i<byteArray.length;
-i++){if(byteArray[i]<=127){if(byteArray[i]===37){str+="%25"
-}else{str+=String.fromCharCode(byteArray[i])
-}}else{str+="%"+byteArray[i].toString(16).toUpperCase()
-}}return decodeURIComponent(str)
+return utf8.fromByteArray(byteArray)
 };
 this.writeBoolean=function(value){this.writeByte(value===true?1:0)
 };
-this.writeString=function(str){var byteArray=[];
-var i,j;
-for(i=0;
-i<str.length;
-i++){if(str.charCodeAt(i)<=127){byteArray.push(str.charCodeAt(i))
-}else{var h=encodeURIComponent(str.charAt(i)).substr(1).split("%");
-for(j=0;
-j<h.length;
-j++){byteArray.push(parseInt(h[j],16))
-}}}this.writeUnsignedShort(byteArray.length);
+this.writeString=function(str){var i;
+var byteArray=utf8.toByteArray(str);
+this.writeUnsignedShort(byteArray.length);
 for(i=0;
 i<byteArray.length;
 i++){this.writeUnsignedByte(byteArray[i])
@@ -98,6 +85,8 @@ if(value<0){value+=MAX_INT16
 this.writeUnsignedByte=function(value){value&=255;
 if(value<0){value+=MAX_BYTE
 }this.writeByte(value)
+};
+this.createServiceDataArray=function(classId){return this.createGameDataArray(classId)
 };
 this.createGameDataArray=function(classId){var header=new FIREBASE.ByteArray();
 header.writeUnsignedInt(this.buffer.length);
@@ -152,7 +141,7 @@ output+="="
 };var FIREBASE=FIREBASE||{};
 var org=org||{};
 org.cometd=org.cometd||{};
-FIREBASE.CometdAdapter=function(hostname,port,endpoint,secure,cometDAccess){var _hostname=hostname;
+FIREBASE.CometdAdapter=function(hostname,port,endpoint,secure,cometdAccess){var _hostname=hostname;
 var _secure=secure!==undefined?secure:false;
 var _endpoint=endpoint;
 var _port=port;
@@ -160,7 +149,7 @@ var _statusCallback;
 var _dataCallback;
 var _connected=false;
 var _firstConnect=false;
-this.cometd=cometDAccess();
+this.cometd=cometdAccess();
 this.protocol=_secure?"https://":"http://";
 this.firebaseUrl=this.protocol+_hostname;
 var _instance=this.cometd;
@@ -175,9 +164,11 @@ _firstConnect=false
 var _reportDisconnected=function(){_statusCallback(FIREBASE.ConnectionStatus.DISCONNECTED);
 _firstConnect=true
 };
-var _subscribe=function(){_instance.subscribe("/service/client",function(message){try{_dataCallback({data:org.cometd.JSON.toJSON(message.data)})
-}catch(x){console.log(x)
-}})
+var _subscribe=function(){_instance.subscribe("/service/client",function(message){_dataCallback({data:org.cometd.JSON.toJSON(message.data)})
+})
+};
+var _connect=function(){_statusCallback(FIREBASE.ConnectionStatus.CONNECTING);
+_instance.handshake()
 };
 _instance.addListener("/meta/handshake",function(message){if(message.failure){_reportDisconnected()
 }});
@@ -190,9 +181,6 @@ _subscribe()
 _subscribe()
 }}else{_reportDisconnected()
 }}}}});
-var _connect=function(){_statusCallback(FIREBASE.ConnectionStatus.CONNECTING);
-_instance.handshake()
-};
 this.reconnect=function(){_connect()
 };
 this.connect=function(statusCallback,dataCallback){_statusCallback=statusCallback;
@@ -206,6 +194,7 @@ FIREBASE.ConnectionStatus={CONNECTING:1,CONNECTED:2,DISCONNECTED:3,RECONNECTING:
 for(key in this){if(this[key]===status){return key
 }}}};var FIREBASE=FIREBASE||{};
 var FB_PROTOCOL=FB_PROTOCOL||{};
+var utf8=utf8||{};
 FIREBASE.Connector=function(packetCallback,lobbyCallback,loginCallback,statusCallback){var _packetCallback=packetCallback;
 var _lobbyCallback=lobbyCallback;
 var _loginCallback=loginCallback;
@@ -232,21 +221,27 @@ i++){if(classConstructor[nameParts[i]]!==undefined){classConstructor=classConstr
 var _handleLoginResponse=function(loginResponse){if(_loginCallback){_loginCallback(loginResponse.status,loginResponse.pid,loginResponse.screenname)
 }};
 var _handleDisconnect=function(){if(_cancelled){return
-}if(!_reconnecting){_statusCallback(FIREBASE.ConnectionStatus.DISCONNECTED);
+}if(!_reconnecting){if(FIREBASE.ReconnectStrategy.MAX_ATTEMPTS===0){_statusCallback(FIREBASE.ConnectionStatus.DISCONNECTED,0,"Disconnected");
+console.log("SKIPPED RECONNECTING");
+return
+}else{_statusCallback(FIREBASE.ConnectionStatus.DISCONNECTED,0,"Disconnected");
 _reconnecting=true;
 _reconnectAttempts=1;
 _reconnectInterval=FIREBASE.ReconnectStrategy.RECONNECT_START_INTERVAL;
 console.log("START RECONNECTING")
-}else{_reconnectAttempts++
-}if(_reconnectAttempts>=FIREBASE.ReconnectStrategy.MAX_ATTEMPTS){_statusCallback(FIREBASE.ConnectionStatus.FAIL,"Too many reconnect attempts ("+_reconnectAttempts+")")
-}if(_reconnectAttempts>=FIREBASE.ReconnectStrategy.INCREASE_THRESHOLD_COUNT){_reconnectInterval+=FIREBASE.ReconnectStrategy.INTERVAL_INCREMENT_STEP
+}}else{_reconnectAttempts++
+}if(_reconnectAttempts>FIREBASE.ReconnectStrategy.MAX_ATTEMPTS){_statusCallback(FIREBASE.ConnectionStatus.FAIL,_reconnectAttempts,"Too many reconnect attempts");
+_reconnecting=false;
+_cancelled=true;
+console.log("STOP RECONNECTING")
+}else{if(_reconnectAttempts>=FIREBASE.ReconnectStrategy.INCREASE_THRESHOLD_COUNT){_reconnectInterval+=FIREBASE.ReconnectStrategy.INTERVAL_INCREMENT_STEP
 }console.log("Reconnect attempt "+_reconnectAttempts);
-_statusCallback(FIREBASE.ConnectionStatus.RECONNECTING,_reconnectAttempts);
+_statusCallback(FIREBASE.ConnectionStatus.RECONNECTING,_reconnectAttempts,"Reconnecting");
 _reconnectTimer=setTimeout(_reconnect,_reconnectInterval)
-};
-var _handleConnect=function(){if(_reconnecting){_statusCallback(FIREBASE.ConnectionStatus.RECONNECTED);
+}};
+var _handleConnect=function(){if(_reconnecting){_statusCallback(FIREBASE.ConnectionStatus.RECONNECTED,0,"Reconnected");
 _reconnecting=false
-}_statusCallback(FIREBASE.ConnectionStatus.CONNECTED)
+}_statusCallback(FIREBASE.ConnectionStatus.CONNECTED,0,"Connected")
 };
 var _handlePacket=function(protocolObject){switch(protocolObject.classId){case FB_PROTOCOL.LoginResponsePacket.CLASSID:_handleLoginResponse(protocolObject);
 break;
@@ -259,7 +254,7 @@ default:if(_packetCallback){_packetCallback(protocolObject)
 this.getIOAdapter=function(){return _ioAdapter
 };
 this.cancel=function(){if(_reconnecting){clearTimeout(_reconnectTimer)
-}_statusCallback(FIREBASE.ConnectionStatus.CANCELLED);
+}_statusCallback(FIREBASE.ConnectionStatus.CANCELLED,0,"Cancelled");
 _cancelled=true
 };
 this.connect=function(ioAdapterName,hostname,port,endpoint,secure,extraConfig){var i;
@@ -295,13 +290,6 @@ var logoutRequest=new FB_PROTOCOL.LogoutPacket();
 logoutRequest.leaveTables=leaveTables;
 this.sendProtocolObject(logoutRequest)
 };
-this.login=function(user,pwd,operatorid,credentials){var loginRequest=new FB_PROTOCOL.LoginRequestPacket();
-loginRequest.user=user;
-loginRequest.password=pwd;
-loginRequest.operatorid=operatorid||1;
-loginRequest.credentials=credentials||[];
-this.sendProtocolObject(loginRequest)
-};
 this.lobbySubscribe=function(gameId,address){var subscribeRequest=new FB_PROTOCOL.LobbySubscribePacket();
 subscribeRequest.type=FB_PROTOCOL.LobbyTypeEnum.REGULAR;
 subscribeRequest.gameid=gameId;
@@ -321,11 +309,27 @@ this.leaveTable=function(tableId){var leaveRequest=new FB_PROTOCOL.LeaveRequestP
 leaveRequest.tableid=tableId;
 this.sendProtocolObject(leaveRequest)
 };
-this.sendGameTransportPacket=function(pid,tableId,classId,byteArray){var gameTransportPacket=new FB_PROTOCOL.GameTransportPacket();
+this.sendStyxGameData=function(pid,tableid,protocolObject){var transportPacket=FIREBASE.Styx.wrapInGameTransportPacket(pid,tableid,protocolObject);
+this.sendProtocolObject(transportPacket)
+};
+this.sendStringGameData=function(pid,tableid,string){var bytes=utf8.toByteArray(string);
+this.sendBinaryGameData(pid,tableid,bytes)
+};
+this.sendBinaryGameData=function(pid,tableId,bytearray){var gameTransportPacket=new FB_PROTOCOL.GameTransportPacket();
 gameTransportPacket.tableid=tableId;
 gameTransportPacket.pid=pid;
-gameTransportPacket.gamedata=FIREBASE.ByteArray.toBase64String(byteArray.createGameDataArray(classId));
+gameTransportPacket.gamedata=FIREBASE.ByteArray.toBase64String(bytearray);
 this.sendProtocolObject(gameTransportPacket)
+};
+this.sendServiceTransportPacket=function(pid,gameId,classId,serviceContract,byteArray){var serviceTransportPacket=new FB_PROTOCOL.ServiceTransportPacket();
+serviceTransportPacket.gameid=gameId;
+serviceTransportPacket.seq=-1;
+serviceTransportPacket.pid=pid;
+serviceTransportPacket.service=serviceContract;
+serviceTransportPacket.idtype=FB_PROTOCOL.ServiceIdentifierEnum.CONTRACT;
+serviceTransportPacket.servicedata=FIREBASE.ByteArray.toBase64String(byteArray.createServiceDataArray(classId));
+console.log("SERVICETRANSPORT: %o",serviceTransportPacket);
+this.sendProtocolObject(serviceTransportPacket)
 };
 this.sendProtocolObject=function(protocolObject){var jsonString=FIREBASE.Styx.toJSON(protocolObject);
 this.send(jsonString)
@@ -466,9 +470,16 @@ deps=[]
 };
 define.amd={}
 }());var FIREBASE=FIREBASE||{};
-FIREBASE.ReconnectStrategy={MAX_ATTEMPTS:Infinity,RECONNECT_START_INTERVAL:1000,INCREASE_THRESHOLD_COUNT:Infinity,INTERVAL_INCREMENT_STEP:200};var FIREBASE=FIREBASE||{};
+FIREBASE.ReconnectStrategy={MAX_ATTEMPTS:0,RECONNECT_START_INTERVAL:1000,INCREASE_THRESHOLD_COUNT:Infinity,INTERVAL_INCREMENT_STEP:200};var FIREBASE=FIREBASE||{};
 var FB_PROTOCOL=FB_PROTOCOL||{};
 FIREBASE.Styx=function(){};
+FIREBASE.Styx.wrapInGameTransportPacket=function(pid,tid,protocolObject){var gameTransportPacket=new FB_PROTOCOL.GameTransportPacket();
+gameTransportPacket.tableid=tid;
+gameTransportPacket.pid=pid;
+var byteArray=protocolObject.save();
+gameTransportPacket.gamedata=FIREBASE.ByteArray.toBase64String(byteArray.createGameDataArray(protocolObject.classId()));
+return gameTransportPacket
+};
 FIREBASE.Styx.isByteArray=function(arr){var i;
 for(i=0;
 i<arr.length;
@@ -509,8 +520,27 @@ return retObject
 };
 FIREBASE.Styx.toJSON=function(protocolObject){var objectClone=FIREBASE.Styx.cloneObject(protocolObject);
 return JSON.stringify(objectClone)
-};var WebSocket=WebSocket||{};
-var FIREBASE=FIREBASE||{};
+};var utf8=utf8||{};
+utf8.toByteArray=function(str){var i,j;
+var bytes=[];
+for(i=0;
+i<str.length;
+i++){if(str.charCodeAt(i)<=127){bytes.push(str.charCodeAt(i))
+}else{var h=encodeURIComponent(str.charAt(i)).substr(1).split("%");
+for(j=0;
+j<h.length;
+j++){bytes.push(parseInt(h[j],16))
+}}}return bytes
+};
+utf8.fromByteArray=function(bytes){var i;
+var str="";
+for(i=0;
+i<bytes.length;
+i++){if(bytes[i]<=127){if(bytes[i]===37){str+="%25"
+}else{str+=String.fromCharCode(bytes[i])
+}}else{str+="%"+bytes[i].toString(16).toUpperCase()
+}}return decodeURIComponent(str)
+};var FIREBASE=FIREBASE||{};
 FIREBASE.WebSocketAdapter=function(hostname,port,endpoint,secure,config){var _hostname=hostname;
 var _secure=secure!==undefined?secure:false;
 var _endpoint=endpoint;

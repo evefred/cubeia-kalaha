@@ -25,7 +25,7 @@ public class KalahaLoginHandler implements LoginHandler {
 		log.debug("Handling login request for session token: " + sessionId);
 		Session ses = manager.getSessionById(sessionId);
 		if(ses == null) {
-			log.debug("Not session found for token: " + sessionId);
+			log.debug("No session found for token: " + sessionId);
 			return new LoginResponseAction(false, -1);
 		} else {
 			log.debug("User " + ses.getUserId() + " found for token");

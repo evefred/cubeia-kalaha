@@ -20,5 +20,5 @@ public class TestJpaModule extends AbstractModule {
 				return fact.createEntityManager();
 			}
 		});
-	}
+	} 
 }

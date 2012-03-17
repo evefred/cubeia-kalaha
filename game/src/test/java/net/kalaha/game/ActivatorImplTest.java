@@ -5,7 +5,7 @@ import net.kalaha.entities.Game;
 import net.kalaha.entities.GameForm;
 import net.kalaha.entities.GameType;
 import net.kalaha.entities.User;
-import net.kalaha.table.api.TableQuery;
+import net.kalaha.table.api.GetTableRequest;
 
 import org.testng.annotations.Test;
 
@@ -45,8 +45,8 @@ public class ActivatorImplTest {
 		Game g = i.getGameManager().createGame(GameType.KALAHA, GameForm.LIVE, u, null, -1, null);
 		
 		// create table for the above game
-		TableQuery q = new TableQuery(u.getId(), 2, g.getId());
-		ActivatorAction<TableQuery> a = new ActivatorAction<TableQuery>(q);
+		GetTableRequest q = new GetTableRequest(u.getId(), 2, g.getId());
+		ActivatorAction<GetTableRequest> a = new ActivatorAction<GetTableRequest>(q);
 		i.onAction(a);
 		//i.getParticipantForRequest(u.getId(), 2, attributes(GameForm.LIVE, g.getId()));
 		

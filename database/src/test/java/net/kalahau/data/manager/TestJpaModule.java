@@ -15,7 +15,7 @@ public class TestJpaModule extends AbstractModule {
 
 			private EntityManagerFactory fact = Persistence.createEntityManagerFactory("testUnit");
 			
-			@Override
+			@Override 
 			public EntityManager get() {
 				return fact.createEntityManager();
 			}

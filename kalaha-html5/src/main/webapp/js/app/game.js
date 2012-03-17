@@ -1,8 +1,10 @@
 KALAHA.game = function() {
 	
+	$.kalaha = this;
+	
 	var _instance = this;
 	
-	$.kalaha = this;
+	var _comm = new KALAHA.comm();
 	
 	var _messages = new KALAHA.messages();
 	
@@ -16,12 +18,14 @@ KALAHA.game = function() {
 	
 	var _gameEnded = false;
 	
+	
 	this.isGameEnded = function() {
 		return _gameEnded;
 	};
 	
 	this.init = function() {
 		_messages.init();
+		// _comm.connect();
 		this.switchPlayer();
 		_pits.layout();
 	};

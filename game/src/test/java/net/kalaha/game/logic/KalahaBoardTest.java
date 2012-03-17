@@ -19,7 +19,7 @@ public class KalahaBoardTest {
 		kb = new KalahaBoard(6);
 	}
 	
-	@Test
+	@Test 
 	public void testNewBoardHasEmptyKalahas()
 	{
 		assertEquals(kb.getStonesInKalaha(Player.SOUTH), 0);

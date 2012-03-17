@@ -23,6 +23,28 @@ public class User implements Serializable {
 	@Column(nullable=false)
 	private int operatorId;
 	
+	@Column(nullable=true)
+	private String localName;
+	
+	@Column(nullable=true)
+	private String localPassword;
+	
+	public String getLocalName() {
+		return localName;
+	}
+	
+	public String getLocalPassword() {
+		return localPassword;
+	}
+	
+	public void setLocalName(String localName) {
+		this.localName = localName;
+	}
+	
+	public void setLocalPassword(String localPassword) {
+		this.localPassword = localPassword;
+	}
+	
 	public int getOperatorId() {
 		return operatorId;
 	}
@@ -54,6 +76,10 @@ public class User implements Serializable {
 		result = prime * result
 				+ ((externalId == null) ? 0 : externalId.hashCode());
 		result = prime * result + id;
+		result = prime * result
+				+ ((localName == null) ? 0 : localName.hashCode());
+		result = prime * result
+				+ ((localPassword == null) ? 0 : localPassword.hashCode());
 		result = prime * result + operatorId;
 		return result;
 	}
@@ -74,6 +100,16 @@ public class User implements Serializable {
 			return false;
 		if (id != other.id)
 			return false;
+		if (localName == null) {
+			if (other.localName != null)
+				return false;
+		} else if (!localName.equals(other.localName))
+			return false;
+		if (localPassword == null) {
+			if (other.localPassword != null)
+				return false;
+		} else if (!localPassword.equals(other.localPassword))
+			return false;
 		if (operatorId != other.operatorId)
 			return false;
 		return true;
@@ -81,7 +117,8 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [externalId=" + externalId + ", id=" + id
-				+ ", operatorId=" + operatorId + "]";
+		return "User [id=" + id + ", externalId=" + externalId
+				+ ", operatorId=" + operatorId + ", localName=" + localName
+				+ ", localPassword=" + localPassword + "]";
 	}
 }

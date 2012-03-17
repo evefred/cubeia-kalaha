@@ -59,6 +59,7 @@ public class UserManagerImpl implements UserManager {
 			trans.exit();
 		}
 	}
+	
 
 	@Override
 	public Session getSessionById(String id) {
@@ -89,6 +90,16 @@ public class UserManagerImpl implements UserManager {
 			trans.exit();
 		}
 	}
+	
+	@Override
+	public User authLocalUser(String localName, String passwd) {
+		trans.enter();
+		try {
+			return doAuthLocalUser(localName, passwd);
+		} finally {
+			trans.exit();
+		}
+	}
 
 	@Override
 	public User getUserBySession(String id) {
@@ -112,6 +123,18 @@ public class UserManagerImpl implements UserManager {
 	
 	private Session doGetSessionById(String id) {
 		return trans.current().find(Session.class, id);
+	}
+	
+	private User doAuthLocalUser(String localName, String passwd) {
+		Query q = trans.current().createQuery("select t from User t where t.localName = :localName and t.localPassword = :localPassword");
+		q.setParameter("localName", localName);
+		q.setParameter("localPassword", passwd);
+		q.setMaxResults(1);
+		try {
+			return (User) q.getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
 	}
 	
 	private User doGetUserByExternalId(String extId, int operatorId) {

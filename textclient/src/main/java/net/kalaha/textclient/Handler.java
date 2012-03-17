@@ -2,7 +2,7 @@ package net.kalaha.textclient;
 
 import java.io.UnsupportedEncodingException;
 
-import net.kalaha.game.json.JsonTransformer;
+import net.kalaha.game.action.Transformer;
 import net.sf.json.JSONObject;
 
 import com.cubeia.firebase.clients.java.connector.text.AbstractClientPacketHandler;
@@ -58,10 +58,9 @@ public class Handler extends AbstractClientPacketHandler {
 	
 	@Override
 	public void visit(GameTransportPacket packet) {
-	    Object action = new JsonTransformer().fromUTF8Data(packet.gamedata);
+	    Object action = new Transformer().fromUTF8Data(packet.gamedata);
 	    System.out.println("Action from ["+packet.pid+"] : " + action);
 	}
-
 
 	@Override
 	public void visit(VersionPacket arg0) {

@@ -1,6 +1,8 @@
-package net.kalaha.game.json;
+package net.kalaha.game.action.util;
 
 import java.nio.ByteBuffer;
+
+import net.kalaha.json.ActionTransformer;
 
 
 import com.cubeia.firebase.api.action.GameDataAction;

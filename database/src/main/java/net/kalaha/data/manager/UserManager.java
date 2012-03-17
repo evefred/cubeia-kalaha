@@ -13,6 +13,8 @@ public interface UserManager {
 
 	public User createUser(String extId, int operatorId);
 	
+	public User authLocalUser(String localName, String passwd);
+	
 	public User getUserBySession(String sessionId);
 	
 	public Session getSessionById(String id);
