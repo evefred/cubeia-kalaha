@@ -6,10 +6,10 @@
     <Arg>
       <New class="org.apache.commons.dbcp.BasicDataSource">
       	<Set name="maxActive">10</Set>
-        <Set name="driverClassName">org.hsqldb.jdbcDriver</Set>
-        <Set name="url">jdbc:hsqldb:mem:users</Set>
-        <Set name="username">sa</Set>
-        <Set name="password"></Set>
+        <Set name="driverClassName">com.mysql.jdbc.Driver</Set>
+        <Set name="url">jdbc:mysql://localhost:3306/kalaha</Set>
+        <Set name="username">kalaha</Set>
+        <Set name="password">kalaha</Set>
       </New>
     </Arg>
   </New>
