@@ -1,9 +1,6 @@
 package net.kalaha.facebook;
 
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.facebook.page.Index;
-import net.kalaha.facebook.page.Invite;
-import net.kalaha.facebook.page.Play;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
@@ -20,6 +17,9 @@ public class FacebookApplication extends WebApplication {
     @Inject
     @Named("facebook-operator-id")
     private int operatorId;
+    
+    @Inject
+    private FacebookUsers users;
     
     // private Logger log = Logger.getLogger(getClass());
     
@@ -40,7 +40,7 @@ public class FacebookApplication extends WebApplication {
 	
 	@Override
 	public Session newSession(Request request, Response response) {
-		return new FacebookSession(request, userManager, operatorId);
+		return new FacebookSession(request, userManager, operatorId, users);
 	}
 
 	/*@Override
@@ -82,8 +82,8 @@ public class FacebookApplication extends WebApplication {
 	}*/
 	
 	private void setup() {
-		mountBookmarkablePage("/Play", Play.class);
-		mountBookmarkablePage("/Invite", Invite.class);
+		// mountBookmarkablePage("/Play", Play.class);
+		// mountBookmarkablePage("/Invite", Invite.class);
 		// getSecuritySettings().setAuthorizationStrategy(new FaceBookAuthorizationStrategy());
         // getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 	}

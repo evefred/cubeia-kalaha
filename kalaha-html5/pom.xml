@@ -32,7 +32,7 @@
 					<webXml>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</webXml>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.bio.SocketConnector">
-							<port>8080</port>
+							<port>8082</port>
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>

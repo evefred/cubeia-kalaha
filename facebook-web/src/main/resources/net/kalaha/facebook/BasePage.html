@@ -1,8 +1,24 @@
-<html xmlns:fb="http://www.facebook.com/2008/fbml">
+<html>
+<link rel="stylesheet" href="/facebook-web/css/fb.css">
+<link rel="stylesheet" href="/facebook-web/css/app.css">
+<script type="text/javascript" src="/facebook-web/js/jquery/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="/facebook-web/js/json2.js"></script>
+<script type="text/javascript" src="/facebook-web/js/fb.js"></script>
+<script type="text/javascript" src="/facebook-web/js/cometd/cometd.js"></script>
+<script type="text/javascript" src="/facebook-web/js/cometd/jquery-cometd.js"></script>
+<script src="/facebook-web/js/fb/firebase-js-api-1.8.0-CE-javascript.js" type="text/javascript"></script>
+<script src="/facebook-web/js/fb/firebase-protocol-1.8.0-CE-javascript.js" type="text/javascript"></script>
+<script type="text/javascript" src="/facebook-web/js/app/ns.js"></script>
+<script type="text/javascript" src="/facebook-web/js/app/messages.js"></script>
+<script type="text/javascript" src="/facebook-web/js/app/player.js"></script>
+<script type="text/javascript" src="/facebook-web/js/app/pit.js"></script>
+<script type="text/javascript" src="/facebook-web/js/app/pits.js"></script>
+<script type="text/javascript" src="/facebook-web/js/app/comm.js"></script>
+<script type="text/javascript" src="/facebook-web/js/app/game.js"></script>
 <body class="fbbody">
 
 	<h1>Kalaha</h1>
-	 
+	
 	<div class="fbinfobox">
 	 	Welcome to the Kalaha Test Harness <span wicket:id="userName"></span>, your site session token
 	 	is <span wicket:id="token">666</span>.
@@ -19,23 +35,28 @@
 	<div class="emtpydivide"></div -->
 	 
 	<wicket:child></wicket:child>
-
-<!-- script>
+	
+	
+	
+	<div style="visibility: hidden">
+		<!-- THROW AWAY (Wicket Stuff) -->
+	</div>
+	 
+	 
+<!-- div id="fb-root"></div>
+<script>
   window.fbAsyncInit = function() {
-    FB.init({
+	FB.init({
       appId      : '492356140365', // App ID
       channelUrl : 'http://fungrim.dyndns-server.com/facebook-web/channel.html', // Channel File
       status     : true, // check login status
       cookie     : true, // enable cookies to allow the server to access the session
       xfbml      : true  // parse XFBML
     });
-
-    // Additional initialization code here
-    FB.api('/me', function(response) {
-    	  alert('Your name is ' + response.name);
-    	});
+	FB.login(function(response) { });
   };
 
+  
   // Load the SDK Asynchronously
   (function(d){
      var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];

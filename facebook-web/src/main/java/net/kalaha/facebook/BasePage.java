@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import net.kalaha.data.manager.GameManager;
+import net.kalaha.entities.Session;
 import net.kalaha.entities.User;
 import net.kalaha.facebook.util.FacebookUtil;
 
@@ -21,13 +22,25 @@ public class BasePage extends WebPage {
 	
     private static final String DEV_VERSION = "_development";
 
-	@Inject
+	/*@Inject
     @Named("facebook-app-id")
-    private String appId;
+    private String appId;*/
     
     @Inject
     @Named("css-version")
     private String cssVersion;
+    
+    @Inject
+    @Named("firebase-host")
+    private String firebaseHost;
+    
+    @Inject
+    @Named("firebase-port")
+    private int firebasePort;
+    
+    @Inject
+    @Named("facebook-operator-id")
+    private int operatorId;
 
     @Inject
     protected GameManager gameManager;
@@ -44,10 +57,12 @@ public class BasePage extends WebPage {
 	@Override
 	public void renderHead(HtmlHeaderContainer container) {
 		super.renderHead(container);
-		renderApiKey(container);
+		// container.getHeaderResponse().renderCSSReference(
+		// renderApiKey(container);
+		renderJsConfig(container);
 	}
-	
-	
+
+
 	// --- PROTECTED METHODS --- //
 	
 	protected void addFBAttribute(String compId, String attr, String val) {
@@ -73,8 +88,18 @@ public class BasePage extends WebPage {
 	
 	// --- PRIVATE METHODS --- //
 	
-	private void renderApiKey(HtmlHeaderContainer container) {
+	/*private void renderApiKey(HtmlHeaderContainer container) {
 		container.getHeaderResponse().renderJavascript("__API_KEY = \"" + appId + "\";", "apiKey");
+	}*/
+	
+	
+	private void renderJsConfig(HtmlHeaderContainer container) {
+		Session dbSession = getSession().getSession();
+		String js = "__session=\"" + dbSession.getId() + "\";" +
+				"__operatorId=" + operatorId + ";" +
+				"__firebaseHost=\"" + firebaseHost + "\";" +
+				"__firebasePort=\"" + firebasePort + "\";";
+		container.getHeaderResponse().renderJavascript(js, "jsConf");
 	}
 	
 	private void setup() { 

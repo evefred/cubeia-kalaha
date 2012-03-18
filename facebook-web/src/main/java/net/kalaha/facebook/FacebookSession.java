@@ -26,14 +26,15 @@ public class FacebookSession extends WebSession {
 	private UserManager userManager;
 	
 	private Session session;
-	private FacebookUser facebookUser;
 	private AuthToken token;
 	private int operatorId;
+	private FacebookUsers users;
 	
-	public FacebookSession(Request request, UserManager userManager, int operatorId) {
+	public FacebookSession(Request request, UserManager userManager, int operatorId, FacebookUsers users) {
 		super(request);
 		this.userManager = userManager;
 		this.operatorId = operatorId;
+		this.users = users;
 		checkCreateClient(request);
 	}
 
@@ -63,10 +64,7 @@ public class FacebookSession extends WebSession {
 	}
 	
 	public FacebookUser getFacebookUser() {
-		if(facebookUser == null) {
-			facebookUser = facebookClient.fetchObject("me", FacebookUser.class);
-		}
-		return facebookUser;
+		return users.get("me");
 	}
 	
 	
@@ -78,6 +76,7 @@ public class FacebookSession extends WebSession {
 		if(token == null || !token.token.equals(next.token)) {
 			log.debug("Creating new Facebook client for token: " + next.token);
 			facebookClient = new DefaultFacebookClient(next.token);
+			this.users.setClient(facebookClient);
 			String facebookId = getFacebookUser().getId();
 			this.session = userManager.getSessionByExternalId(facebookId, operatorId);
 			this.token = next;

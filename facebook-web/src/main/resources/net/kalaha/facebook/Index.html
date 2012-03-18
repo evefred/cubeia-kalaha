@@ -1,0 +1,78 @@
+<html>
+<body>
+<wicket:extend>
+	
+	<div id="pits">
+
+		<div id="pit1" class="pit"></div>
+		<div id="pit2" class="pit"></div>
+		<div id="pit3" class="pit"></div>
+		<div id="pit4" class="pit"></div>
+		<div id="pit5" class="pit"></div>
+		<div id="pit6" class="pit"></div>
+		<div id="pit7" class="pit"></div>
+		
+		<div id="pit8" class="pit homePit" ></div>
+		<div id="pit9" class="pit homePit"></div>
+		<div id="pit10" class="pit homePit"></div>
+		<div id="pit11" class="pit homePit"></div>
+		<div id="pit12" class="pit homePit"></div>
+		<div id="pit13" class="pit homePit"></div>
+		<div id="pit14" class="pit"></div>
+		
+		<div id="boardSide1"></div>
+		<div id="boardSide2"></div>
+
+	</div>
+	
+	<div id="messageBox">Msg here...</div>
+	
+	<div class="emtpydivide" id="pitsDivide"></div>
+	
+	<table class="gametable">
+		<thead>
+			<tr>
+				<td>Opponent</td>
+				<td>Created</td>
+				<td>Last Move</td>
+				<td>No. of Moves</td>
+				<td></td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr wicket:id="gameView">
+				<td><span wicket:id="opponent"></span></td>
+				<td><span wicket:id="created"></span></td>
+				<td><span wicket:id="lastMove"></span></td>
+				<td><span wicket:id="noMoves"></span></td>
+				<td><a wicket:id="gameLink" class="link"><span wicket:id="state"></span></a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="emtpydivide"></div>
+	
+	<!-- fb:serverFbml style="width: 100%">
+		<script type="text/fbml"> 
+			<fb:fbml>
+
+				<fb:request-form 
+					action="http://kalaha.dynalias.com:8080/facebook-web/Invite" 
+					target="iframe_canvas"
+ 					method="POST" 
+					invite="true" 
+					type="Kalaha" 
+					content="Blah blah... <fb:req-choice url='http://apps.facebook.com/playkalaha/Invite' label='Invite'>" > 
+
+					Challenge a friend: <fb:friend-selector></fb:friend-selector>
+					<fb:request-form-submit></fb:request-form-submit>
+
+				</fb:request-form> 
+			</fb:fbml>
+
+		</script> 
+	</fb:serverFbml -->
+
+</wicket:extend>
+</body>
+</html>
