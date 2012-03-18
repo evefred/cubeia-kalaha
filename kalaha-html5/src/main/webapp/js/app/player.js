@@ -14,6 +14,14 @@ KALAHA.player = function(boardSide) {
 		}
 	};
 	
+	this.setOnline = function() {
+		$("#boardSide" + _instance.boardSide).addClass("playerOnline");
+	}
+	
+	this.setOffline = function() {
+		$("#boardSide" + _instance.boardSide).removeClass("playerOnline");
+	}
+	
 	this.reset = function() {
 		$("#boardSide" + _instance.boardSide).empty();
 		$("#boardSide" + _instance.boardSide).append("Player " + _instance.boardSide);

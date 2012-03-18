@@ -16,6 +16,8 @@ KALAHA.game = function() {
 	var _waitingPlayer;
 	var _currentPlayer;
 	
+	var _lastStateFromServer;
+	
 	var _firstState = true;
 	var _gameEnded = false;
 	
@@ -31,19 +33,15 @@ KALAHA.game = function() {
 	};
 	
 	this.showWarning = function(msg) {
-		_messages.setMessage(msg);
+		_messages.queueMessage(msg);
 	};
 	
 	var _handleState = function(state) {
 		console.log("State: " + state.houses);
+		_lastStateFromServer = state;
 		if(_firstState) {
 			_firstState = false;
-			var side = 1;
-			if(state.northPlayerId == _comm.getPlayerId()) {
-				side = 2;
-			}
-			$("#pits").show();
-			_pits.setGameState(side, state.houses);
+			_updateState(state);
 			if(state.playerToAct == _comm.getPlayerId()) {
 				_instance.switchPlayer();
 			}
@@ -52,21 +50,42 @@ KALAHA.game = function() {
 		}
 	};
 	
+	var _updateState = function(state) {
+		var side = 1;
+		if(state.northPlayerId == _comm.getPlayerId()) {
+			side = 2;
+		}
+		$("#pits").show();
+		_pits.setGameState(side, state.houses);
+	}
+	
 	var _handleSow = function(sow) {
 		console.log("Sow: " + sow.house);
 		if(sow.playerId != _comm.getPlayerId()) {
-			_messages.setMessage("Player 1 sowed from house " + (sow.house + 1) + "!");
+			_messages.queueMessage("Player 1 sowed from house " + (sow.house + 1) + "!");
 			_pits.remoteSow(7 - sow.house);
 		}
 	};
 	
 	var _handleEnd = function(end) {
-		if(end.isDraw) {
-			console.log("Game ended in draw!");
+		_gameEnded = true;
+		_updateState(_lastStateFromServer);
+		_playerOne.reset();
+		_playerTwo.reset();
+		if(end.isDraw || end.winnerId == -1) {
+			_messages.queueMessage("Game ended in draw!");
 		} else {
-			console.log("Game ended, winner is: " + end.winnerId);
+			_messages.queueMessage("Game ended, winner is: " + end.winnerId);
 		}
 	};
+	
+	this.playerOnline = function(playerId, isOnline) {
+		/*if(isOnline) {
+			_playerOne.setOnline();
+		} else {
+			_playerOne.setOffline();
+		}*/
+	}
 	
 	this.handleAction = function(packet) {
 		var action = packet._action;
@@ -91,27 +110,18 @@ KALAHA.game = function() {
 	
 	this.moveFinished = function(pit, lastPit, showMsgs) {
 		var doSwitch = true;
-		/*if(_pits.checkPerformGameEnd(_instance.getActingSide())) {
-			var winner = _pits.getLeader();
-			if(winner != 0) {
-				_messages.setMessage("Game ended! Player " + winner + " won!");
-			} else {
-				_messages.setMessage("Game ended in a draw! No one won!");
-			}
-			_playerOne.reset();
-			_playerTwo.reset();
-			_gameEnded = true;
+		if(_pits.checkIsGameEnd(_instance.getActingSide())) {
 			doSwitch = false;
-		} */
+		} 
 		if(_currentPlayer.isPitHome(lastPit) && doSwitch) {
 			if(showMsgs) {
-				_messages.setMessage("It's your move again!");
+				_messages.queueMessage("It's your move again!");
 			}
 			doSwitch = false;
 		} 
 		if(_pits.checkPerformSteal(lastPit, _instance.getActingSide())) {
 			if(showMsgs) {
-				_messages.setMessage("Great Move! It's a steal!");
+				_messages.queueMessage("Great Move! It's a steal!");
 			}
 		}
 		if(doSwitch) {

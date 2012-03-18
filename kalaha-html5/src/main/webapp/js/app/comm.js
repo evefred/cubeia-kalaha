@@ -17,11 +17,11 @@ KALAHA.comm = function() {
 		console.log("Packet: " + packet.classId);
 	    switch (packet.classId) {
 	        case FB_PROTOCOL.NotifyJoinPacket.CLASSID:
-	            // gameMessage("Player " + packet.pid + " joined");
+	            _notifyCB(packet.pid, true);
 	            break;
 	        case FB_PROTOCOL.NotifyLeavePacket.CLASSID:
-	            // gameMessage("Player " + packet.pid + " left");
-	            break;
+	        	_notifyCB(packet.pid, false);
+	        	break;
 	        case FB_PROTOCOL.SeatInfoPacket.CLASSID :
 	            // gameMessage("Player " + packet.player.pid + " is seated in seat " + packet.seat);
 	            break;
@@ -36,6 +36,10 @@ KALAHA.comm = function() {
 	            break;
 	    }
 	};
+	
+	var _notifyCB = function(playerId, isJoin) {
+		$.kalaha.playerOnline(playerId, isJoin);
+	}
 	
 	var _joinCB = function(packet) {
 		console.log("Join packet; status=" + packet.status + "; table=" + packet.tableid + "; seat=" + packet.seat);

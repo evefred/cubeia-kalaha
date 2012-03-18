@@ -121,9 +121,9 @@ KALAHA.pits = function() {
 		} 
 	};
 	
-	this.checkPerformGameEnd = function(boardSide) {
+	this.checkIsGameEnd = function(boardSide) {
 		if(!_hasSideStones(boardSide)) {
-			if(boardSide == 2) {
+			/*if(boardSide == 2) {
 				var count = 0;
 				for (var i = 2; i < 8; i++) {
 					count += _pits[i].stones;
@@ -137,7 +137,7 @@ KALAHA.pits = function() {
 					_pits[i].stones = 0;
 				}
 				_pits[14].stones += count;
-			}
+			}*/
 			return true;
 		} else {
 			return false;
