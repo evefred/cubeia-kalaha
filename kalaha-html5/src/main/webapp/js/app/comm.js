@@ -7,10 +7,11 @@ KALAHA.comm = function() {
 	var _username;
 	var _password;
 	var _playerId;
+	var _tableId;
 	
 	var _message = function(msg) {
 		$("#events").append("<p class=\"event\">" + msg + "</p>");
-	}
+	};
 	
 	var _packetCB = function(packet) {
 		console.log("Packet: " + packet.classId);
@@ -25,7 +26,7 @@ KALAHA.comm = function() {
 	            // gameMessage("Player " + packet.player.pid + " is seated in seat " + packet.seat);
 	            break;
 	        case FB_PROTOCOL.JoinResponsePacket.CLASSID:
-	            // _message("Join response: " + packet.status);
+	            _joinCB(packet);
 	            break;
 	        case FB_PROTOCOL.GameTransportPacket.CLASSID:
 	            _gameCB(packet);
@@ -34,22 +35,37 @@ KALAHA.comm = function() {
 	            _serviceCB(packet);
 	            break;
 	    }
-	}
+	};
+	
+	var _joinCB = function(packet) {
+		console.log("Join packet; status=" + packet.status + "; table=" + packet.tableid + "; seat=" + packet.seat);
+		if(packet.status == "OK") {
+			_tableId = packet.tableid;
+			$("#gameDiv").hide();
+		} else {
+			_message("Join table failed!");
+		}
+	};
 	
 	var _gameCB = function(packet) {
 		var byteArray = FIREBASE.ByteArray.fromBase64String(packet.gamedata);
 	    var message = utf8.fromByteArray(byteArray);
-		// var resp = JSON.parse(message);
 		console.log("Game message: " + message);
-	}
+		var resp = JSON.parse(message);
+		$.kalaha.handleAction(resp);
+	};
 	
 	var _serviceCB = function(packet) {
 		var byteArray = FIREBASE.ByteArray.fromBase64String(packet.servicedata);
 	    var message = utf8.fromByteArray(byteArray);
 		var resp = JSON.parse(message);
-		console.log("Joining table: " + resp.tableId);
-		_connector.joinTable(resp.tableId, 0);
-	}
+		if(resp._action == "GetTableResponse") {
+			console.log("Joining table: " + resp.tableId);
+			_connector.joinTable(resp.tableId, -1);
+		} else {
+			console.log("Joining table: " + resp.gameId);
+		}
+	};
 	
 	var _lobbyCB = function lobbyCallback(packet) { };
 	
@@ -58,6 +74,7 @@ KALAHA.comm = function() {
 	    if (status === 'OK') {
 	    	$("#loginDiv").hide();
 	    	$("#gameDiv").show();
+	    	$("#createBox").show();
 	        _message("Login OK!");
 	        _playerId = playerId;
 	    } else {
@@ -83,7 +100,37 @@ KALAHA.comm = function() {
 	
 	var _haveWebSocket = function() {
 		return (window.WebSocket && window.WebSocket.prototype && window.WebSocket.prototype.send);
-	}
+	};
+	
+	this.getPlayerId = function() {
+		return _playerId;
+	};
+	
+	this.create = function(opponentId) {
+		var pack = new FB_PROTOCOL.ServiceTransportPacket();
+		pack.pid = _playerId;
+		pack.seq = 0;
+		pack.idtype = 0; // namespace
+		pack.service = "net.kalaha:table";
+		var req = { };
+		req.userId = _playerId;
+		req.correlationId = 0;
+		req._action = "CreateGameRequest";
+		req.opponentId = opponentId;
+		var json = JSON.stringify(req);
+		console.log("Sending: " + json);
+		pack.servicedata = utf8.toByteArray(json);
+		_connector.sendProtocolObject(pack);
+	};
+	
+	this.sendMove = function(house) {
+		var pack = { };
+		pack._action = "Sow";
+		pack.playerId = _playerId;
+		pack.house = house;
+		var json = JSON.stringify(pack);
+		_connector.sendStringGameData(0, _tableId, json);
+	};
 	
 	this.join = function(gameId) {
 		var pack = new FB_PROTOCOL.ServiceTransportPacket();
@@ -100,7 +147,7 @@ KALAHA.comm = function() {
 		console.log("Sending: " + json);
 		pack.servicedata = utf8.toByteArray(json);
 		_connector.sendProtocolObject(pack);
-	}
+	};
 	
 	this.connect = function(username, password) {
 		_username = username;
@@ -112,5 +159,5 @@ KALAHA.comm = function() {
 			console.log("Connecing with CometD... LATER!");
 			// _connector.connect("FIREBASE.CometdAdapter", 'localhost', '8081', "/cometd");
 		}
-	}
+	};
 }

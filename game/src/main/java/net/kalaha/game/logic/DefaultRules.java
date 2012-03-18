@@ -4,11 +4,16 @@ public class DefaultRules implements SpecialRules {
 
 	@Override
 	public boolean allowStealingFromEmptyPit() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean endGameWhenEitherPlayerRunsOutOfStones() {
-		return false;
+		return true;
+	}
+	
+	@Override
+	public boolean endGameSweepsBoard() {
+		return true;
 	}
 }

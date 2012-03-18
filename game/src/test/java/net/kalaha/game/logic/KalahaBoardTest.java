@@ -1,11 +1,13 @@
 package net.kalaha.game.logic;
 
+import static net.kalaha.entities.GameStatus.ACTIVE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import net.kalaha.entities.Game;
 import net.kalaha.entities.GameStatus;
 import net.kalaha.entities.User;
+import net.kalaha.game.IllegalMoveException;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -61,13 +63,29 @@ public class KalahaBoardTest {
 	}
 	
 	@Test
-	public void gameEndsWhenNoMoreStones() {
+	public void gameEndsWhenOpponentHasNoMoreStones() {
 		for (int i = 0; i < 6; i++) {
 			kb.setStonesInPit(0, i, Player.NORTH);
 		}
+		// kb.setStonesInPit(1, 5, Player.NORTH);
 		kb.setStonesInPit(1, 5, Player.SOUTH);
 		kb.moveStones(5, Player.SOUTH);
 		assertTrue(kb.isGameEnded());
+		assertEquals(kb.getStonesInKalaha(Player.NORTH), 0);
+		assertEquals(kb.getStonesInKalaha(Player.SOUTH), 31);
+	}
+	
+	@Test
+	public void gameEndsWhenPlayerHasNoMoreStones() {
+		for (int i = 0; i < 6; i++) {
+			kb.setStonesInPit(0, i, Player.SOUTH);
+		}
+		// kb.setStonesInPit(1, 5, Player.NORTH);
+		kb.setStonesInPit(1, 5, Player.SOUTH);
+		kb.moveStones(5, Player.SOUTH);
+		assertTrue(kb.isGameEnded());
+		assertEquals(kb.getStonesInKalaha(Player.NORTH), 36);
+		assertEquals(kb.getStonesInKalaha(Player.SOUTH), 1);
 	}
 	
 	@Test
@@ -83,6 +101,7 @@ public class KalahaBoardTest {
 			kb.setStonesInPit(0, i, Player.NORTH);
 		}
 		kb.setStonesInPit(1, 5, Player.SOUTH);
+		assertFalse(kb.isGameEnded());
 		kb.moveStones(5, Player.SOUTH);
 		assertTrue(kb.isGameEnded());
 		kb.updateGame(g);
@@ -93,6 +112,7 @@ public class KalahaBoardTest {
 	private Game createGame(User owner, User opponent) {
 		Game g = new Game();
 		int[] initState = KalahaBoard.getInitState(6);
+		g.setStatus(ACTIVE);
 		g.updateGameState(initState);
 		g.setOpponent(opponent);
 		g.setOwner(owner);
@@ -195,37 +215,37 @@ public class KalahaBoardTest {
 	}
 	
 	@Test
-	public void testStealAddsStonesInKalahaCorrectly() {
+	public void testStealWhenOppositePitEmptyAndSpecialRuleOff() {
 		KalahaBoard kb = new KalahaBoard(6, Player.NORTH, new BjornRules());
-		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
-		kb.moveStones(1, Player.NORTH);
-		assertEquals(kb.getStonesInKalaha(Player.NORTH), 4);
-		assertEquals(kb.getPlayerToAct(), Player.NORTH);
-	}
-	
-	@Test
-	public void testNoStealWhenOppositePitEmptyAndSpecialRuleOff() {
-		kb.setPlayerToAct(Player.NORTH);
 		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(1, Player.NORTH);
 		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
 		assertEquals(kb.getStonesInKalaha(Player.NORTH), 3);
 		assertEquals(kb.getStonesInPit(2, Player.NORTH), 1);
-		System.out.println(kb);
+		assertEquals(kb.getStonesInPit(2, Player.SOUTH), 10);
 	}	
 	
 	@Test
+	public void testNoNotStealWhenOppositePitEmpty() {
+		KalahaBoard kb = new KalahaBoard(6, Player.NORTH);
+		setupState(kb, 0,10,0,0,1,2,7, 10,1,0,12,5,11,3);		
+		kb.moveStones(1, Player.NORTH);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
+		assertEquals(kb.getStonesInKalaha(Player.NORTH), 3);
+		assertEquals(kb.getStonesInPit(2, Player.NORTH), 1);
+		assertEquals(kb.getStonesInPit(2, Player.SOUTH), 0);
+	}	
+	
+	@Test(expectedExceptions=IllegalMoveException.class)
 	public void ignoresActionFromPlayerNotInTurn() {		
 		kb.moveStones(0, Player.NORTH);
-		assertStones(kb, Player.NORTH, 6, 6, 6, 6, 6, 6, 0);
 	}
 	
-	@Test
+	@Test(expectedExceptions=IllegalMoveException.class)
 	public void ignoresActionMovingZeroStones() {
 		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);
 		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
 		kb.moveStones(0, Player.SOUTH);
-		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
 	}
 	
 	@Test
@@ -244,11 +264,11 @@ public class KalahaBoardTest {
 	}
 	
 	@Test
-	public void playerGetsToActAgainAfterSteal() {
+	public void playerDoesNotGetToActAgainAfterSteal() {
 		KalahaBoard kb = new KalahaBoard(6, Player.NORTH, new BjornRules());
 		setupState(kb, 0,10,10,0,1,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(1, Player.NORTH);
-		assertEquals(kb.getPlayerToAct(), Player.NORTH);
+		assertEquals(kb.getPlayerToAct(), Player.SOUTH);
 	}
 	
 	@Test
@@ -259,18 +279,18 @@ public class KalahaBoardTest {
 	}
 	
 	@Test
-	public void eitherPlayerOutOfStonesEndsGameWhenSpecialRuleOn() {
+	public void eitherPlayerOutOfStonesDoesNotEndsGameWhenSpecialRuleOn() {
 		KalahaBoard kb = new KalahaBoard(6, Player.SOUTH, new BjornRules());
 		setupState(kb, 0,0,0,0,0,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(5, Player.SOUTH);
-		assertTrue(kb.isGameEnded());
+		assertFalse(kb.isGameEnded());
 	}
 	
 	@Test
-	public void eitherPlayerOutOfStonesDoesNotEndGameWhenSpecialRuleOff() {
+	public void eitherPlayerOutOfStonesDoesEndGameWhenSpecialRuleOff() {
 		setupState(kb, 0,0,0,0,0,2,7, 10,1,0,12,5,11,3);		
 		kb.moveStones(5, Player.SOUTH);
-		assertFalse(kb.isGameEnded());
+		assertTrue(kb.isGameEnded());
 	}
 	
 	@Test

@@ -4,13 +4,17 @@ public class BjornRules implements SpecialRules {
 
 	@Override
 	public boolean allowStealingFromEmptyPit() {
-		return true;
+		return false;
 	}
  
 	@Override
 	public boolean endGameWhenEitherPlayerRunsOutOfStones() {
-		return true;
+		return false;
 	}
 
+	@Override
+	public boolean endGameSweepsBoard() {
+		return false;
+	}
 }
  

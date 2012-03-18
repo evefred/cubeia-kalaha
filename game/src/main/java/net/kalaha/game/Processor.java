@@ -66,6 +66,12 @@ public class Processor implements GameProcessor {
 	}
 	
 	private void handleKalahaAction(GameDataAction action, Table table, KalahaAction act) {
+		try {
+			doKalahaAction(action, table, act);
+		} catch(IllegalMoveException e) { }
+	}
+
+	private void doKalahaAction(GameDataAction action, Table table, KalahaAction act) {
 		act.perform(board);
 		notifyOnAction(action, table, act);
 		boolean end = board.isGameEnded();

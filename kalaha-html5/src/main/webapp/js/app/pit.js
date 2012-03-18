@@ -9,9 +9,13 @@ KALAHA.pit = function(pitId) {
 
 	var _getPitIdForDistance = function(distance) {
 		var next = _instance;
+		var skipId = _getNonActiveHomePitId();
 		for (var i = 0; i < distance; i++) {
 			var nextId = next.nextPitId();
 			next = _getPit(nextId);
+			if(nextId == skipId) {
+				i--;
+			}
 		}
 		return next.id;
 	};
@@ -33,6 +37,10 @@ KALAHA.pit = function(pitId) {
 			return $.kalaha.getActingSide() == 2;
 		}
 	}
+	
+	var _getNonActiveHomePitId = function(boardSide) {
+		return ($.kalaha.getActingSide() == 1 ? 14 : 1);
+	};
 	
 	var _visitNextPits = function(visitor) {
 		var lastPit = _instance.id;
@@ -77,6 +85,28 @@ KALAHA.pit = function(pitId) {
 		$("#pit" + _instance.id).css("border", "1px solid " + color);
 	}
 	
+	this.realMove = function(localMove) {
+		_resetAllBorders();
+		_isSelected = false;
+		var lastPit = _visitNextPits(function(pit) {
+			pit.stones = pit.stones + 1;
+		});
+		_instance.stones = 0;
+		if(localMove) {
+			$.kalaha.reportMove(_instance.id, lastPit);
+		}
+		$.kalaha.moveFinished(_instance.id, lastPit, localMove);
+	}
+	
+	this.moveSelect = function() {
+		_resetAllBorders();
+		_instance.setBorder("blue");
+		_isSelected = true;
+		_visitNextPits(function(pit) {
+			pit.setBorder("green");
+		});
+	}
+	
 	this.handleClick = function() {
 		if(_instance.stones === 0 || _instance.id === 1 || _instance.id === 14 || $.kalaha.isGameEnded()) {
 			_resetAllBorders();
@@ -89,20 +119,9 @@ KALAHA.pit = function(pitId) {
 		}
 		if(_isSelected) {
 			// this is a move
-			_resetAllBorders();
-			_isSelected = false;
-			var lastPit = _visitNextPits(function(pit) {
-				pit.stones = pit.stones + 1;
-			});
-			_instance.stones = 0;
-			$.kalaha.reportMove(_instance.id, lastPit);
+			_instance.realMove(true);
 		} else {
-			_resetAllBorders();
-			_instance.setBorder("blue");
-			_isSelected = true;
-			_visitNextPits(function(pit) {
-				pit.setBorder("green");
-			});
+			_instance.moveSelect();
 		}
 	};
 }

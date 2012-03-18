@@ -34,10 +34,16 @@ function join() {
 	$.comm.join(gameId);
 }
 
+function create() {
+	var opponentId = $("#opponentId").val();
+	$.comm.create(opponentId);
+}
+
 $(document).ready(function() {
 	
 	$("#pits").hide();
 	$("#gameDiv").hide();
+	$("#createBox").hide();
 	
 	_game.init();
 	
@@ -83,7 +89,14 @@ $(document).ready(function() {
 
 </div>
 
+<hr />
+
 <div id="messageBox">Msg here...</div>
+
+<div id="createBox">
+	Create game against opponent id: <input id="opponentId" title="OpponentId" type="text"/>
+    <button id="createButt" onclick="create()">Create</button>
+</div>
 
 <div id="events"></div>
 

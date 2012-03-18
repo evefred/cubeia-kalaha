@@ -1,6 +1,7 @@
 package net.kalaha.game;
 
 import static net.kalaha.entities.GameForm.CHALLENGE;
+import static net.kalaha.entities.GameStatus.FINISHED;
 import static net.kalaha.entities.GameType.KALAHA;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Game;
+import net.kalaha.entities.GameStatus;
 import net.kalaha.entities.User;
 import net.kalaha.game.logic.KalahaBoard;
 import net.kalaha.table.api.CreateGameRequest;
@@ -131,6 +133,10 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		final Game game = gameManager.getGame(gameId);
 		if (game == null) {
 			log.fatal("Received request for game " + gameId + " which doesn't exist!");
+			return -1; // EARLY RETURN
+		}
+		if (game.getStatus() == FINISHED) {
+			log.fatal("Received request for game " + gameId + " which is ended!");
 			return -1; // EARLY RETURN
 		}
 		TableFactory fact = context.getTableFactory();

@@ -12,14 +12,14 @@ public class State extends AbstractAction implements Serializable {
 
 	private static final long serialVersionUID = -2115183643846951929L;
 	
-	private int[] pits = new int[14];
+	private int[] houses = new int[14];
 	
 	private int southPlayerId;
 	private int northPlayerId;
 	private int playerToAct;
 	
 	public State(int[] state, int southPlayerId, int northPlayerId, int playerToAct) {
-		this.pits = state;
+		this.houses = state;
 		this.southPlayerId = southPlayerId;
 		this.northPlayerId = northPlayerId;
 		this.playerToAct = playerToAct;
@@ -35,12 +35,12 @@ public class State extends AbstractAction implements Serializable {
 		this.playerToAct = playerToAct;
 	}
 
-	public int[] getPits() {
-		return pits;
+	public int[] getHouses() {
+		return houses;
 	}
 	
-	public void setPits(int[] pits) {
-		this.pits = pits;
+	public void setHouses(int[] pits) {
+		this.houses = pits;
 	}
 	
 	public int getNorthPlayerId() {

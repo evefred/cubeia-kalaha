@@ -27,6 +27,43 @@ KALAHA.pits = function() {
 	_pits[12].stones = 1;
 	_pits[13].stones = 1;*/
 	
+	this.remoteSow = function(pit, switchPlayer) {
+		$("#pit" + pit).data("pit").moveSelect();
+		window.setTimeout(function() {
+			$("#pit" + pit).data("pit").realMove(false);
+			if(switchPlayer) {
+				$.kalaha.switchPlayer();
+			}
+			_updateAllStones();
+		}, 1500);
+	}
+	
+	this.setGameState = function(boardSide, state) {
+		if(boardSide == 2) {
+			for (var i = 0; i < 6; i++) {
+				_pits[7 - i].stones = state[i];
+			}
+			_pits[1].stones = state[6];
+			for (var i = 7; i < 13; i++) {
+				_pits[i + 1].stones = state[i];
+			} 
+			_pits[14].stones = state[13];
+		} else {
+			// reverse!
+			for (var i = 0; i < 6; i++) {
+				_pits[i + 8].stones = state[i];
+			}
+			var j = 7;
+			_pits[1].stones = state[13];
+			for (var i = 7; i < 13; i++) {
+				_pits[j].stones = state[i];
+				j--;
+			} 
+			_pits[14].stones = state[6];
+		}
+		_updateAllStones();
+	};
+	
 	var _updateAllStones = function() {
 		for (var i = 1; i <= 14; i++) {
 			$("#pit" + i).empty();
@@ -156,9 +193,10 @@ KALAHA.pits = function() {
 		$("#pit14").css("background-color", "lightgray");
 		
 		for (var i = 1; i <= 14; i++) {
-			
 			$("#pit" + i).data("pit", _pits[i]);
-			
+		}
+		
+		for (var i = 8; i < 14; i++) {
 			$("#pit" + i).click(function(event) {
 				$(this).data("pit").handleClick();
 				event.preventDefault();
