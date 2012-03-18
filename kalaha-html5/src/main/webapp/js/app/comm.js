@@ -160,8 +160,8 @@ KALAHA.comm = function() {
 			console.log("Connecing with WebSocket...");
 			_connector.connect("FIREBASE.WebSocketAdapter", 'localhost', '8081', "/socket");
 		} else {
-			console.log("Connecing with CometD... LATER!");
-			// _connector.connect("FIREBASE.CometdAdapter", 'localhost', '8081', "/cometd");
+			console.log("Connecing with CometD... ");
+			_connector.connect("FIREBASE.CometdAdapter", 'localhost', '8081', "/cometd", false, function() { return $.cometd });
 		}
 	};
 }
