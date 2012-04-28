@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" href="/css/bootstrap/bootstrap-2.0.3.css">
+<link rel="stylesheet" href="/css/main.css">
+
+<script type="text/javascript" src="/js/jquery/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="/js/bootstrap/bootstrap-2.0.3.js"></script>
+
+<title>Kalaha With Friends</title>
+</head>
+<body>
+
+<div class="container">  
+
+	<div class="row fixed-height-100">
+	    <div class="span4 bottom-aligned">
+	    	<h1>Kalaha WIth Friends</h1>
+	    </div>
+	    
+	    <div class="span4">
+	        <div>&nbsp;</div>
+	    </div>
+	    
+	    <div class="span4 bottom-aligned right-aligned offset8">
+	    	<span wicket:id="session-panel"></span>
+	    </div>
+	</div>
+	
+	<div class="row">
+	    <div class="span12">
+	   		&nbsp; 
+	   	</div>
+	</div>
+	
+	<div class="row">
+	    <div class="span12">
+	    &nbsp; 
+	    	<div class="alert" wicket:id="alert-box">
+	    		<button class="close" data-dismiss="alert">×</button>
+				<strong><span wicket:id="alert-type-label"></span>!</strong> 
+				<span wicket:id="alert-msg"></span>
+			</div>
+	    </div>
+	</div>
+
+	<div class="row">
+	    <div class="span12">
+	        <wicket:child></wicket:child>
+	    </div>
+	</div>
+</div>
+
+</body>
+</html>

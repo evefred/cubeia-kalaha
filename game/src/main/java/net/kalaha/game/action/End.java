@@ -43,5 +43,4 @@ public class End extends AbstractAction {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
-	
 }

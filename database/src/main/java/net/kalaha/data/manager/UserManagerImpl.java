@@ -7,6 +7,7 @@ import javax.persistence.Query;
 
 import net.kalaha.entities.Session;
 import net.kalaha.entities.User;
+import net.kalaha.entities.UserDetails;
 
 import org.apache.log4j.Logger;
 
@@ -44,6 +45,43 @@ public class UserManagerImpl implements UserManager {
 	}
 	
 	@Override
+	public void setDisplayName(int id, String displayName) {
+		trans.enter();
+		try {
+			User user = getUser(id);
+			if(user != null) {
+				user.getUserDetails().setDisplayName(displayName);
+			}
+			trans.commit();
+		} catch(Exception e) {
+			log.error("Failed transaction", e);
+			trans.rollback();
+		} finally {
+			trans.exit();
+		}
+	}
+	
+	@Override
+	public Session getSessionByUserId(int userId) {
+		trans.enter();
+		try {
+			Session s = doGetSessionByUserId(userId);
+			if(s != null) return s;
+			User u = getUser(userId);
+			if(u == null) return null;
+			s = doCreateNewSession(u);
+			trans.commit();
+			return s;
+		} catch(Exception e) {
+			log.error("Failed transaction", e);
+			trans.rollback();
+			return null;
+		} finally {
+			trans.exit();
+		}
+	}
+	
+	@Override
 	public User createUser(String extId, int operatorId) {
 		trans.enter();
 		try {
@@ -60,6 +98,22 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 	
+	@Override
+	public User createLocalUser(String localName, String password) {
+		trans.enter();
+		try {
+			User u = getUserByLocalName(localName);
+			if(u == null) u = doCreateLocalUser(localName, password);
+			trans.commit();
+			return u;
+		} catch(Exception e) {
+			log.error("Failed transaction", e);
+			trans.rollback();
+			return null;
+		} finally {
+			trans.exit();
+		}
+	}
 
 	@Override
 	public Session getSessionById(String id) {
@@ -86,6 +140,16 @@ public class UserManagerImpl implements UserManager {
 		trans.enter();
 		try {
 			return doGetUserByExternalId(extId, operatorId);
+		} finally {
+			trans.exit();
+		}
+	}
+	
+	@Override
+	public User getUserByLocalName(String userName) {
+		trans.enter();
+		try {
+			return doGetUserByLocalName(userName);
 		} finally {
 			trans.exit();
 		}
@@ -149,6 +213,17 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 	
+	private User doGetUserByLocalName(String userName) {
+		Query q = trans.current().createQuery("select t from User t where t.localName = :localName");
+		q.setParameter("localName", userName);
+		q.setMaxResults(1);
+		try {
+			return (User) q.getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
+	
 	private Session doCreateNewSession(User u) {
 		Session s = new Session();
 		UUID uid = UUID.randomUUID();
@@ -166,8 +241,24 @@ public class UserManagerImpl implements UserManager {
 
 	private User doCreateUser(String extId, int operatorId) {
 		User s = new User();
+		UserDetails det = new UserDetails();
+		trans.current().persist(det);
+		s.setUserDetails(det);
 		s.setExternalId(extId);
 		s.setOperatorId(operatorId);
+		trans.current().persist(s);
+		return s;
+	}
+	
+	private User doCreateLocalUser(String localName, String password) {
+		User s = new User();
+		UserDetails det = new UserDetails();
+		det.setDisplayName(localName);
+		trans.current().persist(det);
+		s.setUserDetails(det);
+		s.setOperatorId(0);
+		s.setLocalName(localName);
+		s.setLocalPassword(password);
 		trans.current().persist(s);
 		return s;
 	}
@@ -176,6 +267,17 @@ public class UserManagerImpl implements UserManager {
 		Query q = trans.current().createQuery("select t from Session t where t.externalId = :extId and t.operatorId = :opId");
 		q.setParameter("extId", extId);
 		q.setParameter("opId", operatorId);
+		q.setMaxResults(1);
+		try {
+			return (Session) q.getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
+	
+	private Session doGetSessionByUserId(int userId) {
+		Query q = trans.current().createQuery("select t from Session t where t.userId = :userId");
+		q.setParameter("userId", userId);
 		q.setMaxResults(1);
 		try {
 			return (Session) q.getSingleResult();

@@ -1,7 +1,7 @@
 package net.kalaha.game.action;
 
 import net.kalaha.game.logic.KalahaBoard;
-import net.kalaha.game.logic.Player;
+import net.kalaha.game.logic.KalahaPlayer;
 import net.kalaha.json.IllegalActionException;
 
 public class Sow extends KalahaAction {
@@ -29,7 +29,7 @@ public class Sow extends KalahaAction {
 	}
 	
 	public void perform(KalahaBoard board) {
-		Player p = board.getPlayerForId(playerId);
+		KalahaPlayer p = board.getPlayerForId(playerId);
 		board.moveStones(house, p);
 	}
 }

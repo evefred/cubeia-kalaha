@@ -42,17 +42,17 @@ public class State extends AbstractAction implements Serializable {
 	public void setHouses(int[] pits) {
 		this.houses = pits;
 	}
-	
+
 	public int getNorthPlayerId() {
 		return northPlayerId;
 	}
 	
-	public int getSouthPlayerId() {
-		return southPlayerId;
-	}
-	
 	public void setNorthPlayerId(int northPlayerId) {
 		this.northPlayerId = northPlayerId;
+	}
+	
+	public int getSouthPlayerId() {
+		return southPlayerId;
 	}
 	
 	public void setSouthPlayerId(int southPlayerId) {

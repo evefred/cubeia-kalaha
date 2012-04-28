@@ -3,8 +3,8 @@ package net.kalaha.game.logic;
 import static net.kalaha.entities.GameResult.DRAW;
 import static net.kalaha.entities.GameResult.WIN;
 import static net.kalaha.entities.GameStatus.FINISHED;
-import static net.kalaha.game.logic.Player.NORTH;
-import static net.kalaha.game.logic.Player.SOUTH;
+import static net.kalaha.game.logic.KalahaPlayer.NORTH;
+import static net.kalaha.game.logic.KalahaPlayer.SOUTH;
 
 import java.io.Serializable;
 
@@ -33,12 +33,12 @@ public class KalahaBoard implements Serializable {
 	private int gameId;
 
 	private boolean gameEnded;
-	private Player playerToAct;
+	private KalahaPlayer playerToAct;
 
 	private SpecialRules rules;
 	
 	public KalahaBoard(int stones) {		
-		this(stones, Player.SOUTH);
+		this(stones, KalahaPlayer.SOUTH);
 	}
 	
 	public KalahaBoard(Game game) {
@@ -48,16 +48,16 @@ public class KalahaBoard implements Serializable {
 			this.northPlayerId = game.getOpponent().getId();
 		}
 		this.gameEnded = (game.getStatus() == GameStatus.ACTIVE ? false : true);
-		this.playerToAct = (game.isOwnersMove() ? Player.SOUTH : Player.NORTH);
+		this.playerToAct = (game.isOwnersMove() ? KalahaPlayer.SOUTH : KalahaPlayer.NORTH);
 		this.state = new State(game.getCurrentGameState().getRealState(), southPlayerId, northPlayerId, getPlayerToActId());
 		this.rules = new DefaultRules();
 	}
 	
-	public KalahaBoard(int stones, Player startingPlayer) {
+	public KalahaBoard(int stones, KalahaPlayer startingPlayer) {
 		this(stones, startingPlayer, new DefaultRules());
 	}
 	
-	public KalahaBoard(int stones, Player startingPlayer, SpecialRules rules) {
+	public KalahaBoard(int stones, KalahaPlayer startingPlayer, SpecialRules rules) {
 		this.state = new State();
 		initState(stones);
 		playerToAct = startingPlayer;
@@ -70,7 +70,7 @@ public class KalahaBoard implements Serializable {
 	}	
 	
 	private int getPlayerToActId() {
-		if(playerToAct == Player.SOUTH) {
+		if(playerToAct == KalahaPlayer.SOUTH) {
 			return southPlayerId;
 		} else {
 			return northPlayerId;
@@ -123,33 +123,33 @@ public class KalahaBoard implements Serializable {
 		this.southPlayerId = southPlayerId;
 	}
 	
-	public Player getPlayerForId(int playerId) {
+	public KalahaPlayer getPlayerForId(int playerId) {
 		if(playerId == southPlayerId) {
-			return Player.SOUTH;
+			return KalahaPlayer.SOUTH;
 		} else if(playerId == northPlayerId) {
-			return Player.NORTH;
+			return KalahaPlayer.NORTH;
 		} else {
 			throw new IllegalStateException("No such player: " + playerId);
 		}
 	}
 
-	public int getStonesInKalaha(Player player) {
+	public int getStonesInKalaha(KalahaPlayer player) {
 		return state.getHouses()[player.kalaha()];
 	}
 	
-	public void setStonesInKalaha(int stones, Player player) {
+	public void setStonesInKalaha(int stones, KalahaPlayer player) {
 		state.getHouses()[player.kalaha()] = stones;
 	}
 
-	int getStonesInPit(int pit, Player player) {
-		if (player == Player.SOUTH) {
+	int getStonesInPit(int pit, KalahaPlayer player) {
+		if (player == KalahaPlayer.SOUTH) {
 			return state.getHouses()[pit];
 		} else {
 			return state.getHouses()[SOUTH_KALAHA + 1 + pit];
 		}
 	}
 	
-	public void moveStones(int pit, Player player) {
+	public void moveStones(int pit, KalahaPlayer player) {
 		if(isGameEnded()) {
 			log.debug("Skipping player " + player + " silently, the game is ended...");
 			throw new IllegalMoveException();
@@ -170,7 +170,7 @@ public class KalahaBoard implements Serializable {
 		setStonesInPit(0, pit, player);
 		
 		int skippedKalahas = 0;
-		int offset = (player == Player.NORTH) ? NUMBER_OF_PITS + 1 : 0;
+		int offset = (player == KalahaPlayer.NORTH) ? NUMBER_OF_PITS + 1 : 0;
 		for (int i = pit + 1; i < pit + stonesToMove + 1; i++) {
 			int currentPit = (i + skippedKalahas + offset) % state.getHouses().length;
 			
@@ -202,18 +202,18 @@ public class KalahaBoard implements Serializable {
 		checkGameEnd(player);
 	}
 
-	private void updatePlayerToAct(Player playerWhoActed, boolean endedInKalaha) {
+	private void updatePlayerToAct(KalahaPlayer playerWhoActed, boolean endedInKalaha) {
 		if (!endedInKalaha) {
 			playerToAct = getOpponent(playerWhoActed);
 		}
 		state.setPlayerToAct(getPlayerToActId());
 	}
 
-	private boolean playerToAct(Player player) {
+	private boolean playerToAct(KalahaPlayer player) {
 		return playerToAct == player;
 	}
 
-	private boolean stealOpponentsStones(Player player, int currentPit) {
+	private boolean stealOpponentsStones(KalahaPlayer player, int currentPit) {
 		boolean stole = false;
 		int currentStonesInKalaha = getStonesInKalaha(player);		
 		int stonesInOpponentPit = getStonesInOpponentPit(player, currentPit);
@@ -225,22 +225,22 @@ public class KalahaBoard implements Serializable {
 		return stole;
 	}
 
-	private int getStonesInOpponentPit(Player player, int currentPit) {
+	private int getStonesInOpponentPit(KalahaPlayer player, int currentPit) {
 		int opponentPit = getOpponentPit(player, currentPit);
 		return getStonesInPit(opponentPit, getOpponent(player));
 	}
 
-	private int getOpponentPit(Player player, int currentPit) {
+	private int getOpponentPit(KalahaPlayer player, int currentPit) {
 		int opponentPit = NUMBER_OF_PITS - player.toLocalPit(currentPit) - 1;
 		return opponentPit;
 	}
 	
-	private boolean isOpponentKalaha(Player player, int currentPit) {
+	private boolean isOpponentKalaha(KalahaPlayer player, int currentPit) {
 		return getOpponent(player).isMyKalaha(currentPit);
 	}
 
 	
-	private void checkGameEnd(Player player) {
+	private void checkGameEnd(KalahaPlayer player) {
 		if (!canPlayerMove(player)) {
 			if (playerToAct == player || rules.endGameWhenEitherPlayerRunsOutOfStones()) {
 				endTransfer(getOpponent(player));
@@ -252,7 +252,7 @@ public class KalahaBoard implements Serializable {
 		}
 	}
 	
-	public void endTransfer(Player player) {
+	public void endTransfer(KalahaPlayer player) {
 		if(rules.endGameSweepsBoard()) {
 			// Move remaining stones to kalaha
 			for (int i = 0; i < 6; i++) {
@@ -266,7 +266,7 @@ public class KalahaBoard implements Serializable {
 		}
 	}
 
-	public boolean canPlayerMove(Player player) {
+	public boolean canPlayerMove(KalahaPlayer player) {
 		for (int i = 0; i < 6; i++) {
 			if(getStonesInPit(i, player) != 0) {
 				return true;
@@ -275,12 +275,12 @@ public class KalahaBoard implements Serializable {
 		return false;
 	}
 
-	private Player getOpponent(Player player) {
-		return (player == Player.SOUTH) ? Player.NORTH : Player.SOUTH;
+	private KalahaPlayer getOpponent(KalahaPlayer player) {
+		return (player == KalahaPlayer.SOUTH) ? KalahaPlayer.NORTH : KalahaPlayer.SOUTH;
 	}
 
-	public void setStonesInPit(int stones, int pit, Player player) {
-		if (player == Player.SOUTH) {
+	public void setStonesInPit(int stones, int pit, KalahaPlayer player) {
+		if (player == KalahaPlayer.SOUTH) {
 			state.getHouses()[pit] = stones;
 		} else {
 			state.getHouses()[NUMBER_OF_PITS + pit + 1] = stones;
@@ -292,20 +292,20 @@ public class KalahaBoard implements Serializable {
 	}
 	
 	public boolean isDraw() {
-		return getStonesInKalaha(Player.SOUTH) == getStonesInKalaha(Player.NORTH);
+		return getStonesInKalaha(KalahaPlayer.SOUTH) == getStonesInKalaha(KalahaPlayer.NORTH);
 	}
 
 	public int getWinningPlayerId() {
-		if(getStonesInKalaha(Player.SOUTH) > getStonesInKalaha(Player.NORTH)) {
+		if(getStonesInKalaha(KalahaPlayer.SOUTH) > getStonesInKalaha(KalahaPlayer.NORTH)) {
 			return southPlayerId;
-		} else if(getStonesInKalaha(Player.SOUTH) < getStonesInKalaha(Player.NORTH)) {
+		} else if(getStonesInKalaha(KalahaPlayer.SOUTH) < getStonesInKalaha(KalahaPlayer.NORTH)) {
 			return northPlayerId;
 		} else {
 			return -1;
 		}
 	}
 
-	public Player getPlayerToAct() {
+	public KalahaPlayer getPlayerToAct() {
 		return playerToAct;
 	}
 	
@@ -319,7 +319,7 @@ public class KalahaBoard implements Serializable {
 		return sb.toString();
 	}
 
-	public void setPlayerToAct(Player player) {
+	public void setPlayerToAct(KalahaPlayer player) {
 		playerToAct = player;
 	}
 }

@@ -1,5 +1,7 @@
 package net.kalaha.entities;
 
+import static javax.persistence.CascadeType.ALL;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -7,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Entity
 public class User implements Serializable {
@@ -17,7 +20,7 @@ public class User implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	
-	@Column(nullable=false)
+	@Column(nullable=true)
 	private String externalId;
 	
 	@Column(nullable=false)
@@ -28,6 +31,17 @@ public class User implements Serializable {
 	
 	@Column(nullable=true)
 	private String localPassword;
+	
+	@OneToOne(optional=false, cascade=ALL)
+	private UserDetails userDetails;
+	
+	public UserDetails getUserDetails() {
+		return userDetails;
+	}
+	
+	public void setUserDetails(UserDetails userDetails) {
+		this.userDetails = userDetails;
+	}
 	
 	public String getLocalName() {
 		return localName;

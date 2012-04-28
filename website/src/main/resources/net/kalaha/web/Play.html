@@ -1,0 +1,69 @@
+<html>
+<wicket:head>
+
+    <link rel="stylesheet" href="/css/app.css">
+
+	<script type="text/javascript" src="/js/json2.js"></script>
+	<script type="text/javascript" src="/js/cometd/cometd.js"></script>
+	<script type="text/javascript" src="/js/cometd/jquery-cometd.js"></script>
+	<script src="/js/fb/firebase-js-api-1.8.0-CE-javascript.js" type="text/javascript"></script>
+	<script src="/js/fb/firebase-protocol-1.8.0-CE-javascript.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/js/app/ns.js"></script>
+	<script type="text/javascript" src="/js/app/messages.js"></script>
+	<script type="text/javascript" src="/js/app/player.js"></script>
+	<script type="text/javascript" src="/js/app/pit.js"></script>
+	<script type="text/javascript" src="/js/app/pits.js"></script>
+	<script type="text/javascript" src="/js/app/comm.js"></script>
+	<script type="text/javascript" src="/js/app/game.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			$("#pits").hide();
+			$("#messageBox").hide();
+			var game = new KALAHA.game(__gameId);
+			game.init();
+		});
+	</script>
+
+</wicket:head>
+<body>
+	<wicket:extend>
+		<div class="row">
+		
+			<div class="span4">
+				<p>Some text here perhaps? Some hit on what to do? Or what to eat?</p>
+			</div>
+
+			<div class="span8">
+				<p>Make your move below, or <a wicket:id="go-back">go back</a> to your list of games. </p>
+			
+				<div id="pits">
+
+					<div id="pit1" class="pit"></div>
+					<div id="pit2" class="pit"></div>
+					<div id="pit3" class="pit"></div>
+					<div id="pit4" class="pit"></div>
+					<div id="pit5" class="pit"></div>
+					<div id="pit6" class="pit"></div>
+					<div id="pit7" class="pit"></div>
+
+					<div id="pit8" class="pit homePit"></div>
+					<div id="pit9" class="pit homePit"></div>
+					<div id="pit10" class="pit homePit"></div>
+					<div id="pit11" class="pit homePit"></div>
+					<div id="pit12" class="pit homePit"></div>
+					<div id="pit13" class="pit homePit"></div>
+					<div id="pit14" class="pit"></div>
+
+					<div id="boardSide1"></div>
+					<div id="boardSide2"></div>
+
+				</div>
+
+				<div id="messageBox">Msg here...</div>
+
+			</div>
+		</div>
+	</wicket:extend>
+</body>
+</html>

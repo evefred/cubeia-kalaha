@@ -8,6 +8,7 @@
 	<persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>net.kalaha.entities.User</class>
+		<class>net.kalaha.entities.UserDetails</class>
 		<class>net.kalaha.entities.Session</class>
 		<class>net.kalaha.entities.Game</class>
 		<class>net.kalaha.entities.GameState</class>

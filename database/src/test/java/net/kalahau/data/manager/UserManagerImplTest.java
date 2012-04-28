@@ -2,6 +2,7 @@ package net.kalahau.data.manager;
 
 import static org.testng.Assert.assertEquals; 
 import static org.testng.Assert.assertNotNull;
+import junit.framework.Assert;
 import net.kalaha.entities.Session;
 import net.kalaha.entities.User;
 
@@ -28,5 +29,21 @@ public class UserManagerImplTest extends JpaTestBase {
 		User u = userManager.createUser("kalle", 32);
 		assertNotNull(userManager.getUser(u.getId()));
 		assertEquals(userManager.getUserByExternalId("kalle", 32), u);
+	}
+	
+	@Test
+	public void testLocalUser() {
+		User u = userManager.createLocalUser("kalle", "kalle");
+		assertNotNull(userManager.getUser(u.getId()));
+		assertEquals(userManager.getUserByLocalName("kalle"), u);
+	}
+	
+	@Test
+	public void testSetDisplayName() {
+		User u = userManager.createLocalUser("kalle", "kalle");
+		assertNotNull(userManager.getUser(u.getId()));
+		assertEquals(userManager.getUserByLocalName("kalle").getUserDetails().getDisplayName(), "kalle");
+		userManager.setDisplayName(u.getId(), "kalle1");
+		assertEquals(userManager.getUserByLocalName("kalle").getUserDetails().getDisplayName(), "kalle1");
 	}
 }

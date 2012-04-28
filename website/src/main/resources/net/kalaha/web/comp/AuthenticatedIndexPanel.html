@@ -1,0 +1,28 @@
+<html>
+<body>
+	<wicket:panel>
+		<p>What's that below? It's your current games, stupid! You don't have any, just
+		go ahead and <a wicket:id="challenge-link">challenge</a> someone.
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Opponent</th>
+					<th>Created</th>
+					<th>Last Move</th>
+					<th>No. of Moves</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr wicket:id="gameView">
+					<td><span wicket:id="opponent"></span></td>
+					<td><span wicket:id="created"></span></td>
+					<td><span wicket:id="lastMove"></span></td>
+					<td><span wicket:id="noMoves"></span></td>
+					<td><a wicket:id="gameLink" class="link"><span wicket:id="state"></span></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</wicket:panel>
+</body>
+</html>

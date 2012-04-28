@@ -11,7 +11,6 @@ import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Game;
-import net.kalaha.entities.GameStatus;
 import net.kalaha.entities.User;
 import net.kalaha.game.logic.KalahaBoard;
 import net.kalaha.table.api.CreateGameRequest;

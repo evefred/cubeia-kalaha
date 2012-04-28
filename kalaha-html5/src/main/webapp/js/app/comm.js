@@ -158,10 +158,10 @@ KALAHA.comm = function() {
 		_password = password;
 		if(_haveWebSocket()) {
 			console.log("Connecing with WebSocket...");
-			_connector.connect("FIREBASE.WebSocketAdapter", 'localhost', '8081', "/socket");
+			_connector.connect("FIREBASE.WebSocketAdapter", 'kalahawithfriends.com', '9080', "/socket");
 		} else {
 			console.log("Connecing with CometD... ");
-			_connector.connect("FIREBASE.CometdAdapter", 'localhost', '8081', "/cometd", false, function() { return $.cometd });
+			_connector.connect("FIREBASE.CometdAdapter", 'kalahawithfriends.com', '9080', "/cometd", false, function() { return $.cometd });
 		}
 	};
 }

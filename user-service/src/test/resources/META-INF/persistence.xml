@@ -8,6 +8,7 @@
 	<persistence-unit name="userJpaUnit" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>net.kalaha.entities.User</class>
+		<class>net.kalaha.entities.UserDetails</class>
 		<class>net.kalaha.entities.Session</class>
 		<properties>
 		   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
