@@ -112,7 +112,7 @@
 				<version>1.6.4</version>
 			</dependency>
 			<dependency>
-				<groupId>apache-httpclient</groupId>
+				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
 				<version>3.1</version>
 			</dependency>

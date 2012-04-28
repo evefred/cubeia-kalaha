@@ -21,7 +21,7 @@
 			<artifactId>restfb</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>apache-httpclient</groupId>
+			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 		<dependency>
