@@ -8,5 +8,7 @@
         username="kalaha" 
         password="56yronm3n"
         maxActive="10" maxIdle="5" maxWait="10000" 
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
     />
 </Context>
