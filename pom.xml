@@ -15,9 +15,7 @@
 		<module>table-service</module>
 		<module>persistence</module>
 		<module>uar</module>
-		<module>facebook-web</module>
 		<module>database</module>
-		<module>kalaha-html5</module>
 		<module>common</module>
 		<module>website</module>
 		<module>common-facebook</module>
