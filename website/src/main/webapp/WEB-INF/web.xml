@@ -6,8 +6,13 @@
 	<display-name>Kalaha With Friends Root</display-name>
 
 	<filter>
-		<filter-name>fb-auth</filter-name>
-		<filter-class>net.kalaha.web.facebook.AuthFilter</filter-class>
+		<filter-name>fb-cauth</filter-name>
+		<filter-class>net.kalaha.web.facebook.CanvasAuthFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>fb-oauth</filter-name>
+		<filter-class>net.kalaha.web.facebook.OAuthFilter</filter-class>
 	</filter>
 
 	<filter>
@@ -22,9 +27,14 @@
 			<param-value>net.kalaha.web.SiteModule,net.kalaha.data.manager.ManagerModule</param-value>
 		</init-param>
 	</filter>
+	
+	<filter-mapping>
+		<filter-name>fb-cauth</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<filter-mapping>
-		<filter-name>fb-auth</filter-name>
+		<filter-name>fb-oauth</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 

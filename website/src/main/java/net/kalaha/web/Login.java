@@ -1,6 +1,6 @@
 package net.kalaha.web;
 
-import static net.kalaha.web.facebook.AuthFilter.AUTH_TOKEN;
+import static net.kalaha.web.facebook.OAuthFilter.AUTH_TOKEN;
 
 import javax.servlet.http.HttpSession;
 
