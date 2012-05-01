@@ -221,6 +221,7 @@ public class AuthFilter implements Filter {
 			String tmp = "<html><head><script type='text/javascript'>top.location.href=";
 			tmp += "\"" + url + "\"";
 			tmp += "</script></head></html>";
+			res.setContentType("text/html");
 			res.getWriter().write(tmp);
 			res.getWriter().close();
 		} else {
