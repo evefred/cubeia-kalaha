@@ -7,6 +7,7 @@ import net.kalaha.web.Index;
 import net.kalaha.web.KalahaSession;
 import net.kalaha.web.Login;
 
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
@@ -69,7 +70,7 @@ public class LoginForm extends StatelessForm<Void> {
 		KalahaSession ses = getKalahaSession();
 		ses.setAlert(new Alert(SUCCESS, "Welcome " + ses.getDisplayName() + "!"));
 		if (!continueToOriginalDestination()) {
-			setResponsePage(Index.class);
+			throw new RestartResponseException(Index.class);
 		}
 	}
 }

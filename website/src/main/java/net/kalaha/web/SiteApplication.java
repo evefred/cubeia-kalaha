@@ -1,14 +1,25 @@
 package net.kalaha.web;
 
-import net.kalaha.data.manager.UserManager;
+import static net.kalaha.web.facebook.AuthFilter.AUTH_TOKEN;
 
+import javax.servlet.http.HttpSession;
+
+import net.kalaha.data.manager.UserManager;
+import net.kalaha.web.facebook.AuthToken;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.settings.ISecuritySettings;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.inject.Inject;
@@ -62,6 +73,39 @@ public class SiteApplication extends AuthenticatedWebApplication {
 	
 	private void setup() {
 		addBookmarkableLinks();
+		customizeSecurity();
+	}
+
+	private void customizeSecurity() {
+		ISecuritySettings sec = getSecuritySettings();
+		final IAuthorizationStrategy wrapped = sec.getAuthorizationStrategy();
+		sec.setAuthorizationStrategy(new IAuthorizationStrategy() {
+			
+			@Override
+			public <T extends Component> boolean isInstantiationAuthorized(Class<T> componentClass) {
+				if(checkForAuthToken()) {
+					return wrapped.isInstantiationAuthorized(componentClass);
+				} else {
+					return false;
+				}
+			}
+			
+			@Override
+			public boolean isActionAuthorized(Component component, Action action) {
+				return wrapped.isActionAuthorized(component, action);
+			}
+			
+			private boolean checkForAuthToken() {
+				KalahaSession ses = (KalahaSession) RequestCycle.get().getSession();
+				Request request = RequestCycle.get().getRequest();
+				HttpSession session = ((WebRequest) request).getHttpServletRequest().getSession(false);
+				AuthToken next = (AuthToken) session.getAttribute(AUTH_TOKEN);
+				if (next != null) {
+					ses.signIn(next);
+				}
+				return true;
+			}
+		});
 	}
 
 	private void addBookmarkableLinks() {

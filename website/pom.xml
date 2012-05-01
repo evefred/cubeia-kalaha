@@ -60,12 +60,6 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>net.kalaha</groupId>
-			<artifactId>common-facebook</artifactId>
-			<version>${project.version}</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>compile</scope>

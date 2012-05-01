@@ -1,17 +1,9 @@
 package net.kalaha.web;
 
-import static net.kalaha.facebook.AuthFilter.AUTH_TOKEN;
-
-import javax.servlet.http.HttpSession;
-
-import net.kalaha.facebook.AuthToken;
-import net.kalaha.web.comp.AuthenticatedIndexPanel;
+import net.kalaha.web.comp.FacebookIndexPanel;
 
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.protocol.http.WebRequest;
 
 @AuthorizeInstantiation("USER")
 public class FacebookIndex extends FacebookBasePage {
@@ -22,17 +14,6 @@ public class FacebookIndex extends FacebookBasePage {
 	}
 	
 	private void setup() {
-		checkForAuthToken();
-		add(new AuthenticatedIndexPanel("index-panel", gameManager, true));
-	}
-	
-	private void checkForAuthToken() {
-		Request request = RequestCycle.get().getRequest();
-		HttpSession session = ((WebRequest) request).getHttpServletRequest().getSession(false);
-		AuthToken next = (AuthToken) session.getAttribute(AUTH_TOKEN);
-		if(next != null) {
-			KalahaSession ses = getKalahaSession();
-			ses.signIn(next);
-		}
+		add(new FacebookIndexPanel("index-panel", gameManager));
 	}
 }

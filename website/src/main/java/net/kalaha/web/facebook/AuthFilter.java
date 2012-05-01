@@ -1,4 +1,4 @@
-package net.kalaha.facebook;
+package net.kalaha.web.facebook;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.kalaha.web.PropertiesModule;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -28,16 +30,17 @@ import com.google.inject.name.Named;
 
 public class AuthFilter implements Filter {
 	
+	private static final String REDIRECT = "_redirect";
+	public static final String AUTH_TOKEN = "_authToken";
+
 	private final Logger log = Logger.getLogger(getClass());
 	
-	public static final String AUTH_TOKEN = "_authToken";
 
 	private static final String DIALOG_URL = "https://www.facebook.com/dialog/oauth";
 	private static final String AUTH_URL = "https://graph.facebook.com/oauth/access_token";
 
 	private static final String CODE = "code";
 	private static final String ERROR = "error";
-
 
 	@Inject
 	@Named("facebook-app-id")
@@ -49,23 +52,31 @@ public class AuthFilter implements Filter {
 	
 	@Inject
     @Named("facebook-redirect-uri")
-    private String redirectUri;
+    private String fbRedirectUri;
+	
+	@Inject
+    @Named("facebook-redirect-final")
+    private String fbFinalredirectUri;
+	
+	@Inject
+    @Named("facebook-app-redirect-uri")
+    private String appRedirectUri;
 
 	@Inject
     @Named("facebook-app-scope")
     private String appScope;
+
+	@Inject(optional=true)
+    @Named("facebook-context")
+    private String facebookContext = "/facebook-web/";
 	
 	@Inject(optional=true)
-    @Named("facebook-allow-anonymous")
-    private boolean allowAnonymous = false;
-	
-	@Inject(optional=true)
-    @Named("facebook-force-login-path")
-    private String forceLoginPath = "/login/facebook-login";
+    @Named("facebook-app-login")
+    private String forceAppLogin = "/login/facebook";
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		Injector injector = Guice.createInjector(new AuthModule());
+		Injector injector = Guice.createInjector(new PropertiesModule());
 		injector.injectMembers(this);
 	}
 
@@ -74,38 +85,34 @@ public class AuthFilter implements Filter {
 		 HttpServletRequest req = (HttpServletRequest) request;
 	     HttpServletResponse res = (HttpServletResponse) response;
 	     if(hasToken(req)) {
-	    	 // Already authorized
-	    	 log.trace("User is authenticated, forwarding to Wicket");
-	    	 doForward(req, res, chain);
+	    	 log.trace("User is authenticated, forwarding to Wicket: " + req.getRequestURI());
+	    	 doForward(req, res, chain, false);
 	     } else if(isError(req)) {
 	    	 log.info("Authentication denied, reason: " + req.getParameter("error_reason"));
-	    	 req.getSession().removeAttribute("_redirect");
+	    	 clearPostAuthRedirect(req);
 	     } else if(isCallback(req)) {
 	    	 log.trace("Authentication call back");
 	    	 if(doAuthentication(req, res)) {
-	    		 log.trace("Authentication sucessful, forwarding to Wicket");
-		    	 doForward(req, res, chain);
+	    		 log.trace("Authentication sucessful, forwarding to Wicket: " + req.getRequestURI());
+		    	 doForward(req, res, chain, true);
 	    	 } else {
 	    		 log.trace("Authentication failed, returning nada");
-	    		 req.getSession().removeAttribute("_redirect");
+	    		 clearPostAuthRedirect(req);
 	    	 }
 	     } else {
-	    	 if(isForceLogin(req) || !allowAnonymous) {
-		    	 // Redirect to FB for auth dialog
+	    	 boolean isFacebook = isFacebookReq(req);
+		     boolean isForced = isForceLogin(req);
+	    	 if(isFacebook || isForced) {
 		    	 log.debug("User is not authenticated, forwarding to FB auth dialog");
-		    	 String redir = req.getParameter("redirect");
-		    	 if(redir != null) {
-		    		 req.getSession().setAttribute("_redirect", redir);
-		    	 }
-		    	 redirect(res, getDialogUrl());
+		    	 savePostAuthRedirect(req);
+		    	 redirect(res, getDialogUrl(isFacebook), isFacebook);
 	    	 } else {
-	    		 log.trace("Allowing anonymous access");
-	    		 doForward(req, res, chain);
+	    		 log.trace("Allowing anonymous access: " + req.getRequestURI());
+	    		 doForward(req, res, chain, false);
 	    	 }
 	     }
 	}
 
-	
 
 	@Override
 	public void destroy() { }
@@ -113,27 +120,50 @@ public class AuthFilter implements Filter {
 	
 	// --- PRIVATE METHODS --- //
 	
-	private void doForward(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
-		String redir = (String) req.getSession().getAttribute("_redirect");
-		req.getSession().removeAttribute("_redirect");
-		if(redir == null) {
-			redir = req.getParameter("redirect");
-		}
-		if(redir == null) {
-			chain.doFilter(req, res);
+	private void doForward(HttpServletRequest req, HttpServletResponse res, FilterChain chain, boolean intoFrame) throws IOException, ServletException {
+		if(isFacebookReq(req) && intoFrame) {
+			redirect(res, fbFinalredirectUri, false);
 		} else {
-			redirect(res, redir);
+			String redir = clearPostAuthRedirect(req);
+			if(redir == null) {
+				chain.doFilter(req, res);
+			} else {
+				log.trace("Post auth redirect: " + redir);
+				redirect(res, redir, false);
+			}
 		}
+	}
+	
+	private void savePostAuthRedirect(HttpServletRequest req) {
+		String redir = req.getRequestURI();
+		log.trace("Saving URL for post auth redirect: " + redir);
+		req.getSession().setAttribute(REDIRECT, redir);
+	}
+
+	private boolean isPostAuthRedirectFacebook(HttpServletRequest req) {
+		String redir = (String) req.getSession().getAttribute(REDIRECT);
+		return (redir != null && redir.startsWith(facebookContext));
+	}
+	
+	private String clearPostAuthRedirect(HttpServletRequest req) {
+		String redir = (String) req.getSession().getAttribute(REDIRECT);
+		req.getSession().removeAttribute(REDIRECT);
+		return redir;
 	}
 	
 	private boolean isForceLogin(HttpServletRequest req) {
 		String test = req.getRequestURI();
-		return test != null && test.startsWith(forceLoginPath);
+		return test != null && test.startsWith(forceAppLogin);
+	}
+	
+	private boolean isFacebookReq(HttpServletRequest req) {
+		String test = req.getRequestURI();
+		return test != null && test.startsWith(facebookContext);
 	}
 	
 	private boolean doAuthentication(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		String code = req.getParameter(CODE);
-		String authUrl = getAuthUrl(code);
+		String authUrl = getAuthUrl(code, isPostAuthRedirectFacebook(req));
 		log.debug("Calling FB auth on url: " + authUrl);
 		HttpClient client = new HttpClient();
 		HttpMethod method = new GetMethod(authUrl);
@@ -184,17 +214,26 @@ public class AuthFilter implements Filter {
 		return  (code != null && code.length() > 0);
 	}
 	
-	private void redirect(HttpServletResponse res, String url) throws IOException {
-		log.debug("Redirecting to: " + url);
-		res.sendRedirect(url);
+	private void redirect(HttpServletResponse res, String url, boolean breakFrame) throws IOException {
+		log.debug("Redirecting to: " + url + "; breaking frame: " + breakFrame);
+		// res.sendRedirect(url);
+		if(breakFrame) {
+			String tmp = "<html><head><script type='text/javascript'>top.location.href=";
+			tmp += "\"" + url + "\"";
+			tmp += "</script></head></html>";
+			res.getWriter().write(tmp);
+			res.getWriter().close();
+		} else {
+			res.sendRedirect(url);
+		}
 	}
 	
-	private String getDialogUrl() {
-		return DIALOG_URL + "?client_id=" + appId + "&scope=" + appScope + "&redirect_uri=" + redirectUri;
+	private String getDialogUrl(boolean isFacebook) {
+		return DIALOG_URL + "?client_id=" + appId + "&scope=" + appScope + "&redirect_uri=" + (isFacebook ? fbRedirectUri : appRedirectUri);
 	}
 	
-	private String getAuthUrl(String code) {
-		return AUTH_URL + "?client_id=" + appId + "&client_secret=" + appSecret + "&code=" + code + "&redirect_uri=" + redirectUri;
+	private String getAuthUrl(String code, boolean isFacebook) {
+		return AUTH_URL + "?client_id=" + appId + "&client_secret=" + appSecret + "&code=" + code + "&redirect_uri=" + (isFacebook ?  fbRedirectUri : appRedirectUri);
 	}
 	
 	private boolean hasToken(HttpServletRequest req) {

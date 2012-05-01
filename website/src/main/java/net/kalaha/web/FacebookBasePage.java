@@ -8,12 +8,18 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.model.Model;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public class FacebookBasePage extends WebPage {
+	
+	@Inject
+	@Named("facebook-app-id")
+	private String appId;
+	
 	@Inject
 	protected GameManager gameManager;
 
@@ -41,6 +47,12 @@ public class FacebookBasePage extends WebPage {
 		return (KalahaSession) getSession();
 	}
 	
+	@Override
+	public void renderHead(HtmlHeaderContainer container) {
+		super.renderHead(container);
+		renderJsConfig(container);
+	}
+	
 	
 	// --- PRIVATE METHODS --- ///
 
@@ -50,6 +62,11 @@ public class FacebookBasePage extends WebPage {
 		// setupMenuPanel(ses);
 	}
 
+	private void renderJsConfig(HtmlHeaderContainer container) {
+		String js = "__appId=\"" + appId + "\";";
+		container.getHeaderResponse().renderJavascript(js, "appConf");
+	}
+	
 	private void setupAlertPanel(KalahaSession ses) {
 		Alert alert = ses.popAlert();
 		WebMarkupContainer cont = new WebMarkupContainer("alert-box");

@@ -7,7 +7,7 @@
 
 	<filter>
 		<filter-name>fb-auth</filter-name>
-		<filter-class>net.kalaha.facebook.AuthFilter</filter-class>
+		<filter-class>net.kalaha.web.facebook.AuthFilter</filter-class>
 	</filter>
 
 	<filter>
@@ -19,7 +19,7 @@
 		</init-param>
 		<init-param>
 			<param-name>module</param-name>
-			<param-value>net.kalaha.web.WebModule,net.kalaha.data.manager.ManagerModule</param-value>
+			<param-value>net.kalaha.web.SiteModule,net.kalaha.data.manager.ManagerModule</param-value>
 		</init-param>
 	</filter>
 

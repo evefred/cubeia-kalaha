@@ -3,8 +3,8 @@ package net.kalaha.web;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.entities.Session;
 import net.kalaha.entities.User;
-import net.kalaha.facebook.AuthToken;
-import net.kalaha.facebook.FacebookUser;
+import net.kalaha.web.facebook.AuthToken;
+import net.kalaha.web.facebook.FacebookUser;
 
 import org.apache.log4j.Logger;
 import org.apache.wicket.Request;

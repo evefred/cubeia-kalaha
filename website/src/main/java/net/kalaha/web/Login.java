@@ -1,15 +1,16 @@
 package net.kalaha.web;
 
-import static net.kalaha.facebook.AuthFilter.AUTH_TOKEN;
+import static net.kalaha.web.facebook.AuthFilter.AUTH_TOKEN;
 
 import javax.servlet.http.HttpSession;
 
-import net.kalaha.facebook.AuthToken;
 import net.kalaha.web.comp.LoginForm;
+import net.kalaha.web.facebook.AuthToken;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.protocol.http.WebRequest;
 
 public class Login extends BasePage {
@@ -25,7 +26,7 @@ public class Login extends BasePage {
 	private void setup() {
 		checkForAuthToken();
 		if(getKalahaSession().isSignedIn()) {
-			super.setResponsePage(Index.class);
+			throw new RestartResponseException(Index.class);
 		} else {
 			add(new LoginForm("login-form"));
 		}	

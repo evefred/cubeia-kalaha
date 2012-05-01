@@ -1,4 +1,4 @@
-package net.kalaha.facebook;
+package net.kalaha.web.facebook;
 
 import java.util.concurrent.ExecutionException;
 

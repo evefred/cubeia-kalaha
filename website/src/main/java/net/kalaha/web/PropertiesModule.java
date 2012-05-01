@@ -1,4 +1,4 @@
-package net.kalaha.facebook;
+package net.kalaha.web;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -13,7 +13,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 
-public class AuthModule extends AbstractModule {
+public class PropertiesModule extends AbstractModule {
 	
 	protected Logger log = Logger.getLogger(getClass());
 

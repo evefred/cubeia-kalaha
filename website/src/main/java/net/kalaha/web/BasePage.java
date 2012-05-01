@@ -5,6 +5,7 @@ import net.kalaha.data.manager.UserManager;
 import net.kalaha.web.comp.AuthenticatedSessionPanel;
 import net.kalaha.web.comp.UnAuthenticatedSessionPanel;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -16,6 +17,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public class BasePage extends WebPage {
+	
+	protected final Logger log = Logger.getLogger(getClass());
 	
 	@Inject
 	protected GameManager gameManager;
