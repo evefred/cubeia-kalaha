@@ -1,6 +1,6 @@
 package net.kalaha.json;
 
-import net.kalaha.json.JsonTransformer;
+import net.kalaha.common.json.JsonTransformer;
 
 public class Transformer extends JsonTransformer {
 

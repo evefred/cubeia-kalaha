@@ -2,10 +2,6 @@ package net.kalaha.game;
 
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import net.kalaha.table.api.GetTableResponse;
 import net.kalaha.table.api.TableManager;
 import net.kalaha.table.api.TableRequestAction;
@@ -23,7 +19,6 @@ import com.cubeia.firebase.api.service.Contract;
 import com.cubeia.firebase.api.service.ServiceRegistry;
 import com.cubeia.firebase.api.service.ServiceRegistryAdapter;
 import com.cubeia.firebase.api.service.ServiceRouter;
-import com.cubeia.firebase.api.service.persistence.PublicPersistenceService;
 import com.cubeia.firebase.api.util.ConfigSource;
 import com.cubeia.firebase.api.util.ConfigSourceListener;
 
@@ -53,27 +48,7 @@ public class ActivatorContextImpl implements ActivatorContext {
 			@Override
 			@SuppressWarnings("unchecked")
 			public <T extends Contract> T getServiceInstance(Class<T> contract) {
-				if(contract.equals(PublicPersistenceService.class)) {
-					return (T)new PublicPersistenceService() {
-						
-						EntityManagerFactory f = Persistence.createEntityManagerFactory("kalaha");
-						
-						@Override
-						public boolean isReady(String arg0) {
-							return true;
-						}
-						
-						@Override
-						public EntityManager getEntityManager(String arg0, boolean arg1) {
-							return null;
-						}
-						
-						@Override
-						public EntityManager getEntityManager(String arg0) {
-							return f.createEntityManager();
-						}
-					};
-				} else if(contract.equals(TableManager.class)) {
+				if(contract.equals(TableManager.class)) {
 					return (T)new TableManager() {
 
 						@Override

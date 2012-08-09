@@ -2,6 +2,8 @@ package net.kalaha.entities;
 
 import java.util.Arrays;
 
+import net.kalaha.data.entities.GameState;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -1,8 +1,8 @@
 package net.kalaha.web;
 
 import static net.kalaha.web.Alert.Type.ERROR;
-import net.kalaha.entities.Game;
-import net.kalaha.entities.Session;
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.Session;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;

@@ -1,8 +1,8 @@
 package net.kalaha.game;
 
-import static net.kalaha.entities.GameForm.CHALLENGE;
-import static net.kalaha.entities.GameStatus.FINISHED;
-import static net.kalaha.entities.GameType.KALAHA;
+import static net.kalaha.data.entities.GameForm.CHALLENGE;
+import static net.kalaha.data.entities.GameStatus.FINISHED;
+import static net.kalaha.data.entities.GameType.KALAHA;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +10,9 @@ import java.util.Map;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.entities.Game;
-import net.kalaha.entities.User;
+import net.kalaha.data.util.JpaInitializer;
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.User;
 import net.kalaha.game.logic.KalahaBoard;
 import net.kalaha.table.api.CreateGameRequest;
 import net.kalaha.table.api.CreateGameResponse;
@@ -36,6 +37,7 @@ import com.cubeia.firebase.api.routing.RoutableActivator;
 import com.cubeia.firebase.api.server.SystemException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.persist.jpa.JpaPersistModule;
 
 public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ RoutableActivator {
 	
@@ -53,7 +55,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 
 	@Override
 	public void init(ActivatorContext context) throws SystemException {
-		injector = Guice.createInjector(new ActivatorModule(context), new ManagerModule());
+		injector = Guice.createInjector(new ManagerModule(), new JpaPersistModule("kalaha"));
 		gameManager = injector.getInstance(GameManager.class);
 		userManager = injector.getInstance(UserManager.class);
 		this.context = context;
@@ -70,7 +72,9 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	}
 
 	@Override
-	public void start() { }
+	public void start() { 
+		injector.getInstance(JpaInitializer.class);
+	}
 
 	@Override
 	public void stop() { }

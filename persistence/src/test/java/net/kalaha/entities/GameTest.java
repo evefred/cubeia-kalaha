@@ -1,5 +1,8 @@
 package net.kalaha.entities;
 
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.User;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

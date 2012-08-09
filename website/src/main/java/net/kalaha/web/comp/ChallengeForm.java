@@ -1,14 +1,14 @@
 package net.kalaha.web.comp;
 
-import static net.kalaha.entities.GameForm.CHALLENGE;
-import static net.kalaha.entities.GameType.KALAHA;
+import static net.kalaha.data.entities.GameForm.CHALLENGE;
+import static net.kalaha.data.entities.GameType.KALAHA;
 import static net.kalaha.game.logic.KalahaBoard.getInitState;
 import static net.kalaha.web.Alert.Type.ERROR;
 import static net.kalaha.web.Alert.Type.INFO;
 import static net.kalaha.web.Alert.Type.SUCCESS;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.User;
 import net.kalaha.web.Alert;
 import net.kalaha.web.Challenge;
 import net.kalaha.web.FacebookChallenge;

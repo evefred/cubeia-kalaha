@@ -12,9 +12,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 
 import net.kalaha.data.manager.GameManager;
-import net.kalaha.entities.Game;
-import net.kalaha.entities.GameStatus;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.GameStatus;
+import net.kalaha.data.entities.User;
 import net.kalaha.web.BasePanel;
 
 public class GameTablePanel extends BasePanel {

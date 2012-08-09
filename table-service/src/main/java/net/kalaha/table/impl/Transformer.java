@@ -1,6 +1,6 @@
 package net.kalaha.table.impl;
 
-import net.kalaha.json.JsonTransformer;
+import net.kalaha.common.json.JsonTransformer;
 import net.kalaha.table.api.TableRequestAction;
 
 public class Transformer extends JsonTransformer {

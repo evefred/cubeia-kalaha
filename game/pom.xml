@@ -23,11 +23,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<artifactId>database</artifactId>
-			<groupId>net.kalaha</groupId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<artifactId>table-service</artifactId>
 			<groupId>net.kalaha</groupId>
 			<version>${project.version}</version>
@@ -67,8 +62,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

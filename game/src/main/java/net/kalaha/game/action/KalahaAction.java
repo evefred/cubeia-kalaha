@@ -1,7 +1,7 @@
 package net.kalaha.game.action;
 
+import net.kalaha.common.json.AbstractAction;
 import net.kalaha.game.logic.KalahaBoard;
-import net.kalaha.json.AbstractAction;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

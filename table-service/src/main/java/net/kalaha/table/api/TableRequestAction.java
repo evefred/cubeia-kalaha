@@ -2,7 +2,7 @@ package net.kalaha.table.api;
 
 import java.io.Serializable;
 
-import net.kalaha.json.AbstractAction;
+import net.kalaha.common.json.AbstractAction;
 
 public abstract class TableRequestAction extends AbstractAction implements Serializable {
 

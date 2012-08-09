@@ -1,0 +1,7 @@
+<Context>
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+	<Resource name="jdbc/kalahaDs" auth="Container" type="javax.sql.DataSource"
+		maxActive="20" maxIdle="5" maxWait="10000" username="kalaha"
+		password="kalaha" driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/kalaha" />
+</Context>

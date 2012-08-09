@@ -3,7 +3,7 @@ package net.kalaha.web;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.User;
 
 import org.apache.wicket.markup.html.panel.Panel;
 

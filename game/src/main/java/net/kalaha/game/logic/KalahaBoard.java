@@ -1,15 +1,15 @@
 package net.kalaha.game.logic;
 
-import static net.kalaha.entities.GameResult.DRAW;
-import static net.kalaha.entities.GameResult.WIN;
-import static net.kalaha.entities.GameStatus.FINISHED;
+import static net.kalaha.data.entities.GameResult.DRAW;
+import static net.kalaha.data.entities.GameResult.WIN;
+import static net.kalaha.data.entities.GameStatus.FINISHED;
 import static net.kalaha.game.logic.KalahaPlayer.NORTH;
 import static net.kalaha.game.logic.KalahaPlayer.SOUTH;
 
 import java.io.Serializable;
 
-import net.kalaha.entities.Game;
-import net.kalaha.entities.GameStatus;
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.GameStatus;
 import net.kalaha.game.IllegalMoveException;
 import net.kalaha.game.action.State;
 

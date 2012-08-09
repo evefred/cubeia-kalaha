@@ -1,7 +1,7 @@
 package net.kalaha.user.impl;
 
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.User;
 
 import org.apache.log4j.Logger;
 

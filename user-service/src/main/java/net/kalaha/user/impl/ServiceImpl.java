@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.kalaha.data.manager.ManagerModule;
+import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.user.api.UserService;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
@@ -20,8 +21,6 @@ import com.google.inject.Module;
 
 public class ServiceImpl implements UserService, Service {
 
-	private static final boolean ALLOW_TRIVIAL_LOGIN = false;
-	
 	private Injector injector;
 	private ServiceContext context;
 
@@ -41,7 +40,9 @@ public class ServiceImpl implements UserService, Service {
 	public void init(ServiceRegistry arg0) { }
 	
 	@Override
-	public void start() { }
+	public void start() { 
+		injector.getInstance(JpaInitializer.class);
+	}
 	
 	@Override
 	public LoginHandler locateLoginHandler(LoginRequestAction req) {
@@ -59,7 +60,7 @@ public class ServiceImpl implements UserService, Service {
 	private void createInjector() {
 		List<Module> list = new ArrayList<Module>(5);
 		list.add(new FirebaseModule(context.getParentRegistry()));
-		list.add(new ServiceModule(context.getParentRegistry(), ALLOW_TRIVIAL_LOGIN));
+		list.add(new ServiceModule());
 		list.add(new ManagerModule());
 		injector = Guice.createInjector(list);
 	}

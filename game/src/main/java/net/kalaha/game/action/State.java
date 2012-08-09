@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import net.kalaha.json.AbstractAction;
+import net.kalaha.common.json.AbstractAction;
 
 public class State extends AbstractAction implements Serializable {
 

@@ -1,12 +1,13 @@
 package net.kalaha.game;
 
+import net.kalaha.common.json.ActionTransformer;
 import net.kalaha.data.manager.GameManager;
-import net.kalaha.entities.Game;
+import net.kalaha.data.util.JpaInitializer;
+import net.kalaha.data.entities.Game;
 import net.kalaha.game.action.End;
 import net.kalaha.game.action.KalahaAction;
 import net.kalaha.game.action.util.ActionUtil;
 import net.kalaha.game.logic.KalahaBoard;
-import net.kalaha.json.ActionTransformer;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +32,10 @@ public class Processor implements GameProcessor {
 	
 	@Inject 
 	private GameManager gameManager;
+	
+	@Inject
+	@SuppressWarnings("unused")
+	private JpaInitializer jpaInit;
 	
 	public void handle(GameDataAction action, Table table) { 
 		Object act = trans.fromUTF8Data(action.getData().array());
@@ -60,7 +65,7 @@ public class Processor implements GameProcessor {
 		table.getNotifier().notifyAllPlayers(gda);
 	}
 
-	private void notifyOnAction(GameDataAction action, Table table, Object act) {
+	private void notifyOnAction(GameDataAction action, Table table, KalahaAction act) {
 		GameDataAction gda = util.toDataAction(action.getPlayerId(), table.getId(), act);
 		table.getNotifier().notifyAllPlayersExceptOne(gda, action.getPlayerId());
 	}

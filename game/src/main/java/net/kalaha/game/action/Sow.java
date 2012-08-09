@@ -1,8 +1,8 @@
 package net.kalaha.game.action;
 
+import net.kalaha.common.json.IllegalActionException;
 import net.kalaha.game.logic.KalahaBoard;
 import net.kalaha.game.logic.KalahaPlayer;
-import net.kalaha.json.IllegalActionException;
 
 public class Sow extends KalahaAction {
 

@@ -1,7 +1,7 @@
 package net.kalaha.game;
 
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.User;
 import net.kalaha.game.action.Info;
 import net.kalaha.game.action.Player;
 import net.kalaha.game.action.util.ActionUtil;

@@ -1,12 +1,11 @@
 package net.kalaha.textclient;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.regex.Pattern;
 
+import net.kalaha.common.json.IllegalActionException;
 import net.kalaha.game.action.Sow;
 import net.kalaha.game.action.Transformer;
-import net.kalaha.json.IllegalActionException;
 import net.kalaha.table.api.CreateGameRequest;
 import net.kalaha.table.api.GetTableRequest;
 import net.kalaha.table.api.TableManager;
@@ -100,22 +99,6 @@ public class Client extends SimpleTextClient {
 	    } catch (Exception e) {
 	       reportBadCommand(e.toString());
 	    }
-	}
-	
-	public byte[] toUTF8Data(String s) {
-		try {
-			return s.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException("Missing UTF-8?!");
-		}
-	}
-	
-	public String fromUTF8Data(byte[] arr) {
-		try {
-			return new String(arr, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException("Missing UTF-8?!");
-		}
 	}
 
 	private void reportBadCommand(String error) {

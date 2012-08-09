@@ -3,7 +3,7 @@ package net.kalaha.user.impl;
 import org.apache.log4j.Logger;
 
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.entities.Session;
+import net.kalaha.data.entities.Session;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
 import com.cubeia.firebase.api.action.local.LoginResponseAction;

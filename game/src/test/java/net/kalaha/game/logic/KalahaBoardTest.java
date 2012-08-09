@@ -1,12 +1,12 @@
 package net.kalaha.game.logic;
 
-import static net.kalaha.entities.GameStatus.ACTIVE;
+import static net.kalaha.data.entities.GameStatus.ACTIVE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import net.kalaha.entities.Game;
-import net.kalaha.entities.GameStatus;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.GameStatus;
+import net.kalaha.data.entities.User;
 import net.kalaha.game.IllegalMoveException;
 
 import org.testng.annotations.BeforeMethod;

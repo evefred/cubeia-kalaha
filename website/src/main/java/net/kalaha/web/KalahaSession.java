@@ -1,8 +1,8 @@
 package net.kalaha.web;
 
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.entities.Session;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.Session;
+import net.kalaha.data.entities.User;
 import net.kalaha.web.facebook.AuthToken;
 import net.kalaha.web.facebook.FacebookUser;
 

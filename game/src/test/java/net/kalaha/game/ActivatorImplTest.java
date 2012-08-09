@@ -1,10 +1,10 @@
 package net.kalaha.game;
 
 import static org.testng.Assert.assertEquals;
-import net.kalaha.entities.Game;
-import net.kalaha.entities.GameForm;
-import net.kalaha.entities.GameType;
-import net.kalaha.entities.User;
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.GameForm;
+import net.kalaha.data.entities.GameType;
+import net.kalaha.data.entities.User;
 import net.kalaha.table.api.GetTableRequest;
 
 import org.testng.annotations.Test;
@@ -37,6 +37,7 @@ public class ActivatorImplTest {
 		ActivatorContextImpl con = new ActivatorContextImpl();
 		ActivatorImpl i = new ActivatorImpl();
 		i.init(con);
+		i.start();
 		
 		// create user
 		User u = i.getUserManager().createUser("olle", 0);
