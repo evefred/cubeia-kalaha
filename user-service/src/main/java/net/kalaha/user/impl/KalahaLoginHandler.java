@@ -1,9 +1,9 @@
 package net.kalaha.user.impl;
 
-import org.apache.log4j.Logger;
-
-import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.entities.Session;
+import net.kalaha.data.manager.SessionManager;
+
+import org.apache.log4j.Logger;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
 import com.cubeia.firebase.api.action.local.LoginResponseAction;
@@ -13,17 +13,17 @@ import com.google.inject.Inject;
 
 public class KalahaLoginHandler implements LoginHandler {
 
-	@Inject
-	private UserManager manager;
-	
 	@Log4j
 	private Logger log;
+	
+	@Inject
+	private SessionManager sessions;
 	
 	@Override
 	public LoginResponseAction handle(LoginRequestAction req) {
 		String sessionId = req.getPassword();
 		log.debug("Handling login request for session token: " + sessionId);
-		Session ses = manager.getSessionById(sessionId);
+		Session ses = sessions.getSessionById(sessionId);
 		if(ses == null) {
 			log.debug("No session found for token: " + sessionId);
 			return new LoginResponseAction(false, -1);
