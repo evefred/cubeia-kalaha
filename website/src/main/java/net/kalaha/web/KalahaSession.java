@@ -1,5 +1,6 @@
 package net.kalaha.web;
 
+import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.entities.Session;
 import net.kalaha.data.entities.User;
@@ -19,6 +20,7 @@ public class KalahaSession extends AuthenticatedWebSession {
 	private static final Logger log = Logger.getLogger(KalahaSession.class);
 
 	private final UserManager userManager;
+	private final SessionManager sessionManager;
 	private final int operatorId;
 
 	private User user;
@@ -29,9 +31,10 @@ public class KalahaSession extends AuthenticatedWebSession {
 	
 	private String displayName;
 
-	public KalahaSession(Request request, UserManager userManager, int operatorId) {
+	public KalahaSession(Request request, UserManager userManager, SessionManager sessionManager, int operatorId) {
 		super(request);
 		this.userManager = userManager;
+		this.sessionManager = sessionManager;
 		this.operatorId = operatorId;
 	}
 
@@ -39,7 +42,7 @@ public class KalahaSession extends AuthenticatedWebSession {
 	public boolean authenticate(String username, String password) {
 		user = userManager.authLocalUser(username, password);
 		if(user != null) {
-			this.session = userManager.getSessionByUserId(user.getId());
+			this.session = sessionManager.getSessionByUserId(user.getId());
 			this.displayName = username;
 		}
 		return user != null;
@@ -52,7 +55,7 @@ public class KalahaSession extends AuthenticatedWebSession {
 			// this.users.setClient(facebookClient);
 			FacebookUser fbuser = client.fetchObject("me", FacebookUser.class);
 			String facebookId = fbuser.getId();
-			this.session = userManager.getSessionByExternalId(facebookId, operatorId);
+			this.session = sessionManager.getSessionByExternalId(facebookId, operatorId);
 			this.user = userManager.getUser(this.session.getUserId());
 			this.externalToken = next;
 			this.displayName = fbuser.getName();

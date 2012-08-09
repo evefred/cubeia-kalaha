@@ -35,7 +35,7 @@ public class GameTablePanel extends BasePanel {
 	// --- PRIVATE METHODS --- //
 	
 	private void setup() { 
-		List<Game> myGames = gameManager.getMyGames(getCurrentUser(), GameStatus.ACTIVE, null);
+		List<Game> myGames = gameManager.getMyGames(getCurrentUser(), GameStatus.ACTIVE);
 		ListView<Game> view = new ListView<Game>("gameView", myGames) {
 			
 			private static final long serialVersionUID = 7816560728323554003L;

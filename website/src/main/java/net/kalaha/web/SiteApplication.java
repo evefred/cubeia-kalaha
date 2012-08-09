@@ -4,6 +4,7 @@ import static net.kalaha.web.facebook.OAuthFilter.AUTH_TOKEN;
 
 import javax.servlet.http.HttpSession;
 
+import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.web.facebook.AuthToken;
 
@@ -35,6 +36,9 @@ public class SiteApplication extends AuthenticatedWebApplication {
     
     @Inject
     private UserManager userManager;
+    
+    @Inject
+    private SessionManager sessionManager;
 	
 	@Override
 	protected void init() {
@@ -50,7 +54,7 @@ public class SiteApplication extends AuthenticatedWebApplication {
 	
 	@Override
 	public Session newSession(Request request, Response response) {
-		return new KalahaSession(request, userManager, operatorId);
+		return new KalahaSession(request, userManager, sessionManager, operatorId);
 	}
 	
 	@Override

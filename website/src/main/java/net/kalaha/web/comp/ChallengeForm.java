@@ -1,6 +1,5 @@
 package net.kalaha.web.comp;
 
-import static net.kalaha.data.entities.GameForm.CHALLENGE;
 import static net.kalaha.data.entities.GameType.KALAHA;
 import static net.kalaha.game.logic.KalahaBoard.getInitState;
 import static net.kalaha.web.Alert.Type.ERROR;
@@ -71,7 +70,7 @@ public class ChallengeForm extends StatelessForm<Void> {
 			setResponsePage(challengeClass);
 		} else {
 			ses.setAlert(new Alert(SUCCESS, "Game created against " + opponent.getLocalName()));
-			gameManager.createGame(KALAHA, CHALLENGE, ses.getUser(), opponent, -1, getInitState(6));
+			gameManager.createGame(KALAHA, ses.getUser(), opponent, -1, getInitState(6));
 			setResponsePage(indexClass);
 		}
 	}
