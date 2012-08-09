@@ -43,7 +43,10 @@ public abstract class JpaTestBase {
 	
 	@BeforeClass
 	protected void setupJpa() {
-		Injector inj = Guice.createInjector(new ManagerModule(), new JpaPersistModule("testUnit"));
+		Injector inj = Guice.createInjector(
+							new TestModule(), 
+							new ManagerModule(), 
+							new JpaPersistModule("testUnit"));
 		inj.injectMembers(this);
 		service.start();
 	}
@@ -63,6 +66,7 @@ public abstract class JpaTestBase {
 	@BeforeMethod
 	protected void beforeMethod() {
 		unit.begin();
+		SystemTestTime.TIME.set(0);
 		EntityManager man = em.get();
 		EntityTransaction tran = man.getTransaction();
 		tran.begin();

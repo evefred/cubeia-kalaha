@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.User;
 import net.kalaha.data.entities.UserDetails;
 
@@ -17,6 +18,9 @@ public class UserManagerImpl implements UserManager {
 		
 	@Inject
 	private Provider<EntityManager> em;
+	
+	@Inject
+	private SystemTime time;
 	
 	@Override
 	@Transactional
@@ -70,7 +74,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	@Transactional
 	public User authLocalUser(String localName, String passwd) {
-			return doAuthLocalUser(localName, passwd);
+		return doAuthLocalUser(localName, passwd);
 	}
 	
 	
@@ -112,7 +116,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private User doCreateUser(String extId, int operatorId) {
-		User s = new User();
+		User s = newUser();
 		UserDetails det = new UserDetails();
 		em.get().persist(det);
 		s.setUserDetails(det);
@@ -123,7 +127,7 @@ public class UserManagerImpl implements UserManager {
 	}
 	
 	private User doCreateLocalUser(String localName, String password) {
-		User s = new User();
+		User s = newUser();
 		UserDetails det = new UserDetails();
 		det.setDisplayName(localName);
 		em.get().persist(det);
@@ -132,6 +136,14 @@ public class UserManagerImpl implements UserManager {
 		s.setLocalName(localName);
 		s.setLocalPassword(password);
 		em.get().persist(s);
+		return s;
+	}
+
+	private User newUser() {
+		User s = new User();
+		long t = time.utc();
+		s.setCreated(t);
+		s.setLastModified(t);
 		return s;
 	}
 }

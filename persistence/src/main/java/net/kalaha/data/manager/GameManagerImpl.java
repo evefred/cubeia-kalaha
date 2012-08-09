@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.GameResult;
 import net.kalaha.data.entities.GameStatus;
@@ -22,10 +23,13 @@ public class GameManagerImpl implements GameManager {
 	@Inject
 	private Provider<EntityManager> em;
 	
+	@Inject
+	private SystemTime time;
+	
 	@Override
 	@Transactional
 	public Game createGame(GameType type, User owner, User opponent, long moveTimeout, int[] initState) {
-		long now = System.currentTimeMillis();
+		long now = time.utc();
 		Game g = new Game();
 		g.setCreated(now);
 		g.setLastModified(now);

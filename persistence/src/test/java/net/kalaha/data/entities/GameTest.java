@@ -1,4 +1,4 @@
-package net.kalaha.entities;
+package net.kalaha.data.entities;
 
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.User;

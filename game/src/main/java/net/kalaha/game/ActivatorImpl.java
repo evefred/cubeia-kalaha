@@ -6,12 +6,12 @@ import static net.kalaha.data.entities.GameType.KALAHA;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.util.JpaInitializer;
-import net.kalaha.data.entities.Game;
-import net.kalaha.data.entities.User;
 import net.kalaha.game.logic.KalahaBoard;
 import net.kalaha.table.api.CreateGameRequest;
 import net.kalaha.table.api.CreateGameResponse;

@@ -35,6 +35,28 @@ public class User implements Serializable {
 	@OneToOne(optional=false, cascade=ALL)
 	private UserDetails userDetails;
 	
+	@Column(nullable=false) 
+	private long created;
+	
+	@Column(nullable=false)
+	private long lastModified;
+	
+	public long getCreated() {
+		return created;
+	}
+	
+	public void setCreated(long created) {
+		this.created = created;
+	}
+	
+	public void setLastModified(long lastModified) {
+		this.lastModified = lastModified;
+	}
+	
+	public long getLastModified() {
+		return lastModified;
+	}
+	
 	public UserDetails getUserDetails() {
 		return userDetails;
 	}
@@ -87,14 +109,18 @@ public class User implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (int) (created ^ (created >>> 32));
 		result = prime * result
 				+ ((externalId == null) ? 0 : externalId.hashCode());
 		result = prime * result + id;
+		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result
 				+ ((localName == null) ? 0 : localName.hashCode());
 		result = prime * result
 				+ ((localPassword == null) ? 0 : localPassword.hashCode());
 		result = prime * result + operatorId;
+		result = prime * result
+				+ ((userDetails == null) ? 0 : userDetails.hashCode());
 		return result;
 	}
 
@@ -107,12 +133,16 @@ public class User implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
+		if (created != other.created)
+			return false;
 		if (externalId == null) {
 			if (other.externalId != null)
 				return false;
 		} else if (!externalId.equals(other.externalId))
 			return false;
 		if (id != other.id)
+			return false;
+		if (lastModified != other.lastModified)
 			return false;
 		if (localName == null) {
 			if (other.localName != null)
@@ -126,6 +156,11 @@ public class User implements Serializable {
 			return false;
 		if (operatorId != other.operatorId)
 			return false;
+		if (userDetails == null) {
+			if (other.userDetails != null)
+				return false;
+		} else if (!userDetails.equals(other.userDetails))
+			return false;
 		return true;
 	}
 
@@ -133,6 +168,8 @@ public class User implements Serializable {
 	public String toString() {
 		return "User [id=" + id + ", externalId=" + externalId
 				+ ", operatorId=" + operatorId + ", localName=" + localName
-				+ ", localPassword=" + localPassword + "]";
+				+ ", localPassword=" + localPassword + ", userDetails="
+				+ userDetails + ", created=" + created + ", lastModified="
+				+ lastModified + "]";
 	}
 }

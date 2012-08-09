@@ -1,9 +1,15 @@
 package net.kalaha.data.manager;
 
+import java.util.List;
+
 import net.kalaha.data.entities.Session;
 import net.kalaha.data.entities.User;
 
 public interface SessionManager {
+	
+	public long countSessions();
+	
+	public List<Session> reapSessions(long maxAge);
 
 	public Session getSessionByExternalId(String extId, int operatorId);
 	

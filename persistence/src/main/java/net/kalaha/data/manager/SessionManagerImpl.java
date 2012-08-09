@@ -1,11 +1,13 @@
 package net.kalaha.data.manager;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.Session;
 import net.kalaha.data.entities.User;
 
@@ -22,7 +24,34 @@ public class SessionManagerImpl implements SessionManager {
 	
 	@Inject
 	private UserManager users;
+	
+	@Inject
+	private SystemTime time;
+	
+	@Override
+	public long countSessions() {
+		Query q = em.get().createQuery("select count(s.id) from Session s");
+		try {
+			Long i = (Long) q.getSingleResult();
+			return i.longValue();
+		} catch(NoResultException e) {
+			return 0;
+		}
+	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Session> reapSessions(long maxAge) {
+		long last = time.utc() - maxAge;
+		Query q = em.get().createQuery("select s from Session s where s.lastModified < :last");
+		q.setParameter("last", last);
+		List<Session> sessions = (List<Session>) q.getResultList();
+		for (Session s : sessions) {
+			em.get().remove(s);
+		}
+		return sessions;
+	}
+	
 	@Override
 	@Transactional
 	public Session getSessionByExternalId(String extId, int operatorId) {
@@ -85,7 +114,7 @@ public class SessionManagerImpl implements SessionManager {
 		UUID uid = UUID.randomUUID();
 		s.setId(uid.toString());
 		s.setUserId(u.getId());
-		long t = System.currentTimeMillis();
+		long t = time.utc();
 		s.setCreated(t);
 		s.setOperatorId(u.getOperatorId());
 		s.setExternalId(u.getExternalId());
