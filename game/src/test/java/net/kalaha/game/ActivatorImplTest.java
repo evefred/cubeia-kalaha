@@ -2,7 +2,6 @@ package net.kalaha.game;
 
 import static org.testng.Assert.assertEquals;
 import net.kalaha.data.entities.Game;
-import net.kalaha.data.entities.GameForm;
 import net.kalaha.data.entities.GameType;
 import net.kalaha.data.entities.User;
 import net.kalaha.table.api.GetTableRequest;
@@ -43,7 +42,7 @@ public class ActivatorImplTest {
 		User u = i.getUserManager().createUser("olle", 0);
 		
 		// create "existing" game
-		Game g = i.getGameManager().createGame(GameType.KALAHA, GameForm.LIVE, u, null, -1, null);
+		Game g = i.getGameManager().createGame(GameType.KALAHA, u, null, -1, null);
 		
 		// create table for the above game
 		GetTableRequest q = new GetTableRequest(u.getId(), 2, g.getId());

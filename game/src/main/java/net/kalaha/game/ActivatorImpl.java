@@ -1,6 +1,5 @@
 package net.kalaha.game;
 
-import static net.kalaha.data.entities.GameForm.CHALLENGE;
 import static net.kalaha.data.entities.GameStatus.FINISHED;
 import static net.kalaha.data.entities.GameType.KALAHA;
 
@@ -97,7 +96,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		User user = userManager.getUser(q.getUserId());
 		User opponent = userManager.getUser(q.getOpponentId());
 		// TODO: Check if users exists...
-		Game game = gameManager.createGame(KALAHA, CHALLENGE, user, opponent, -1, KalahaBoard.getInitState(6));
+		Game game = gameManager.createGame(KALAHA, user, opponent, -1, KalahaBoard.getInitState(6));
 		int tableId = getTableForGame(game.getId(), q.getUserId());
 		if(tableId != -1) {
 			dispatch(new CreateGameResponse(q, game.getId(), tableId));
@@ -173,7 +172,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		
 		@Override
 		public LobbyPath getLobbyPathForTable(Table table) {
-			return new LobbyPath(table.getMetaData().getGameId(), game.getForm().toString().toLowerCase(), table.getId());
+			return new LobbyPath(table.getMetaData().getGameId(), game.getType().toString().toLowerCase(), table.getId());
 		}
 		
 		@Override
