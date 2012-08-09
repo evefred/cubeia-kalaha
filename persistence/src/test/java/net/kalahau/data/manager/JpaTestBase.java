@@ -5,6 +5,7 @@ import javax.persistence.EntityTransaction;
 
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.ManagerModule;
+import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
 
 import org.testng.annotations.AfterClass;
@@ -27,6 +28,9 @@ public abstract class JpaTestBase {
 	
 	@Inject
 	protected UserManager userManager;
+	
+	@Inject
+	protected SessionManager sessionManager;
 	
 	@Inject
 	private UnitOfWork unit;
