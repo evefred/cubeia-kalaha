@@ -1,33 +1,24 @@
 package net.kalaha.web;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import net.kalaha.common.guice.ClassPathPropertiesModule;
 
 import org.apache.wicket.protocol.http.WebApplication;
 
-import com.google.inject.Provider;
+import com.cubeia.firebase.guice.inject.Log4jTypeListener;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.persist.jpa.JpaPersistModule;
 
-public class SiteModule extends PropertiesModule {
+public class SiteModule extends ClassPathPropertiesModule {
 
+	public SiteModule() {
+		super("facebook.properties");
+		super.install(new JpaPersistModule("kalaha"));
+	}
+	
 	@Override
 	protected void configure() {
 		super.configure();
+		bindListener(Matchers.any(), new Log4jTypeListener());
 		bind(WebApplication.class).to(SiteApplication.class);
-		bindJpa();
-	}
-	
-	// --- PRIVATE METHODS --- //
-	
-	private void bindJpa() {
-		bind(EntityManager.class).toProvider(new Provider<EntityManager>() {
-			
-			private EntityManagerFactory fact = Persistence.createEntityManagerFactory("kalaha");
-
-			@Override
-			public EntityManager get() {
-				return fact.createEntityManager();
-			}
-		});
 	}
 }

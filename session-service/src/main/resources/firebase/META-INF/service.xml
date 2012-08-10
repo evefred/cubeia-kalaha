@@ -1,0 +1,11 @@
+<service auto-start="true">
+    <name>session-service</name>
+    <public-id>net.kalaha:session-service</public-id>
+    <contract>net.kalaha.session.api.SessionManager</contract>
+    <service>net.kalaha.session.impl.SessionManagerImpl</service>
+    <dependencies />
+    <description />
+    <exported>
+        <package>net.kalaha.session.api.-</package>
+    </exported>
+</service>

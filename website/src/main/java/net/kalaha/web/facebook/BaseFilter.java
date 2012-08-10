@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.kalaha.web.PropertiesModule;
+import net.kalaha.common.guice.ClassPathPropertiesModule;
 
 import org.apache.log4j.Logger;
 
@@ -66,7 +66,7 @@ public abstract class BaseFilter implements Filter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		Injector injector = Guice.createInjector(new PropertiesModule());
+		Injector injector = Guice.createInjector(new ClassPathPropertiesModule("facebook.properties"));
 		injector.injectMembers(this);
 	}
 	
