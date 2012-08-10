@@ -17,6 +17,7 @@ import com.cubeia.firebase.api.service.ServiceRegistry;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.persist.jpa.JpaPersistModule;
 
 public class ServiceImpl implements UserService, Service {
 
@@ -57,6 +58,7 @@ public class ServiceImpl implements UserService, Service {
 	private void createInjector() {
 		List<Module> list = new ArrayList<Module>(5);
 		// list.add(new FirebaseModule(context.getParentRegistry()));
+		list.add(new JpaPersistModule("kalaha"));
 		list.add(new ServiceModule());
 		list.add(new ManagerModule());
 		injector = Guice.createInjector(list);
