@@ -8,13 +8,11 @@ import org.apache.log4j.Logger;
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
 import com.cubeia.firebase.api.action.local.LoginResponseAction;
 import com.cubeia.firebase.api.login.LoginHandler;
-import com.cubeia.firebase.guice.inject.Log4j;
 import com.google.inject.Inject;
 
 public class KalahaLoginHandler implements LoginHandler {
 
-	@Log4j
-	private Logger log;
+	private final Logger log = Logger.getLogger(getClass());
 	
 	@Inject
 	private SessionManager sessions;

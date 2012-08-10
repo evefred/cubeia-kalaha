@@ -7,7 +7,6 @@ import com.cubeia.firebase.api.action.local.LoginResponseAction;
 import com.cubeia.firebase.api.login.LoginHandler;
 import com.cubeia.firebase.api.login.LoginLocator;
 import com.cubeia.firebase.api.service.ServiceRegistry;
-import com.cubeia.firebase.guice.inject.Log4j;
 import com.google.inject.Inject;
 
 public class LoginLocatorImpl implements LoginLocator {
@@ -31,8 +30,7 @@ public class LoginLocatorImpl implements LoginLocator {
 	@Inject
 	private LocalLoginHandler localHandler;
 	
-	@Log4j
-	private Logger log;
+	private final Logger log = Logger.getLogger(getClass());
 	
 	@Override
 	public void init(ServiceRegistry arg0) { }

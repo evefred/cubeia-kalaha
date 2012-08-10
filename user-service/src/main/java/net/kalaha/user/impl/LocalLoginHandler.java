@@ -1,14 +1,13 @@
 package net.kalaha.user.impl;
 
-import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.entities.User;
+import net.kalaha.data.manager.UserManager;
 
 import org.apache.log4j.Logger;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
 import com.cubeia.firebase.api.action.local.LoginResponseAction;
 import com.cubeia.firebase.api.login.LoginHandler;
-import com.cubeia.firebase.guice.inject.Log4j;
 import com.google.inject.Inject;
 
 public class LocalLoginHandler implements LoginHandler {
@@ -16,8 +15,7 @@ public class LocalLoginHandler implements LoginHandler {
 	@Inject
 	private UserManager manager;
 	
-	@Log4j
-	private Logger log;
+	private final Logger log = Logger.getLogger(getClass());
 	
 	@Override
 	public LoginResponseAction handle(LoginRequestAction req) {

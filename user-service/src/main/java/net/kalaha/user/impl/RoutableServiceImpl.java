@@ -1,13 +1,12 @@
 package net.kalaha.user.impl;
 
-import org.apache.log4j.Logger;
-
 import net.kalaha.data.manager.UserManager;
+
+import org.apache.log4j.Logger;
 
 import com.cubeia.firebase.api.action.service.ServiceAction;
 import com.cubeia.firebase.api.service.RoutableService;
 import com.cubeia.firebase.api.service.ServiceRouter;
-import com.cubeia.firebase.guice.inject.Log4j;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -18,8 +17,7 @@ public class RoutableServiceImpl implements RoutableService {
 	@SuppressWarnings("unused")
 	private UserManager manager;
 	
-	@Log4j
-	private Logger log;
+	private final Logger log = Logger.getLogger(getClass());
 
 	@SuppressWarnings("unused")
 	private ServiceRouter router;
