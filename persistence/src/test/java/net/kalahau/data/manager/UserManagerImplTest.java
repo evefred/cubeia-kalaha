@@ -84,7 +84,7 @@ public class UserManagerImplTest extends JpaTestBase {
 		updateFriends(u2, 2);
 		updateFriends(u3, 3);
 		updateFriends(u4, 4);
-		Set<Integer> set = new HashSet<Integer>();
+		Set<Long> set = new HashSet<Long>();
 		set.add(u4.getId());
 		set.add(u2.getId());
 		set.add(u1.getId());
@@ -105,7 +105,7 @@ public class UserManagerImplTest extends JpaTestBase {
 		updateRanking(u2, 2);
 		updateRanking(u3, 3);
 		updateRanking(u4, 4);
-		Set<Integer> set = new HashSet<Integer>();
+		Set<Long> set = new HashSet<Long>();
 		set.add(u4.getId());
 		set.add(u2.getId());
 		set.add(u1.getId());

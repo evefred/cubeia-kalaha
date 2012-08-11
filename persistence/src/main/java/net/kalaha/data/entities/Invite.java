@@ -13,7 +13,7 @@ public class Invite {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	@ManyToOne
 	@JoinColumn(nullable=false)
@@ -31,11 +31,11 @@ public class Invite {
 	@Column(nullable=false)
 	private InviteStatus status;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -84,13 +84,12 @@ public class Invite {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (created ^ (created >>> 32));
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result
 				+ ((invitedExtId == null) ? 0 : invitedExtId.hashCode());
 		result = prime * result + ((inviter == null) ? 0 : inviter.hashCode());
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
-		result = prime * result
-				+ ((this.status == null) ? 0 : this.status.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		return result;
 	}
 

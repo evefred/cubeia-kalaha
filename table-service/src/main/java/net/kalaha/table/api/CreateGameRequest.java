@@ -10,7 +10,7 @@ public class CreateGameRequest extends TableRequestAction implements Serializabl
 	
 	public CreateGameRequest() { }
 	
-	public CreateGameRequest(int userId, int opponentId, int correlationId) {
+	public CreateGameRequest(long userId, int opponentId, int correlationId) {
 		super(userId, correlationId);
 		this.opponentId = opponentId;
 	}

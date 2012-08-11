@@ -15,7 +15,7 @@ public class UserDetails implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	@Column(nullable=true)
 	private String displayName;
@@ -28,11 +28,11 @@ public class UserDetails implements Serializable {
 		this.displayName = displayName;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -47,7 +47,7 @@ public class UserDetails implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((displayName == null) ? 0 : displayName.hashCode());
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		return result;
 	}
 

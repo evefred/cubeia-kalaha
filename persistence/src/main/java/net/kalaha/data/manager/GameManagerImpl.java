@@ -59,13 +59,13 @@ public class GameManagerImpl implements GameManager {
 	
 	@Override
 	@Transactional
-	public Game getGame(int gameId) {
+	public Game getGame(long gameId) {
 		return em.get().find(Game.class, gameId);
 	}
 	
 	@Override
 	@Transactional
-	public Game finishGame(int gameId, User winner) {
+	public Game finishGame(long gameId, User winner) {
 		Game g = getGame(gameId);
 		if(g == null) throw new IllegalArgumentException("No such game: " + gameId);
 		g.setLastModified(System.currentTimeMillis());

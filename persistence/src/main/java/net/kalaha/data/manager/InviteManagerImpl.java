@@ -43,7 +43,7 @@ public class InviteManagerImpl implements InviteManager {
 
 	@Override
 	@Transactional
-	public Invite updateInvite(int id, InviteStatus status) {
+	public Invite updateInvite(long id, InviteStatus status) {
 		Invite inv = em.get().find(Invite.class, id);
 		if(inv == null) {
 			log.debug("Attempt to update non-exising invite: " + id);

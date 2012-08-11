@@ -114,7 +114,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		}
 	}
 
-	private int getTableForGame(int gameId, int userId) {
+	private int getTableForGame(long gameId, long userId) {
 		int tableId = -1;
 		synchronized(mapping) {
 			tableId = mapping.getTableForGame(gameId);
@@ -130,7 +130,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		manager.sendToClient(action);
 	}
 
-	private int createTable(int gameId, int userId) {
+	private int createTable(long gameId, long userId) {
 		log.debug("Ressurecting game " + gameId + " for player " + userId);
 		final Game game = gameManager.getGame(gameId);
 		if (game == null) {
@@ -162,7 +162,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		@Override
 		public void tableCreated(Table table, LobbyTableAttributeAccessor atts) {
 			table.getGameState().setState(new KalahaBoard(game));
-			atts.setIntAttribute("gameId", game.getId());
+			atts.setStringAttribute("gameId", String.valueOf(game.getId()));
 		}
 		
 		@Override
@@ -188,22 +188,22 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	
 	private static class Mapping {
 		
-		private Map<Integer, Integer> gameToTable = new HashMap<Integer, Integer>();
-		private Map<Integer, Integer> tableToGame = new HashMap<Integer, Integer>();
+		private Map<Long, Integer> gameToTable = new HashMap<Long, Integer>();
+		private Map<Integer, Long> tableToGame = new HashMap<Integer, Long>();
 	
-		public void put(int gameId, int tableId) {
+		public void put(long gameId, int tableId) {
 			gameToTable.put(gameId, tableId);
 			tableToGame.put(tableId, gameId);
 		}
 		
-		public int getTableForGame(int gameId) {
+		public int getTableForGame(long gameId) {
 			Integer i = gameToTable.get(gameId);
 			return (i == null ? -1 : i.intValue());
 		}
 		
 		@SuppressWarnings("unused")
 		public void removeForTable(int tableId) {
-			Integer i = tableToGame.remove(tableId);
+			Long i = tableToGame.remove(tableId);
 			if(i != null) {
 				gameToTable.remove(i);
 			}

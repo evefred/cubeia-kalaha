@@ -6,7 +6,7 @@ import net.kalaha.data.entities.User;
 
 public interface InviteManager {
 
-	public Invite updateInvite(int id, InviteStatus status);
+	public Invite updateInvite(long id, InviteStatus status);
 	
 	public Invite invite(User inviter, String extInvitedId);
 

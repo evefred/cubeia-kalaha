@@ -13,7 +13,7 @@ public interface SessionManager {
 
 	public Session getSessionByExternalId(String extId, int operatorId);
 	
-	public Session getSessionByUserId(int id);
+	public Session getSessionByUserId(long id);
 
 	public User getUserBySession(String sessionId);
 		

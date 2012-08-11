@@ -26,8 +26,9 @@ public class TableService implements TableManager, Service {
 	@Override
 	public void sendToClient(TableRequestAction action) {
 		byte[] data = transformer.toUTF8Data(action);
-		ServiceAction a = new ClientServiceAction(action.getUserId(), action.getCorrelationId(), data);
-		router.dispatchToPlayer(action.getUserId(), a);
+		// TODO: USER ID -> INT ?!
+		ServiceAction a = new ClientServiceAction((int) action.getUserId(), action.getCorrelationId(), data);
+		router.dispatchToPlayer((int) action.getUserId(), a);
 	}
 
 	@Override

@@ -8,14 +8,14 @@ import net.kalaha.common.json.AbstractAction;
 
 public class End extends AbstractAction {
 
-	private int winnerId;
+	private long winnerId;
 	private boolean isDraw;
 	
-	public int getWinnerId() {
+	public long getWinnerId() {
 		return winnerId;
 	}
 	
-	public void setWinnerId(int winnerId) {
+	public void setWinnerId(long winnerId) {
 		this.winnerId = winnerId;
 	}
 	

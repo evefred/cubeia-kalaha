@@ -7,19 +7,19 @@ public class CreateGameResponse extends TableRequestAction implements Serializab
 	private static final long serialVersionUID = -3453124953652290479L;
 	
 	public int opponentId;
-	public int gameId;
+	public long gameId;
 	public int tableId;
 	
 	public CreateGameResponse() { }
 	
-	public CreateGameResponse(int userId, int opponentId, int correlationId, int gameId, int tableId) {
+	public CreateGameResponse(long userId, int opponentId, int correlationId, long gameId, int tableId) {
 		super(userId, correlationId);
 		this.opponentId = opponentId;
 		this.gameId = gameId;
 		this.tableId = tableId;
 	}
 
-	public CreateGameResponse(CreateGameRequest q, int gameId, int tableId) {
+	public CreateGameResponse(CreateGameRequest q, long gameId, int tableId) {
 		this(q.getUserId(), q.getOpponentId(), q.getCorrelationId(), gameId, tableId);
 	}
 
@@ -31,11 +31,11 @@ public class CreateGameResponse extends TableRequestAction implements Serializab
 		this.opponentId = opponentId;
 	}
 
-	public int getGameId() {
+	public long getGameId() {
 		return gameId;
 	}
 
-	public void setGameId(int gameId) {
+	public void setGameId(long gameId) {
 		this.gameId = gameId;
 	}
 

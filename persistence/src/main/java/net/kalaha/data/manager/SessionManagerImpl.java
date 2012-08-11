@@ -69,7 +69,7 @@ public class SessionManagerImpl implements SessionManager {
 	
 	@Override
 	@Transactional
-	public Session getSessionByUserId(int userId) {
+	public Session getSessionByUserId(long userId) {
 		Session s = doGetSessionByUserId(userId);
 		if(s != null) {
 			return s;
@@ -136,7 +136,7 @@ public class SessionManagerImpl implements SessionManager {
 		}
 	}
 	
-	private Session doGetSessionByUserId(int userId) {
+	private Session doGetSessionByUserId(long userId) {
 		Query q = em.get().createQuery("select t from Session t where t.userId = :userId");
 		q.setParameter("userId", userId);
 		q.setMaxResults(1);

@@ -8,7 +8,7 @@ import net.kalaha.data.entities.User;
 
 public interface UserManager {
 
-	public User getUser(int id);
+	public User getUser(long id);
 	
 	public User getUserByExternalId(String extId, int operatorId);
 
@@ -18,10 +18,10 @@ public interface UserManager {
 	
 	public User authLocalUser(String localName, String passwd);
 	
-	public void setDisplayName(int id, String displayName);
+	public void setDisplayName(long id, String displayName);
 
 	public User getUserByLocalName(String name);
 	
-	public List<User> listUserByStats(int limit, GameStats.Field field, Set<Integer> userGroup);
+	public List<User> listUserByStats(int limit, GameStats.Field field, Set<Long> userGroup);
 	
 }

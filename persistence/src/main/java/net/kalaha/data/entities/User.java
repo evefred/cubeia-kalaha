@@ -18,7 +18,7 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	@Column(nullable=true)
 	private String externalId;
@@ -111,11 +111,11 @@ public class User implements Serializable {
 		this.operatorId = operatorId;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
@@ -136,7 +136,7 @@ public class User implements Serializable {
 				+ ((externalId == null) ? 0 : externalId.hashCode());
 		result = prime * result
 				+ ((gameStats == null) ? 0 : gameStats.hashCode());
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result
 				+ ((localName == null) ? 0 : localName.hashCode());

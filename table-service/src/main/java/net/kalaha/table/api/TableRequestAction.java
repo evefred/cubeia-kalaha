@@ -8,21 +8,21 @@ public abstract class TableRequestAction extends AbstractAction implements Seria
 
 	private static final long serialVersionUID = 4740437729799629229L;
 	
-	private int userId;
+	private long userId;
 	private int correlationId;
 	
 	public TableRequestAction() { }
 	
-	public TableRequestAction(int userId, int correlationId) {
+	public TableRequestAction(long userId, int correlationId) {
 		this.userId = userId;
 		this.correlationId = correlationId;
 	}
 
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 

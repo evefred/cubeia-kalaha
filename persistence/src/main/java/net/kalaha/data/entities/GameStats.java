@@ -27,7 +27,7 @@ public class GameStats {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	private int challengesReceived;
 	private int challengesAccepted;
@@ -81,11 +81,11 @@ public class GameStats {
 		return totalGames;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -208,7 +208,7 @@ public class GameStats {
 		result = prime * result + gamesLost;
 		result = prime * result + gamesTimedOut;
 		result = prime * result + gamesWon;
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + sentChallenges;
 		result = prime * result + sentChallengesAccepted;
 		result = prime * result + sentChallengesDeclined;

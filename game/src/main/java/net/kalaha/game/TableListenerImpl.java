@@ -60,7 +60,7 @@ public class TableListenerImpl implements TableListener {
 	
 	// --- PRIVATE METHODS --- //
 	
-	private Player getPlayer(int playerId) {
+	private Player getPlayer(long playerId) {
 		User user = userManager.getUser(playerId);
 		Player p = new Player();
 		p.setDisplayName(user.getUserDetails().getDisplayName());

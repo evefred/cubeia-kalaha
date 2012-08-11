@@ -26,8 +26,9 @@ public class KalahaLoginHandler implements LoginHandler {
 			log.debug("No session found for token: " + sessionId);
 			return new LoginResponseAction(false, -1);
 		} else {
+			// TODO USER ID -> INT?
 			log.debug("User " + ses.getUserId() + " found for token");
-			return new LoginResponseAction(true, ses.getUserId());
+			return new LoginResponseAction(true, (int) ses.getUserId());
 		}
 	}
 }

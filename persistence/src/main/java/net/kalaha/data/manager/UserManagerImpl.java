@@ -31,7 +31,7 @@ public class UserManagerImpl implements UserManager {
 	
 	@Override
 	@Transactional
-	public void setDisplayName(int id, String displayName) {
+	public void setDisplayName(long id, String displayName) {
 		User user = getUser(id);
 		if(user != null) {
 			user.getUserDetails().setDisplayName(displayName);
@@ -42,7 +42,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	@Transactional
 	@SuppressWarnings("unchecked")
-	public List<User> listUserByStats(int limit, Field field, Set<Integer> userGroup) {
+	public List<User> listUserByStats(int limit, Field field, Set<Long> userGroup) {
 		StringBuilder b = new StringBuilder("select u from User u");
 		if(userGroup != null) {
 			b.append(" where id in (:users)");
@@ -83,7 +83,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	@Transactional
-	public User getUser(int id) {
+	public User getUser(long id) {
 		return em.get().find(User.class, id);
 	}
 

@@ -9,12 +9,12 @@ import net.kalaha.data.entities.User;
 
 public interface GameManager {
 	
-	public Game getGame(int gameId);
+	public Game getGame(long gameId);
 	
 	public List<Game> getMyGames(User user, GameStatus status);
 	
 	public Game createGame(GameType type, User owner, User opponent, long moveTimeout, int[] initState);
 	
-	public Game finishGame(int gameId, User winner);
+	public Game finishGame(long gameId, User winner);
 	
 }

@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Player {
 
-	private int id;
+	private long id;
 	private String displayName;
 	
 	public String getDisplayName() {
@@ -17,11 +17,11 @@ public class Player {
 		this.displayName = displayName;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	

@@ -15,7 +15,7 @@ public class Session implements Serializable {
 	private String id;
 	
 	@Column(nullable=false)
-	private int userId;
+	private long userId;
 	
 	@Column(nullable=false)
 	private String externalId;
@@ -41,11 +41,11 @@ public class Session implements Serializable {
 		this.operatorId = operatorId;
 	}
 	
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 	
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 	
@@ -100,7 +100,7 @@ public class Session implements Serializable {
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result + operatorId;
 		result = prime * result + (int) (ttl ^ (ttl >>> 32));
-		result = prime * result + userId;
+		result = prime * result + (int) (userId ^ (userId >>> 32));
 		return result;
 	}
 

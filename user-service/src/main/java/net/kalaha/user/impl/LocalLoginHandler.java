@@ -25,8 +25,9 @@ public class LocalLoginHandler implements LoginHandler {
 			log.debug("No user found for login name: " + req.getUser());
 			return new LoginResponseAction(false, -1);
 		} else {
+			// TODO USER ID -> INT
 			log.debug("User " + user.getId() + " found for token");
-			return new LoginResponseAction(true, user.getId());
+			return new LoginResponseAction(true, (int) user.getId());
 		}
 	}
 }

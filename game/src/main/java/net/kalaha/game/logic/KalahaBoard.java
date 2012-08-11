@@ -28,9 +28,9 @@ public class KalahaBoard implements Serializable {
 
 	private final State state;
 	
-	private int southPlayerId;
-	private int northPlayerId;
-	private int gameId;
+	private long southPlayerId;
+	private long northPlayerId;
+	private long gameId;
 
 	private boolean gameEnded;
 	private KalahaPlayer playerToAct;
@@ -69,7 +69,7 @@ public class KalahaBoard implements Serializable {
 		return new KalahaBoard(stones).getState().getHouses();
 	}	
 	
-	private int getPlayerToActId() {
+	private long getPlayerToActId() {
 		if(playerToAct == KalahaPlayer.SOUTH) {
 			return southPlayerId;
 		} else {
@@ -99,7 +99,7 @@ public class KalahaBoard implements Serializable {
 		}
 	}
 	
-	public int getGameId() {
+	public long getGameId() {
 		return gameId;
 	}
 	
@@ -107,11 +107,11 @@ public class KalahaBoard implements Serializable {
 		return state;
 	}
 	
-	public int getNorthPlayerId() {
+	public long getNorthPlayerId() {
 		return northPlayerId;
 	}
 	
-	public int getSouthPlayerId() {
+	public long getSouthPlayerId() {
 		return southPlayerId;
 	}
 	
@@ -295,7 +295,7 @@ public class KalahaBoard implements Serializable {
 		return getStonesInKalaha(KalahaPlayer.SOUTH) == getStonesInKalaha(KalahaPlayer.NORTH);
 	}
 
-	public int getWinningPlayerId() {
+	public long getWinningPlayerId() {
 		if(getStonesInKalaha(KalahaPlayer.SOUTH) > getStonesInKalaha(KalahaPlayer.NORTH)) {
 			return southPlayerId;
 		} else if(getStonesInKalaha(KalahaPlayer.SOUTH) < getStonesInKalaha(KalahaPlayer.NORTH)) {

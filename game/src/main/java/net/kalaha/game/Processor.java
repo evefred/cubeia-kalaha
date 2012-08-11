@@ -81,7 +81,7 @@ public class Processor implements GameProcessor {
 		notifyOnAction(action, table, act);
 		boolean end = board.isGameEnded();
 		sendStateToAll(action, table);
-		int gameId = board.getGameId();
+		long gameId = board.getGameId();
 		Game game = gameManager.getGame(gameId);
 		board.updateGame(game);
 		if(end) {

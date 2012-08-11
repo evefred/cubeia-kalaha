@@ -6,12 +6,12 @@ public class GetTableResponse extends TableRequestAction implements Serializable
 
 	private static final long serialVersionUID = 8570319927151735444L;
 	
-	private int gameId;
+	private long gameId;
 	private int tableId;
 	
 	public GetTableResponse() { }
 	
-	public GetTableResponse(int userId, int correlationId, int gameId, int tableId) {
+	public GetTableResponse(long userId, int correlationId, long gameId, int tableId) {
 		super(userId, correlationId);
 		this.gameId = gameId;
 		this.tableId = tableId;
@@ -21,11 +21,11 @@ public class GetTableResponse extends TableRequestAction implements Serializable
 		this(q.getUserId(), q.getCorrelationId(), q.getGameId(), tableId);
 	}
 
-	public int getGameId() {
+	public long getGameId() {
 		return gameId;
 	}
 
-	public void setGameId(int gameId) {
+	public void setGameId(long gameId) {
 		this.gameId = gameId;
 	}
 

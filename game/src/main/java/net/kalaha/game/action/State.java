@@ -14,11 +14,11 @@ public class State extends AbstractAction implements Serializable {
 	
 	private int[] houses = new int[14];
 	
-	private int southPlayerId;
-	private int northPlayerId;
-	private int playerToAct;
+	private long southPlayerId;
+	private long northPlayerId;
+	private long playerToAct;
 	
-	public State(int[] state, int southPlayerId, int northPlayerId, int playerToAct) {
+	public State(int[] state, long southPlayerId, long northPlayerId, long playerToAct) {
 		this.houses = state;
 		this.southPlayerId = southPlayerId;
 		this.northPlayerId = northPlayerId;
@@ -27,11 +27,11 @@ public class State extends AbstractAction implements Serializable {
 	
 	public State() { }
 	
-	public int getPlayerToAct() {
+	public long getPlayerToAct() {
 		return playerToAct;
 	}
 	
-	public void setPlayerToAct(int playerToAct) {
+	public void setPlayerToAct(long playerToAct) {
 		this.playerToAct = playerToAct;
 	}
 
@@ -43,19 +43,19 @@ public class State extends AbstractAction implements Serializable {
 		this.houses = pits;
 	}
 
-	public int getNorthPlayerId() {
+	public long getNorthPlayerId() {
 		return northPlayerId;
 	}
 	
-	public void setNorthPlayerId(int northPlayerId) {
+	public void setNorthPlayerId(long northPlayerId) {
 		this.northPlayerId = northPlayerId;
 	}
 	
-	public int getSouthPlayerId() {
+	public long getSouthPlayerId() {
 		return southPlayerId;
 	}
 	
-	public void setSouthPlayerId(int southPlayerId) {
+	public void setSouthPlayerId(long southPlayerId) {
 		this.southPlayerId = southPlayerId;
 	}
 	

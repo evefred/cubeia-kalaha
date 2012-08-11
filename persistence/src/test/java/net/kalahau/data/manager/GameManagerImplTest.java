@@ -65,7 +65,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		Game g1 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		Game g2 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		Game g3 = gameManager.createGame(GameType.KALAHA, me, null, 100, null);
-		Map<Integer, Game> games = new HashMap<Integer, Game>();
+		Map<Long, Game> games = new HashMap<Long, Game>();
 		games.put(g1.getId(), g1);
 		games.put(g2.getId(), g2);
 		games.put(g3.getId(), g3);

@@ -24,7 +24,7 @@ public class Game implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	@Column(nullable=false)
 	private GameType type;
@@ -56,7 +56,7 @@ public class Game implements Serializable {
 	private boolean ownersMove = true;
 	
 	@Column(nullable=true)
-	private int winningUser;
+	private long winningUser;
 	
 	@OrderBy("id")
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="game", fetch=FetchType.EAGER)
@@ -86,19 +86,19 @@ public class Game implements Serializable {
 		this.status = status;
 	}
 	
-	public void setWinningUser(int userId) {
+	public void setWinningUser(long userId) {
 		this.winningUser = userId;
 	}
 	
-	public int getWinningUser() {
+	public long getWinningUser() {
 		return winningUser;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -191,7 +191,7 @@ public class Game implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (created ^ (created >>> 32));
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result + (int) (moveTimeout ^ (moveTimeout >>> 32));
 		result = prime * result
@@ -200,10 +200,10 @@ public class Game implements Serializable {
 		result = prime * result + (ownersMove ? 1231 : 1237);
 		result = prime * result
 				+ ((this.result == null) ? 0 : this.result.hashCode());
-		// result = prime * result + ((states == null) ? 0 : states.hashCode());
+		result = prime * result + ((states == null) ? 0 : states.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + winningUser;
+		result = prime * result + (int) (winningUser ^ (winningUser >>> 32));
 		return result;
 	}
 
@@ -236,25 +236,16 @@ public class Game implements Serializable {
 			return false;
 		if (ownersMove != other.ownersMove)
 			return false;
-		if (result == null) {
-			if (other.result != null)
-				return false;
-		} else if (!result.equals(other.result))
+		if (result != other.result)
 			return false;
-		/*if (states == null) {
+		if (states == null) {
 			if (other.states != null)
 				return false;
 		} else if (!states.equals(other.states))
-			return false;*/
-		if (status == null) {
-			if (other.status != null)
-				return false;
-		} else if (!status.equals(other.status))
 			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
+		if (status != other.status)
+			return false;
+		if (type != other.type)
 			return false;
 		if (winningUser != other.winningUser)
 			return false;

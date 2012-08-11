@@ -27,7 +27,7 @@ public class TableInterceptorImpl implements TableInterceptor {
 	
 	@Override
 	public InterceptionResponse allowJoin(Table table, SeatRequest req) {
-		int gameId = board.getGameId();
+		long gameId = board.getGameId();
 		int playerId = req.getPlayerId();
 		if(playerId == board.getSouthPlayerId() || playerId == board.getNorthPlayerId()) {
 			log.debug("Allowing seat for player " + playerId + " at game " + gameId);

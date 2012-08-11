@@ -19,7 +19,7 @@ public class GameState implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private long id;
 	
 	@ManyToOne
 	@JoinColumn(name="gameId", nullable=false)
@@ -38,11 +38,11 @@ public class GameState implements Serializable {
 		this.game = game;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -95,7 +95,7 @@ public class GameState implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((game == null) ? 0 : game.hashCode());
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + Arrays.hashCode(realState);
 		result = prime * result + ((state == null) ? 0 : state.hashCode());
 		return result;
