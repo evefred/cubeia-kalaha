@@ -1,13 +1,21 @@
 package net.kalaha.data.manager;
 
+import static net.kalaha.common.elo.EloCalculator.Result.DRAW;
+import static net.kalaha.common.elo.EloCalculator.Result.PLAYER_ONE;
+import static net.kalaha.common.elo.EloCalculator.Result.PLAYER_TWO;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import net.kalaha.common.elo.EloCalculator;
+import net.kalaha.common.elo.EloCalculator.Matchup;
+import net.kalaha.common.elo.EloCalculator.Result;
 import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.GameResult;
+import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.GameStatus;
 import net.kalaha.data.entities.GameType;
 import net.kalaha.data.entities.User;
@@ -25,6 +33,9 @@ public class GameManagerImpl implements GameManager {
 	
 	@Inject
 	private SystemTime time;
+	
+	@Inject
+	private EloCalculator eloCalculator;
 	
 	@Override
 	@Transactional
@@ -59,12 +70,15 @@ public class GameManagerImpl implements GameManager {
 		if(g == null) throw new IllegalArgumentException("No such game: " + gameId);
 		g.setLastModified(System.currentTimeMillis());
 		g.setStatus(GameStatus.FINISHED);
+		GameResult res = null;
 		if(winner != null) {
+			res = GameResult.WIN;
 			g.setWinningUser(winner.getId());
-			g.setResult(GameResult.WIN);
 		} else {
-			g.setResult(GameResult.DRAW);
+			res = GameResult.DRAW;
 		}
+		g.setResult(res);
+		updateStats(g, winner, res);
 		return g;
 	}
 
@@ -83,5 +97,29 @@ public class GameManagerImpl implements GameManager {
 			q.setParameter("status", status);
 		}
 		return q.getResultList();
+	}
+	
+	
+	// -- PRIVATE METHODS --- //
+	
+	private void updateStats(Game g, User winner, GameResult res) {
+		GameStats one = g.getOwner().getGameStats();
+		GameStats two = g.getOpponent().getGameStats();
+		Result result = (winner == null ? DRAW : (winner.getId() == g.getOwner().getId() ? PLAYER_ONE : PLAYER_TWO));
+		Matchup m = eloCalculator.calculate(result, new Matchup(one.getEloRating(), two.getEloRating()));
+		one.setEloRating(m.playerOne);
+		two.setEloRating(m.playerTwo);
+		one.incrementTotalGames();
+		two.incrementTotalGames();
+		if(result == DRAW) {
+			one.incrementGamesDrawn();
+			two.incrementGamesDrawn();
+		} else if(winner.getId() == g.getOwner().getId()) {
+			one.incrementGamesWon();
+			two.incrementGamesLost();
+		} else {
+			two.incrementGamesWon();
+			one.incrementGamesLost();
+		}
 	}
 }

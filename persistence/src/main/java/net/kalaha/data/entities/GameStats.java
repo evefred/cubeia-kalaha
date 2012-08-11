@@ -262,4 +262,20 @@ public class GameStats {
 			return false;
 		return true;
 	}
+
+	public void incrementTotalGames() {
+		totalGames++;
+	}
+
+	public void incrementGamesDrawn() {
+		gamesDrawn++;
+	}
+
+	public void incrementGamesWon() {
+		gamesWon++;
+	}
+
+	public void incrementGamesLost() {
+		gamesLost++;
+	}
 }

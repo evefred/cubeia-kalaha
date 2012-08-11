@@ -11,6 +11,7 @@ import java.util.Map;
 
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.GameResult;
+import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.GameStatus;
 import net.kalaha.data.entities.GameType;
 import net.kalaha.data.entities.User;
@@ -44,6 +45,16 @@ public class GameManagerImplTest extends JpaTestBase {
 		// finish game	
 		Game g2 = gameManager.finishGame(g1.getId(), me);
 		assertEquals(g2.getStatus(), FINISHED);
+		GameStats one = me.getGameStats();
+		GameStats two = kalle.getGameStats();
+		assertEquals(one.getGamesWon(), 1);
+		assertEquals(two.getGamesWon(), 0);
+		assertEquals(one.getGamesLost(), 0);
+		assertEquals(two.getGamesLost(), 1);
+		assertEquals(one.getTotalGames(), 1);
+		assertEquals(two.getTotalGames(), 1);
+		assertEquals(Math.round(one.getEloRating()), 1516);
+		assertEquals(Math.round(two.getEloRating()), 1484);
 	}
 
 	@Test

@@ -144,6 +144,7 @@ public class UserManagerImpl implements UserManager {
 	private User doCreateUser(String extId, int operatorId) {
 		User s = newUser();
 		GameStats stats = new GameStats();
+		stats.setEloRating(1500);
 		em.get().persist(stats);
 		UserDetails det = new UserDetails();
 		em.get().persist(det);
@@ -158,6 +159,7 @@ public class UserManagerImpl implements UserManager {
 	private User doCreateLocalUser(String localName, String password) {
 		User s = newUser();
 		GameStats stats = new GameStats();
+		stats.setEloRating(1500);
 		em.get().persist(stats);
 		UserDetails det = new UserDetails();
 		det.setDisplayName(localName);
