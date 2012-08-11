@@ -1,10 +1,15 @@
 package net.kalaha.data.manager;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import net.kalaha.common.util.SystemTime;
+import net.kalaha.data.entities.GameStats;
+import net.kalaha.data.entities.GameStats.Field;
 import net.kalaha.data.entities.User;
 import net.kalaha.data.entities.UserDetails;
 
@@ -31,6 +36,27 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 	
+	
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<User> listUserByStats(int limit, Field field, Set<Integer> userGroup) {
+		StringBuilder b = new StringBuilder("select u from User u");
+		if(userGroup != null) {
+			b.append(" where id in (:users)");
+		}
+		if(field != null) {
+			b.append(" order by ").append("gameStats." + field.getFieldName()).append(" desc");
+		}
+		Query q = em.get().createQuery(b.toString());
+		if(userGroup != null) {
+			q.setParameter("users", userGroup);
+		}
+		if(limit > 0) {
+			q.setMaxResults(limit);
+		}
+		return q.getResultList();
+	}
 	
 	
 	@Override
@@ -117,8 +143,11 @@ public class UserManagerImpl implements UserManager {
 
 	private User doCreateUser(String extId, int operatorId) {
 		User s = newUser();
+		GameStats stats = new GameStats();
+		em.get().persist(stats);
 		UserDetails det = new UserDetails();
 		em.get().persist(det);
+		s.setGameStats(stats);
 		s.setUserDetails(det);
 		s.setExternalId(extId);
 		s.setOperatorId(operatorId);
@@ -128,9 +157,12 @@ public class UserManagerImpl implements UserManager {
 	
 	private User doCreateLocalUser(String localName, String password) {
 		User s = newUser();
+		GameStats stats = new GameStats();
+		em.get().persist(stats);
 		UserDetails det = new UserDetails();
 		det.setDisplayName(localName);
 		em.get().persist(det);
+		s.setGameStats(stats);
 		s.setUserDetails(det);
 		s.setOperatorId(0);
 		s.setLocalName(localName);

@@ -1,5 +1,9 @@
 package net.kalaha.data.manager;
 
+import java.util.List;
+import java.util.Set;
+
+import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.User;
 
 public interface UserManager {
@@ -17,5 +21,7 @@ public interface UserManager {
 	public void setDisplayName(int id, String displayName);
 
 	public User getUserByLocalName(String name);
+	
+	public List<User> listUserByStats(int limit, GameStats.Field field, Set<Integer> userGroup);
 	
 }

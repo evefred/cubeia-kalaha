@@ -35,11 +35,22 @@ public class User implements Serializable {
 	@OneToOne(optional=false, cascade=ALL)
 	private UserDetails userDetails;
 	
+	@OneToOne(optional=false, cascade=ALL)
+	private GameStats gameStats;
+	
 	@Column(nullable=false) 
 	private long created;
 	
 	@Column(nullable=false)
 	private long lastModified;
+	
+	public GameStats getGameStats() {
+		return gameStats;
+	}
+	
+	public void setGameStats(GameStats gameStats) {
+		this.gameStats = gameStats;
+	}
 	
 	public long getCreated() {
 		return created;
@@ -168,8 +179,7 @@ public class User implements Serializable {
 	public String toString() {
 		return "User [id=" + id + ", externalId=" + externalId
 				+ ", operatorId=" + operatorId + ", localName=" + localName
-				+ ", localPassword=" + localPassword + ", userDetails="
-				+ userDetails + ", created=" + created + ", lastModified="
+				+ ", created=" + created + ", lastModified="
 				+ lastModified + "]";
 	}
 }

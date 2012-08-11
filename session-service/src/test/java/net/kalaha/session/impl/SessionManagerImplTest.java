@@ -52,7 +52,6 @@ public class SessionManagerImplTest {
 		}
 	}
 	
-	
 	private class Context extends ServiceContextAdapter {
 		
 		private Context() {
