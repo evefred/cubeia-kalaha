@@ -44,6 +44,17 @@ public class User implements Serializable {
 	@Column(nullable=false)
 	private long lastModified;
 	
+	@Column(nullable=false)
+	private UserStatus status;
+	
+	public UserStatus getStatus() {
+		return status;
+	}
+	
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
+	
 	public GameStats getGameStats() {
 		return gameStats;
 	}
@@ -123,6 +134,8 @@ public class User implements Serializable {
 		result = prime * result + (int) (created ^ (created >>> 32));
 		result = prime * result
 				+ ((externalId == null) ? 0 : externalId.hashCode());
+		result = prime * result
+				+ ((gameStats == null) ? 0 : gameStats.hashCode());
 		result = prime * result + id;
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result
@@ -130,6 +143,7 @@ public class User implements Serializable {
 		result = prime * result
 				+ ((localPassword == null) ? 0 : localPassword.hashCode());
 		result = prime * result + operatorId;
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result
 				+ ((userDetails == null) ? 0 : userDetails.hashCode());
 		return result;
@@ -151,6 +165,11 @@ public class User implements Serializable {
 				return false;
 		} else if (!externalId.equals(other.externalId))
 			return false;
+		if (gameStats == null) {
+			if (other.gameStats != null)
+				return false;
+		} else if (!gameStats.equals(other.gameStats))
+			return false;
 		if (id != other.id)
 			return false;
 		if (lastModified != other.lastModified)
@@ -167,6 +186,8 @@ public class User implements Serializable {
 			return false;
 		if (operatorId != other.operatorId)
 			return false;
+		if (status != other.status)
+			return false;
 		if (userDetails == null) {
 			if (other.userDetails != null)
 				return false;
@@ -180,6 +201,6 @@ public class User implements Serializable {
 		return "User [id=" + id + ", externalId=" + externalId
 				+ ", operatorId=" + operatorId + ", localName=" + localName
 				+ ", created=" + created + ", lastModified="
-				+ lastModified + "]";
+				+ lastModified + ", status=" + status + "]";
 	}
 }

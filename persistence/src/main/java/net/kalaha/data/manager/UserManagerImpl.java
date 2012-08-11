@@ -1,5 +1,7 @@
 package net.kalaha.data.manager;
 
+import static net.kalaha.data.entities.UserStatus.LIVE;
+
 import java.util.List;
 import java.util.Set;
 
@@ -175,6 +177,7 @@ public class UserManagerImpl implements UserManager {
 
 	private User newUser() {
 		User s = new User();
+		s.setStatus(LIVE);
 		long t = time.utc();
 		s.setCreated(t);
 		s.setLastModified(t);
