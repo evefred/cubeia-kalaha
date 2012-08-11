@@ -48,7 +48,7 @@ public class GameStats {
 	
 	private int friends;
 	
-	private int eloRating;
+	private double eloRating;
 
 	public int getFriends() {
 		return friends;
@@ -185,11 +185,11 @@ public class GameStats {
 		this.gamesTimedOut = gameTimedOut;
 	}
 
-	public int getEloRating() {
+	public double getEloRating() {
 		return eloRating;
 	}
 
-	public void setEloRating(int eloRanking) {
+	public void setEloRating(double eloRanking) {
 		this.eloRating = eloRanking;
 	}
 
@@ -200,7 +200,9 @@ public class GameStats {
 		result = prime * result + challengesAccepted;
 		result = prime * result + challengesDeclined;
 		result = prime * result + challengesReceived;
-		result = prime * result + eloRating;
+		long temp;
+		temp = Double.doubleToLongBits(eloRating);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + friends;
 		result = prime * result + gamesDrawn;
 		result = prime * result + gamesLost;
@@ -231,7 +233,8 @@ public class GameStats {
 			return false;
 		if (challengesReceived != other.challengesReceived)
 			return false;
-		if (eloRating != other.eloRating)
+		if (Double.doubleToLongBits(eloRating) != Double
+				.doubleToLongBits(other.eloRating))
 			return false;
 		if (friends != other.friends)
 			return false;
