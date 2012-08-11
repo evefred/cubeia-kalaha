@@ -9,5 +9,6 @@ public class ManagerModule extends AbstractModule {
 		bind(UserManager.class).to(UserManagerImpl.class);
 		bind(GameManager.class).to(GameManagerImpl.class);
 		bind(SessionManager.class).to(SessionManagerImpl.class);
+		bind(InviteManager.class).to(InviteManagerImpl.class);
 	}
 }
