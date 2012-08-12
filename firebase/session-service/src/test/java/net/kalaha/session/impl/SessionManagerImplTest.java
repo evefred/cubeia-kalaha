@@ -30,7 +30,7 @@ public class SessionManagerImplTest {
 			@Override
 			protected void createInjector() {
 				ClusterConfigProviderContract serv = con.getParentRegistry().getServiceInstance(ClusterConfigProviderContract.class);
-				injector = Guice.createInjector(new TestModule(), new PropertiesModule(getConfigProeprties(serv)));
+				injector = Guice.createInjector(new TestModule(), new PropertiesModule(getConfigProperties(serv)));
 				injector.injectMembers(this);
 			}
 		};

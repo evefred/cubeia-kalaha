@@ -23,5 +23,7 @@ public interface UserManager {
 	public User getUserByLocalName(String name);
 	
 	public List<User> listUserByStats(int limit, GameStats.Field field, Set<Long> userGroup);
+
+	public User authBot(String userName, int botId);
 	
 }

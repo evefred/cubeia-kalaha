@@ -47,11 +47,11 @@ public class SessionManagerImpl implements Service, SessionManager {
 	
 	protected void createInjector() {
 		ClusterConfigProviderContract serv = con.getParentRegistry().getServiceInstance(ClusterConfigProviderContract.class);
-		injector = Guice.createInjector(new ManagerModule(), new JpaPersistModule("kalaha"), new PropertiesModule(getConfigProeprties(serv)));
+		injector = Guice.createInjector(new ManagerModule(), new JpaPersistModule("kalaha"), new PropertiesModule(getConfigProperties(serv)));
 		injector.injectMembers(this);
 	}
 
-	protected Properties getConfigProeprties(ClusterConfigProviderContract serv) {
+	protected Properties getConfigProperties(ClusterConfigProviderContract serv) {
 		Properties p = new Properties();
 		for (ConfigProperty prop : serv.getAllProperties()) {
 			PropertyKey key = prop.getKey();

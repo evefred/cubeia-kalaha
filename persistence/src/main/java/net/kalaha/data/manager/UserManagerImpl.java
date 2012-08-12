@@ -76,7 +76,7 @@ public class UserManagerImpl implements UserManager {
 	public User createLocalUser(String localName, String password) {
 		User u = getUserByLocalName(localName);
 		if(u == null) {
-			u = doCreateLocalUser(localName, password);
+			u = doCreateLocalUser(localName, password, 0);
 		}
 		return u;
 	}
@@ -96,7 +96,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	@Transactional
 	public User getUserByLocalName(String userName) {
-		return doGetUserByLocalName(userName);
+		return doGetUserByLocalName(userName, 0);
 	}
 	
 	@Override
@@ -105,8 +105,22 @@ public class UserManagerImpl implements UserManager {
 		return doAuthLocalUser(localName, passwd);
 	}
 	
-	
+	@Override
+	@Transactional
+	public User authBot(String userName, int botId) {
+		return doAuthBot(userName, botId);
+	}
+
+
 	// --- PRIVATE METHODS --- //
+	
+	private User doAuthBot(String userName, int botId) {
+		User u = doGetUserByLocalName(userName, 666);
+		if(u == null) {
+			u = doCreateLocalUser(userName, "Bot_" + botId, 666);
+		}
+		return u;
+	}
 	
 	private User doAuthLocalUser(String localName, String passwd) {
 		Query q = em.get().createQuery("select t from User t where t.localName = :localName and t.localPassword = :localPassword");
@@ -132,9 +146,10 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 	
-	private User doGetUserByLocalName(String userName) {
-		Query q = em.get().createQuery("select t from User t where t.localName = :localName");
+	private User doGetUserByLocalName(String userName, int operatorId) {
+		Query q = em.get().createQuery("select t from User t where t.localName = :localName and t.operatorId = :operatorId");
 		q.setParameter("localName", userName);
+		q.setParameter("operatorId", operatorId);
 		q.setMaxResults(1);
 		try {
 			return (User) q.getSingleResult();
@@ -158,7 +173,7 @@ public class UserManagerImpl implements UserManager {
 		return s;
 	}
 	
-	private User doCreateLocalUser(String localName, String password) {
+	private User doCreateLocalUser(String localName, String password, int operatorId) {
 		User s = newUser();
 		GameStats stats = new GameStats();
 		stats.setEloRating(1500);
@@ -168,7 +183,7 @@ public class UserManagerImpl implements UserManager {
 		em.get().persist(det);
 		s.setGameStats(stats);
 		s.setUserDetails(det);
-		s.setOperatorId(0);
+		s.setOperatorId(operatorId);
 		s.setLocalName(localName);
 		s.setLocalPassword(password);
 		em.get().persist(s);
