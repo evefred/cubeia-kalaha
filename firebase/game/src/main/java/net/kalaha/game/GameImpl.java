@@ -7,6 +7,7 @@ import net.kalaha.data.manager.ManagerModule;
 import com.cubeia.firebase.guice.game.Configuration;
 import com.cubeia.firebase.guice.game.GuiceGame;
 import com.google.inject.Module;
+import com.google.inject.persist.jpa.JpaPersistModule;
 
 public class GameImpl extends GuiceGame {
 
@@ -18,6 +19,7 @@ public class GameImpl extends GuiceGame {
 	@Override
 	protected void preInjectorCreation(List<Module> modules) {
 		modules.add(new KalahaModule());
+		// modules.add(new JpaPersistModule("kalaha"));
 		modules.add(new ManagerModule());
 	}
 }

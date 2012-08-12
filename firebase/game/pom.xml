@@ -36,6 +36,12 @@
 		<dependency>
 			<groupId>com.cubeia.firebase</groupId>
 			<artifactId>guice-support</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>guice</artifactId>
+					<groupId>com.google.code.guice</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
@@ -57,17 +63,32 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- PROVIDED FOR FIREBASE:RUN -->
+		<dependency>
+			<artifactId>table-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency>
+		<!-- dependency>
+			<artifactId>user-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<artifactId>session-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency -->
 	</dependencies>
 </project>

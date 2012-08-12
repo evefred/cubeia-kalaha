@@ -54,10 +54,17 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 
 	@Override
 	public void init(ActivatorContext context) throws SystemException {
-		injector = Guice.createInjector(new ManagerModule(), new JpaPersistModule("kalaha"));
-		gameManager = injector.getInstance(GameManager.class);
-		userManager = injector.getInstance(UserManager.class);
-		this.context = context;
+		Thread th = Thread.currentThread();
+		ClassLoader cl = th.getContextClassLoader();
+		try {
+			th.setContextClassLoader(getClass().getClassLoader());
+			injector = Guice.createInjector(new ManagerModule(), new JpaPersistModule("kalaha"));
+			gameManager = injector.getInstance(GameManager.class);
+			userManager = injector.getInstance(UserManager.class);
+			this.context = context;
+		} finally {
+			th.setContextClassLoader(cl);
+		}
 	}
 	
 	@Override

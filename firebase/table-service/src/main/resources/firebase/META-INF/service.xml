@@ -7,6 +7,6 @@
     <description />
     <exported>
         <package>net.kalaha.table.api.-</package>
-        <package>net.kalaha.json.AbstractAction</package>
+        <class>net.kalaha.common.json.AbstractAction</class>
     </exported>
 </service>

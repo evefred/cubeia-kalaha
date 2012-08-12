@@ -8,6 +8,5 @@
     <description />
     <exported>
         <package>net.kalaha.user.api.-</package>
-        <package>net.kalaha.entities.-</package>
     </exported>
 </service>

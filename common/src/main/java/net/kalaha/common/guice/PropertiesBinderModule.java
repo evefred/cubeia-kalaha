@@ -13,7 +13,14 @@ public abstract class PropertiesBinderModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		Names.bindProperties(binder(), loadProperties());
+		Properties p = loadProperties();
+		if(log.isDebugEnabled()) {
+			for (Object k : p.keySet()) {
+				Object v = p.get(k);
+				log.debug("Binding '" + k + "' -> '" + v + "'");
+			}
+		}
+		Names.bindProperties(binder(), p);
 	}
 	
 	protected abstract Properties loadProperties();
