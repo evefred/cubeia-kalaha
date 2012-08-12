@@ -8,15 +8,10 @@
 	<name>kalaha</name>
 
 	<modules>
-		<module>game</module>
-		<module>textclient</module>
-		<module>user-service</module>
-		<module>table-service</module>
 		<module>persistence</module>
-		<module>uar</module>
+		<module>firebase</module>
 		<module>common</module>
 		<module>website</module>
-    <module>session-service</module>
   </modules>
 
 	<properties>
