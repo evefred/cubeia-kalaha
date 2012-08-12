@@ -11,12 +11,6 @@
   <name>uar (uar)</name>
   <packaging>firebase-uar</packaging>
   <dependencies>
-      	<dependency>
-  	  <groupId>net.kalaha</groupId>
-  	  <artifactId>persistence</artifactId>
-  	  <version>${project.version}</version>
-	  <type>firebase-par</type>
-  	</dependency>
 	<dependency>
   	  <groupId>net.kalaha</groupId>
   	  <artifactId>user-service</artifactId>

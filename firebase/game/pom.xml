@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.kalaha</groupId>
-			<artifactId>persistence</artifactId>
+			<artifactId>persistence-jta</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

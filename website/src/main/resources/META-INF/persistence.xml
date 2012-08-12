@@ -8,11 +8,13 @@
 	<persistence-unit name="kalaha" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<non-jta-data-source>java:comp/env/jdbc/kalahaDs</non-jta-data-source>
-		<class>net.kalaha.entities.User</class>
-		<class>net.kalaha.entities.UserDetails</class>
-		<class>net.kalaha.entities.Session</class>
-		<class>net.kalaha.entities.Game</class>
-		<class>net.kalaha.entities.GameState</class>
+		<class>net.kalaha.data.entities.User</class>
+		<class>net.kalaha.data.entities.UserDetails</class>
+		<class>net.kalaha.data.entities.Session</class>
+		<class>net.kalaha.data.entities.Game</class>
+		<class>net.kalaha.data.entities.GameStats</class>
+		<class>net.kalaha.data.entities.GameState</class>
+		<class>net.kalaha.data.entities.Invite</class>
 		<properties>
            <property name="hibernate.hbm2ddl.auto" value="update" />
 		</properties>

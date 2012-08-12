@@ -15,5 +15,6 @@
 <module>session-service</module>
 <module>user-service</module>	  
 <module>uar</module>
+<module>persistence-jta</module>
 	  </modules>
 </project>
