@@ -1,5 +1,9 @@
 package net.kalaha.user.impl;
 
+import static net.kalaha.common.Constants.BOT_OPERATOR_ID;
+import static net.kalaha.common.Constants.FACEBOOK_OPERATOR_ID;
+import static net.kalaha.common.Constants.LOCAL_OPERATOR_ID;
+
 import org.apache.log4j.Logger;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
@@ -11,10 +15,6 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public class LoginLocatorImpl implements LoginLocator {
-	
-	private static final int BOT_OPERATOR = 666;
-	private static final int LOCAL_OPERATOR = 0;
-	private static final int FACEBOOK_OPERATOR = 1;
 
 	private static final LoginHandler NULL_HANDLER = new LoginHandler() {
 		
@@ -54,13 +54,13 @@ public class LoginLocatorImpl implements LoginLocator {
 
 	@Override
 	public LoginHandler locateLoginHandler(LoginRequestAction req) {
-		if(req.getOperatorid() == FACEBOOK_OPERATOR) {
+		if(req.getOperatorid() == FACEBOOK_OPERATOR_ID) {
 			log.debug("Using facebook login handler");
 			return realHandler;
-		} else if(req.getOperatorid() == LOCAL_OPERATOR && allowLocal) {
+		} else if(req.getOperatorid() == LOCAL_OPERATOR_ID && allowLocal) {
 			log.debug("Using local login handler");
 			return localHandler;
-		} else if(req.getOperatorid() == BOT_OPERATOR && allowBots) {
+		} else if(req.getOperatorid() == BOT_OPERATOR_ID && allowBots) {
 			log.debug("Using bot login handler");
 			return botHandler;
 		}

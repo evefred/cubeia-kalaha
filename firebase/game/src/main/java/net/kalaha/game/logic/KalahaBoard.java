@@ -1,5 +1,6 @@
 package net.kalaha.game.logic;
 
+import static net.kalaha.common.TableState.OPEN;
 import static net.kalaha.data.entities.GameResult.DRAW;
 import static net.kalaha.data.entities.GameResult.WIN;
 import static net.kalaha.data.entities.GameStatus.FINISHED;
@@ -8,6 +9,7 @@ import static net.kalaha.game.logic.KalahaPlayer.SOUTH;
 
 import java.io.Serializable;
 
+import net.kalaha.common.TableState;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.GameStatus;
 import net.kalaha.game.IllegalMoveException;
@@ -37,6 +39,12 @@ public class KalahaBoard implements Serializable {
 
 	private SpecialRules rules;
 	
+	/*
+	 * Note: this is the state of the give Firebase table, it
+	 * isn't strictly "logic", but hell...
+	 */
+	private TableState tableState;
+	
 	public KalahaBoard(int stones) {		
 		this(stones, KalahaPlayer.SOUTH);
 	}
@@ -51,6 +59,7 @@ public class KalahaBoard implements Serializable {
 		this.playerToAct = (game.isOwnersMove() ? KalahaPlayer.SOUTH : KalahaPlayer.NORTH);
 		this.state = new State(game.getCurrentGameState().getRealState(), southPlayerId, northPlayerId, getPlayerToActId());
 		this.rules = new DefaultRules();
+		this.tableState = OPEN;
 	}
 	
 	public KalahaBoard(int stones, KalahaPlayer startingPlayer) {
@@ -63,6 +72,15 @@ public class KalahaBoard implements Serializable {
 		playerToAct = startingPlayer;
 		state.setPlayerToAct(getPlayerToActId());
 		this.rules = rules;		
+		this.tableState = OPEN;
+	}
+	
+	public TableState getTableState() {
+		return tableState;
+	}
+	
+	public void setTableState(TableState tableState) {
+		this.tableState = tableState;
 	}
 
 	public static int[] getInitState(int stones) {

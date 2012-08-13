@@ -1,5 +1,9 @@
 package net.kalaha.game;
 
+import static net.kalaha.common.Errors.ILLEGAL_PLAYER;
+import static net.kalaha.common.Errors.OK;
+import static net.kalaha.common.Errors.TABLE_CLOSED;
+import static net.kalaha.common.TableState.OPEN;
 import net.kalaha.game.logic.KalahaBoard;
 
 import org.apache.log4j.Logger;
@@ -27,40 +31,36 @@ public class TableInterceptorImpl implements TableInterceptor {
 	
 	@Override
 	public InterceptionResponse allowJoin(Table table, SeatRequest req) {
-		long gameId = board.getGameId();
-		int playerId = req.getPlayerId();
-		if(playerId == board.getSouthPlayerId() || playerId == board.getNorthPlayerId()) {
-			log.debug("Allowing seat for player " + playerId + " at game " + gameId);
-			return new InterceptionResponse(true, 0);
+		if(isOpen()) {
+			long gameId = board.getGameId();
+			int playerId = req.getPlayerId();
+			if(playerId == board.getSouthPlayerId() || playerId == board.getNorthPlayerId()) {
+				log.debug("Allowing seat for player " + playerId + " at game " + gameId);
+				return new InterceptionResponse(true, OK);
+			} else {
+				log.debug("Denying seat for player " + playerId + " at game " + gameId);
+				return new InterceptionResponse(false, ILLEGAL_PLAYER);
+			}
 		} else {
-			log.debug("Denying seat for player " + playerId + " at game " + gameId);
-			return new InterceptionResponse(false, -1);
+			log.debug("Denying join, table is closed");
+			return new InterceptionResponse(false, TABLE_CLOSED);
 		}
-		/*int seat = req.getSeat();
-		if(seat == 0) {
-			if(board.getSouthPlayerId() == playerId) {
-				return new InterceptionResponse(true, 0);
-			} else {
-				log.debug("Denying seat for player " + playerId + " at game " + gameId + " position SOUTH");
-				return new InterceptionResponse(false, -1);
-			}
-		} else {
-			if(board.getNorthPlayerId() == playerId) {
-				return new InterceptionResponse(true, 0);
-			} else {
-				log.debug("Denying seat for player " + playerId + " at game " + gameId + " position NORTH");
-				return new InterceptionResponse(false, -1);
-			}
-		}*/
 	}
 
 	@Override
 	public InterceptionResponse allowLeave(Table arg0, int arg1) {
-		return new InterceptionResponse(true, 0);
+		return new InterceptionResponse(true, OK);
 	}
 
 	@Override
 	public InterceptionResponse allowReservation(Table arg0, SeatRequest arg1) {
-		return new InterceptionResponse(true, 0);
+		return new InterceptionResponse(false, -1);
+	}
+	
+	
+	// --- PRIVATE METHODS --- //
+	
+	private boolean isOpen() {
+		return board.getTableState().equals(OPEN);
 	}
 }

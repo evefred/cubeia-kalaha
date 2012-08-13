@@ -1,9 +1,12 @@
 package net.kalaha.game;
 
+import static net.kalaha.common.TableState.CLOSED;
+import net.kalaha.common.json.AbstractAction;
 import net.kalaha.common.json.ActionTransformer;
+import net.kalaha.data.entities.Game;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.util.JpaInitializer;
-import net.kalaha.data.entities.Game;
+import net.kalaha.game.action.Close;
 import net.kalaha.game.action.End;
 import net.kalaha.game.action.KalahaAction;
 import net.kalaha.game.action.util.ActionUtil;
@@ -47,11 +50,38 @@ public class Processor implements GameProcessor {
 		}
 	}
 
-	public void handle(GameObjectAction action, Table table) { }
+	public void handle(GameObjectAction action, Table table) { 
+		String tmp = action.getAttachment().toString();
+		AbstractAction act = trans.fromString(tmp);
+		handleInternalAction(act, table);
+	}
 
-	
+
 	// --- PRIVATE METHODS --- //
 	
+	// scheduled or activator action 
+	private void handleInternalAction(AbstractAction act, Table table) {
+		if(act instanceof Close) {
+			tryClose(table);
+		} else {
+			log.warn("Unknown internal action: " + act);
+		}
+	}
+	
+	private void tryClose(Table table) {
+		if(haveSeated(table)) {
+			log.debug("Ingoring close action as there are players seated; tableId: " + table.getId());
+		} else {
+			log.debug("Closing table " + table.getId());
+			table.getAttributeAccessor().setStringAttribute("state", CLOSED.name());
+			board.setTableState(CLOSED);
+		}
+	}
+
+	private boolean haveSeated(Table table) {
+		return table.getPlayerSet().getPlayerCount() > 0;
+	}
+
 	private void sendStateToAll(GameDataAction action, Table table) {
 		GameDataAction gda = util.toDataAction(action.getPlayerId(), table.getId(), board.getState());
 		table.getNotifier().notifyAllPlayers(gda);

@@ -19,7 +19,8 @@ public class GameImpl extends GuiceGame {
 	@Override
 	protected void preInjectorCreation(List<Module> modules) {
 		modules.add(new KalahaModule());
-		// modules.add(new JpaPersistModule("kalaha"));
+		modules.add(new JpaPersistModule("kalaha"));
 		modules.add(new ManagerModule());
+		modules.add(new GameModule());
 	}
 }
