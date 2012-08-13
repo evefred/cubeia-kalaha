@@ -1,0 +1,3 @@
+service.jta-enabled=true 
+service.users.allow-local=true
+service.users.allow-bots=true
