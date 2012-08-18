@@ -49,7 +49,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.kalaha</groupId>
-			<artifactId>persistence</artifactId>
+			<artifactId>persistence-nonjta</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>

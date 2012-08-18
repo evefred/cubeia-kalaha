@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
+import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.web.facebook.AuthToken;
 
 import org.apache.wicket.Component;
@@ -39,6 +40,9 @@ public class SiteApplication extends AuthenticatedWebApplication {
     
     @Inject
     private SessionManager sessionManager;
+    
+    @Inject
+    private JpaInitializer jpaInit;
 	
 	@Override
 	protected void init() {

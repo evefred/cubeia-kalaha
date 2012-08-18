@@ -12,12 +12,12 @@ public class SiteModule extends ClassPathPropertiesModule {
 
 	public SiteModule() {
 		super("facebook.properties");
-		super.install(new JpaPersistModule("kalaha"));
 	}
 	
 	@Override
 	protected void configure() {
 		super.configure();
+		super.install(new JpaPersistModule("kalaha"));
 		bindListener(Matchers.any(), new Log4jTypeListener());
 		bind(WebApplication.class).to(SiteApplication.class);
 	}
