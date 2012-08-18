@@ -37,7 +37,6 @@ public class Processor implements GameProcessor {
 	private GameManager gameManager;
 	
 	@Inject
-	@SuppressWarnings("unused")
 	private JpaInitializer jpaInit;
 	
 	public void handle(GameDataAction action, Table table) { 
