@@ -120,8 +120,8 @@ public class SiteApplication extends AuthenticatedWebApplication {
 		mountBookmarkablePage("/index", Index.class);
 		mountBookmarkablePage("/login", Login.class);
 		mountBookmarkablePage("/facebook-web/index", FacebookIndex.class);
-		mountBookmarkablePage("/facebook-web/challenge", FacebookChallenge.class);
 		mountBookmarkablePage("/facebook-web/play", FacebookPlay.class);
+		mountBookmarkablePage("/facebook-web/request", FacebookRequest.class);
 		mountBookmarkablePage("/challenge", Challenge.class);
 		mountBookmarkablePage("/play", Play.class);
 	}

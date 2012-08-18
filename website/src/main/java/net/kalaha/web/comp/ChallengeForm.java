@@ -5,13 +5,11 @@ import static net.kalaha.game.logic.KalahaBoard.getInitState;
 import static net.kalaha.web.Alert.Type.ERROR;
 import static net.kalaha.web.Alert.Type.INFO;
 import static net.kalaha.web.Alert.Type.SUCCESS;
+import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.UserManager;
-import net.kalaha.data.entities.User;
 import net.kalaha.web.Alert;
 import net.kalaha.web.Challenge;
-import net.kalaha.web.FacebookChallenge;
-import net.kalaha.web.FacebookIndex;
 import net.kalaha.web.Index;
 import net.kalaha.web.KalahaSession;
 
@@ -38,22 +36,13 @@ public class ChallengeForm extends StatelessForm<Void> {
 	private Class<? extends Page> indexClass;
 	
 	public ChallengeForm(String id, GameManager gameManager, UserManager userManager) {
-		this(id, gameManager, userManager, false);
-	}
-	
-	public ChallengeForm(String id, GameManager gameManager, UserManager userManager, boolean isFacebook) {
 		super(id);
 		this.gameManager = gameManager;
 		this.userManager = userManager;
 		add(username = new TextField<String>("username", new PropertyModel<String>(properties, "username")));
 		username.setType(String.class);
-		if(isFacebook) {
-			this.challengeClass = FacebookChallenge.class;
-			this.indexClass = FacebookIndex.class;
-		} else {
-			this.challengeClass = Challenge.class;
-			this.indexClass = Index.class;
-		}
+		this.challengeClass = Challenge.class;
+		this.indexClass = Index.class;
 		add(new BookmarkablePageLink<Void>("cancel-button", indexClass));
 	}
 

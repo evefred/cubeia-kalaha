@@ -11,10 +11,31 @@ function fbChallenge() {
 		method : 'apprequests',
 		message : 'I dare you! Play Kahala with me!',
 		filters : ['app_users']
-	}, inviteCallback);
+	}, challengeCallback);
 }
-
 
 function inviteCallback(response) {
 	alert(response.request + '_' + response.to);
+	var json = JSON.stringify(response);
+	var map = { };
+	map['response'] = json;
+	map['type'] = 'INVITE';
+	$.ajax({
+		type: 'POST',
+		url: '/facebook-web/request',
+		data: map
+	});
+}
+
+function challengeCallback(response) {
+	// alert(response.request + '_' + response.to);
+	var json = JSON.stringify(response);
+	var map = { };
+	map['response'] = json;
+	map['type'] = 'CHALLENGE';
+	$.ajax({
+		type: 'POST',
+		url: '/facebook-web/request',
+		data: map
+	});
 }
