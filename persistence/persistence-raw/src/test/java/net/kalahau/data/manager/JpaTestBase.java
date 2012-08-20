@@ -4,7 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import net.kalaha.data.manager.GameManager;
-import net.kalaha.data.manager.InviteManager;
+import net.kalaha.data.manager.RequestManager;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
@@ -34,7 +34,7 @@ public abstract class JpaTestBase {
 	protected SessionManager sessionManager;
 	
 	@Inject
-	protected InviteManager inviteManager;
+	protected RequestManager inviteManager;
 	
 	@Inject
 	private UnitOfWork unit;

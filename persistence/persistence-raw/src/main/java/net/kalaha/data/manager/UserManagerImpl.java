@@ -14,6 +14,7 @@ import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.GameStats.Field;
 import net.kalaha.data.entities.User;
 import net.kalaha.data.entities.UserDetails;
+import net.kalaha.data.entities.UserStatus;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -63,10 +64,12 @@ public class UserManagerImpl implements UserManager {
 	
 	@Override
 	@Transactional
-	public User createUser(String extId, int operatorId) {
+	public User createUser(String extId, int operatorId, UserStatus st) {
 		User u = getUserByExternalId(extId, operatorId);
 		if(u == null) {
-			u = doCreateUser(extId, operatorId);
+			u = doCreateUser(extId, operatorId, st);
+		} else {
+			u.setStatus(st);
 		}
 		return u;
 	}
@@ -158,8 +161,8 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	private User doCreateUser(String extId, int operatorId) {
-		User s = newUser();
+	private User doCreateUser(String extId, int operatorId, UserStatus st) {
+		User s = newUser(st);
 		GameStats stats = new GameStats();
 		stats.setEloRating(1500);
 		em.get().persist(stats);
@@ -174,7 +177,7 @@ public class UserManagerImpl implements UserManager {
 	}
 	
 	private User doCreateLocalUser(String localName, String password, int operatorId) {
-		User s = newUser();
+		User s = newUser(LIVE);
 		GameStats stats = new GameStats();
 		stats.setEloRating(1500);
 		em.get().persist(stats);
@@ -190,9 +193,9 @@ public class UserManagerImpl implements UserManager {
 		return s;
 	}
 
-	private User newUser() {
+	private User newUser(UserStatus st) {
 		User s = new User();
-		s.setStatus(LIVE);
+		s.setStatus(st);
 		long t = time.utc();
 		s.setCreated(t);
 		s.setLastModified(t);

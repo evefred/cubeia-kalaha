@@ -1,7 +1,5 @@
 package net.kalaha.data.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,9 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class UserDetails implements Serializable {
-
-	private static final long serialVersionUID = 3902469451383600942L;
+public class UserDetails {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

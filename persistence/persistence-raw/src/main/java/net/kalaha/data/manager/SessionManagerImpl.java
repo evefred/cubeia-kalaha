@@ -1,5 +1,7 @@
 package net.kalaha.data.manager;
 
+import static net.kalaha.data.entities.UserStatus.LIVE;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -61,7 +63,7 @@ public class SessionManagerImpl implements SessionManager {
 		}
 		User u = users.getUserByExternalId(extId, operatorId);
 		if(u == null) {
-			u = users.createUser(extId, operatorId);
+			u = users.createUser(extId, operatorId, LIVE);
 		}
 		s = doCreateNewSession(u);
 		return s;

@@ -2,8 +2,6 @@ package net.kalaha.data.entities;
 
 import static javax.persistence.CascadeType.ALL;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,9 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-public class User implements Serializable {
-
-	private static final long serialVersionUID = 1412493585337537363L;
+public class User {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

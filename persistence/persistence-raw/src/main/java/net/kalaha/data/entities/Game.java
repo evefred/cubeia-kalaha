@@ -1,6 +1,5 @@
 package net.kalaha.data.entities;
 
-import java.io.Serializable; 
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,9 +17,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 @Entity
-public class Game implements Serializable {
-
-	private static final long serialVersionUID = -6522255809158960549L;
+public class Game {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

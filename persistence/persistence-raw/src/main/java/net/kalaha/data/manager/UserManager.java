@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.User;
+import net.kalaha.data.entities.UserStatus;
 
 public interface UserManager {
 
@@ -12,7 +13,7 @@ public interface UserManager {
 	
 	public User getUserByExternalId(String extId, int operatorId);
 
-	public User createUser(String extId, int operatorId);
+	public User createUser(String extId, int operatorId, UserStatus status);
 
 	public User createLocalUser(String localName, String paswd);
 	

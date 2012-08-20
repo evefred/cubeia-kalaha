@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Invite {
+public class Request {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -19,8 +19,9 @@ public class Invite {
 	@JoinColumn(nullable=false)
 	private User inviter;
 	
-	@Column(name="invited", nullable=false)
-	private String invitedExtId;
+	@ManyToOne
+	@JoinColumn(nullable=false)
+	private User invitee;
 	
 	@Column(nullable=false) 
 	private long created;
@@ -29,7 +30,26 @@ public class Invite {
 	private long lastModified;
 	
 	@Column(nullable=false)
-	private InviteStatus status;
+	private RequestStatus status;
+	
+	@Column
+	private RequestType type;
+	
+	public User getInvitee() {
+		return invitee;
+	}
+	
+	public void setInvitee(User invitee) {
+		this.invitee = invitee;
+	}
+	
+	public void setType(RequestType type) {
+		this.type = type;
+	}
+	
+	public RequestType getType() {
+		return type;
+	}
 
 	public long getId() {
 		return id;
@@ -45,14 +65,6 @@ public class Invite {
 
 	public void setInviter(User inviter) {
 		this.inviter = inviter;
-	}
-
-	public String getInvitedExtId() {
-		return invitedExtId;
-	}
-
-	public void setInvitedExtId(String invitedExtId) {
-		this.invitedExtId = invitedExtId;
 	}
 
 	public long getCreated() {
@@ -71,11 +83,11 @@ public class Invite {
 		this.lastModified = lastModified;
 	}
 
-	public InviteStatus getStatus() {
+	public RequestStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(InviteStatus result) {
+	public void setStatus(RequestStatus result) {
 		this.status = result;
 	}
 
@@ -86,10 +98,11 @@ public class Invite {
 		result = prime * result + (int) (created ^ (created >>> 32));
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result
-				+ ((invitedExtId == null) ? 0 : invitedExtId.hashCode());
+				+ ((invitee == null) ? 0 : invitee.hashCode());
 		result = prime * result + ((inviter == null) ? 0 : inviter.hashCode());
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -101,15 +114,15 @@ public class Invite {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Invite other = (Invite) obj;
+		Request other = (Request) obj;
 		if (created != other.created)
 			return false;
 		if (id != other.id)
 			return false;
-		if (invitedExtId == null) {
-			if (other.invitedExtId != null)
+		if (invitee == null) {
+			if (other.invitee != null)
 				return false;
-		} else if (!invitedExtId.equals(other.invitedExtId))
+		} else if (!invitee.equals(other.invitee))
 			return false;
 		if (inviter == null) {
 			if (other.inviter != null)
@@ -120,13 +133,15 @@ public class Invite {
 			return false;
 		if (status != other.status)
 			return false;
+		if (type != other.type)
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Invite [id=" + id + ", inviter=" + inviter + ", invitedExtId="
-				+ invitedExtId + ", created=" + created + ", lastModified="
-				+ lastModified + ", result=" + status + "]";
+		return "Request [id=" + id + ", inviter=" + inviter + ", invitee="
+				+ invitee + ", created=" + created + ", lastModified="
+				+ lastModified + ", status=" + status + ", type=" + type + "]";
 	}
 }

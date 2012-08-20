@@ -1,5 +1,6 @@
 package net.kalaha.game;
 
+import static net.kalaha.data.entities.UserStatus.LIVE;
 import static org.testng.Assert.assertEquals;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.GameType;
@@ -39,7 +40,7 @@ public class ActivatorImplTest {
 		i.start();
 		
 		// create user
-		User u = i.getUserManager().createUser("olle", 0);
+		User u = i.getUserManager().createUser("olle", 0, LIVE);
 		
 		// create "existing" game
 		Game g = i.getGameManager().createGame(GameType.KALAHA, u, null, -1, null);

@@ -4,6 +4,9 @@ import static net.kalaha.data.entities.GameStats.Field.ELO_RANKING;
 import static net.kalaha.data.entities.GameStats.Field.FRIENDS;
 import static net.kalaha.data.entities.GameStats.Field.GAMES_WON;
 import static net.kalaha.data.entities.GameStats.Field.TOTAL_GAMES;
+import static net.kalaha.data.entities.UserStatus.DELETED;
+import static net.kalaha.data.entities.UserStatus.INVITED;
+import static net.kalaha.data.entities.UserStatus.LIVE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -21,7 +24,8 @@ public class UserManagerImplTest extends JpaTestBase {
 	
 	@Test
 	public void testUser() {
-		User u = userManager.createUser("kalle", 32);
+		User u = userManager.createUser("kalle", 32, LIVE);
+		assertEquals(u.getStatus(), LIVE);
 		assertNotNull(userManager.getUser(u.getId()));
 		assertEquals(userManager.getUserByExternalId("kalle", 32), u);
 	}
@@ -31,6 +35,14 @@ public class UserManagerImplTest extends JpaTestBase {
 		User u = userManager.createLocalUser("kalle", "kalle");
 		assertNotNull(userManager.getUser(u.getId()));
 		assertEquals(userManager.getUserByLocalName("kalle"), u);
+	}
+	
+	@Test
+	public void testResurrectUser() {
+		User u = userManager.createUser("kalle", 32, DELETED);
+		assertEquals(u.getStatus(), DELETED);
+		u = userManager.createUser("kalle", 32, INVITED);
+		assertEquals(u.getStatus(), INVITED);
 	}
 	
 	@Test

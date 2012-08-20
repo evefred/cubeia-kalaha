@@ -2,6 +2,7 @@ package net.kalahau.data.manager;
 
 import static net.kalaha.data.entities.GameStatus.ACTIVE;
 import static net.kalaha.data.entities.GameStatus.FINISHED;
+import static net.kalaha.data.entities.UserStatus.LIVE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 
@@ -24,8 +25,8 @@ public class GameManagerImplTest extends JpaTestBase {
 	@Test
 	public void testCreateGetGame() {
 		// create users and game
-		User me = userManager.createUser("larsan", 0);
-		User kalle = userManager.createUser("kalle", 0);
+		User me = userManager.createUser("larsan", 0, LIVE);
+		User kalle = userManager.createUser("kalle", 0, LIVE);
 		Game g1 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		// check retrieval
 		Game g2 = gameManager.getGame(g1.getId());
@@ -38,8 +39,8 @@ public class GameManagerImplTest extends JpaTestBase {
 	@Test
 	public void testFinishGame() {
 		// create users and game
-		User me = userManager.createUser("larsan", 0);
-		User kalle = userManager.createUser("kalle", 0);
+		User me = userManager.createUser("larsan", 0, LIVE);
+		User kalle = userManager.createUser("kalle", 0, LIVE);
 		Game g1 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		assertEquals(g1.getStatus(), ACTIVE);
 		// finish game	
@@ -59,8 +60,8 @@ public class GameManagerImplTest extends JpaTestBase {
 
 	@Test
 	public void testSearchGame() {
-		User me = userManager.createUser("larsan", 0);
-		User kalle = userManager.createUser("kalle", 0);
+		User me = userManager.createUser("larsan", 0, LIVE);
+		User kalle = userManager.createUser("kalle", 0, LIVE);
 		
 		Game g1 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		Game g2 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);

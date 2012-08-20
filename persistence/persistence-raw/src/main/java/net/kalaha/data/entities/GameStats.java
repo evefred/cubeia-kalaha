@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class GameStats {
-	
+
 	public static enum Field {
 		GAMES_WON("gamesWon"),
 		ELO_RANKING("eloRating"),
@@ -277,5 +277,37 @@ public class GameStats {
 
 	public void incrementGamesLost() {
 		gamesLost++;
+	}
+
+	public void incrementSentInvites() {
+		sentInvites++;
+	}
+
+	public void incrementSentChallenges() {
+		sentChallenges++;
+	}
+
+	public void incrementChallengesReceived() {
+		challengesReceived++;
+	}
+
+	public void incrementSentChallengesAccepted() {
+		sentChallengesAccepted++;
+	}
+
+	public void incrementChallengesAccepted() {
+		challengesAccepted++;
+	}
+
+	public void incrementSentChallengesDenied() {
+		sentChallengesDeclined++;
+	}
+
+	public void incrementChallengesDenied() {
+		challengesDeclined++;
+	}
+
+	public void incrementSentInvitesAccepted() {
+		sentInvitesAccepted++;
 	}
 }

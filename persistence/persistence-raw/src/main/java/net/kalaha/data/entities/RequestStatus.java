@@ -1,6 +1,6 @@
 package net.kalaha.data.entities;
 
-public enum InviteStatus {
+public enum RequestStatus {
 
 	PENDING,
 	ACCEPTED,
