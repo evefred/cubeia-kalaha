@@ -46,6 +46,12 @@
 			<artifactId>user-service</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>persistence-jta</artifactId>
+					<groupId>net.kalaha</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.kalaha</groupId>
@@ -58,6 +64,12 @@
 			<artifactId>game</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>persistence-jta</artifactId>
+					<groupId>net.kalaha</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>

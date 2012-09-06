@@ -30,6 +30,7 @@ public class CanvasAuthFilter extends BaseFilter {
 		 HttpServletRequest req = (HttpServletRequest) request;
 	     HttpServletResponse res = (HttpServletResponse) response;
 	     log.trace("Request URI: " + req.getRequestURI());
+	     checkRequests(request);
 	     if(checkSignedRequest(req, res)) {
 	    	 chain.doFilter(request, response);
 	     } 
@@ -85,6 +86,16 @@ public class CanvasAuthFilter extends BaseFilter {
 				return false;
 			} else {
 				return true;
+			}
+		}
+	}
+	
+	private void checkRequests(ServletRequest request) {
+		String tmp = request.getParameter("request_ids");
+		if(tmp != null) {
+			String[] arr = tmp.split(",");
+			for (String id : arr) {
+				log.info("GOT FILTER REQUEST: " + id);
 			}
 		}
 	}

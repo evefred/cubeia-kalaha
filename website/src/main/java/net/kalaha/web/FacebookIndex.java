@@ -15,5 +15,15 @@ public class FacebookIndex extends FacebookBasePage {
 	
 	private void setup() {
 		add(new FacebookIndexPanel("index-panel", gameManager));
+		checkRequests();
+	}
+
+	private void checkRequests() {
+		String[] arr = getPageParameters().getStringArray("request_ids");
+		if(arr != null) {
+			for (String id : arr) {
+				log.info("GOT REQUEST: " + id);
+			}
+		}
 	}
 }

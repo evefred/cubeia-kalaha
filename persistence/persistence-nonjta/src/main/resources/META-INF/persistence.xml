@@ -3,15 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_1_0.xsd"
 	version="1.0">
-	<persistence-unit name="kalaha" transaction-type="LOCAL-TX">
-		<non-jta-data-source>java:comp/env/jdbc/kalahaDs</non-jta-data-source>
+	<persistence-unit name="kalaha" transaction-type="RESOURCE_LOCAL">
+		<non-jta-data-source>java:comp/env/jdbc/kalaha</non-jta-data-source>
 		<class>net.kalaha.data.entities.User</class>
 		<class>net.kalaha.data.entities.UserDetails</class>
 		<class>net.kalaha.data.entities.Session</class>
 		<class>net.kalaha.data.entities.Game</class>
 		<class>net.kalaha.data.entities.GameStats</class>
 		<class>net.kalaha.data.entities.GameState</class>
-		<class>net.kalaha.data.entities.Invite</class>
+		<class>net.kalaha.data.entities.Request</class>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />

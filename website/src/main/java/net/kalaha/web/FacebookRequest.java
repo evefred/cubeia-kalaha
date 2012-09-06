@@ -20,11 +20,13 @@ public class FacebookRequest extends FacebookBasePage {
 	private void setup() {
 		super.setStatelessHint(true);
 		String resp = getPageParameters().getString("response");
-		Type type = Type.valueOf(getPageParameters().getString("type"));
-		if(type == Type.INVITE) {
-			log.info("GOT INVITATION: " + resp);
-		} else {
-			log.info("GOT CHALLENGE: " + resp);
+		if(resp != null) {
+			Type type = Type.valueOf(getPageParameters().getString("type"));
+			if(type == Type.INVITE) {
+				log.info("GOT INVITATION: " + resp);
+			} else {
+				log.info("GOT CHALLENGE: " + resp);
+			}
 		}
 		throw new AbortWithHttpStatusException(400, false);
 	}
