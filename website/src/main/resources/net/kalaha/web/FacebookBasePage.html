@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" href="/css/bootstrap/bootstrap-2.0.3.css">
+<link rel="stylesheet" href="/css/main.css">
+
+<script type="text/javascript" src="/js/jquery/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="/js/bootstrap/bootstrap-2.0.3.js"></script>
+<script type="text/javascript" src="/js/fb.js"></script>
+<script type="text/javascript" src="/js/json2.js"></script>
+
+<title>Kalaha With Friends</title>
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="row fixed-height-100">
+			<div class="span4 bottom-aligned">
+				<h1>Play Kalaha</h1>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="span12">&nbsp;</div>
+		</div>
+
+		<div class="row">
+			<div class="span12">
+				&nbsp;
+				<div class="alert" wicket:id="alert-box">
+					<button class="close" data-dismiss="alert">×</button>
+					<strong><span wicket:id="alert-type-label"></span>!</strong> <span
+						wicket:id="alert-msg"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="span12">
+				<wicket:child></wicket:child>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="fb-root"></div>
+	<script src="http://connect.facebook.net/en_US/all.js"></script>
+	<script type="text/javascript">
+		FB.init({
+			appId : __appId,
+			frictionlessRequests: true,
+		});
+	</script>
+</body>
+</html>

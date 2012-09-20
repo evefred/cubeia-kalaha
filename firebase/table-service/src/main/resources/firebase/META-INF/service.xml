@@ -1,0 +1,12 @@
+<service auto-start="true">
+    <name>table</name>
+    <public-id>net.kalaha:table</public-id>
+    <contract>net.kalaha.table.api.TableManager</contract>
+    <service>net.kalaha.table.impl.TableService</service>
+    <dependencies />
+    <description />
+    <exported>
+        <package>net.kalaha.table.api.-</package>
+        <class>net.kalaha.common.json.AbstractAction</class>
+    </exported>
+</service>

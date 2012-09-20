@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>game</artifactId>
+	<packaging>firebase-gar</packaging>
+	<name>game (game)</name>
+
+	<parent>
+		<groupId>net.kalaha</groupId>
+		<artifactId>firebase</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.kalaha</groupId>
+			<artifactId>common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.kalaha</groupId>
+			<artifactId>persistence-jta</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>table-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.cubeia.firebase</groupId>
+			<artifactId>firebase-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.cubeia.firebase</groupId>
+			<artifactId>guice-support</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>guice</artifactId>
+					<groupId>com.google.code.guice</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<classifier>jdk15</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- PROVIDED FOR FIREBASE:RUN -->
+		<dependency>
+			<artifactId>table-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency>
+		<!-- dependency>
+			<artifactId>user-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<artifactId>session-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency -->
+	</dependencies>
+</project>

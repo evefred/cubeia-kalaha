@@ -1,0 +1,5 @@
+service.jta-enabled=true 
+service.sessions.max-age=300000
+service.sessions.reaper-interval=60000
+service.users.allow-local=true
+service.users.allow-bots=true
