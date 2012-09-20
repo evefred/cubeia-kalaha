@@ -18,7 +18,7 @@ public class RequestManagerImplTest extends JpaTestBase {
 	public void testCreateInvite() {
 		SystemTestTime.TIME.set(10);
 		User u = userManager.createUser("kalle", 32, LIVE);
-		Request inv = inviteManager.invite(u, "xxx", 32);
+		Request inv = inviteManager.invite(u, "xxx", 32, "yyy");
 		assertEquals(inv.getInviter(), u);
 		assertEquals(inv.getInvitee().getExternalId(), "xxx");
 		assertEquals(inv.getCreated(), 10);
@@ -33,7 +33,7 @@ public class RequestManagerImplTest extends JpaTestBase {
 		SystemTestTime.TIME.set(10);
 		User u1 = userManager.createUser("kalle1", 32, LIVE);
 		User u2 = userManager.createUser("kalle2", 32, LIVE);
-		Request inv = inviteManager.challenge(u1, u2);
+		Request inv = inviteManager.challenge(u1, u2, "yyy");
 		assertEquals(inv.getInviter(), u1);
 		assertEquals(inv.getInvitee(), u2);
 		assertEquals(inv.getStatus(), PENDING);
@@ -45,7 +45,7 @@ public class RequestManagerImplTest extends JpaTestBase {
 	public void testInviteAccepted() {
 		SystemTestTime.TIME.set(10);
 		User u = userManager.createUser("kalle", 32, LIVE);
-		Request inv = inviteManager.invite(u, "xxx", 32);
+		Request inv = inviteManager.invite(u, "xxx", 32, "yyy");
 		SystemTestTime.TIME.set(20);
 		inv = inviteManager.updateRequest(inv.getId(), ACCEPTED);
 		assertEquals(inv.getStatus(), ACCEPTED);
@@ -60,8 +60,8 @@ public class RequestManagerImplTest extends JpaTestBase {
 	public void testInviteDeclined() {
 		SystemTestTime.TIME.set(10);
 		User u = userManager.createUser("kalle", 32, LIVE);
-		Request inv = inviteManager.invite(u, "xxx", 32);
-		inv = inviteManager.updateRequest(inv.getId(), DENIED);
+		Request inv = inviteManager.invite(u, "xxx", 32, "yyy");
+		inv = inviteManager.updateRequestByExternalId("yyy", DENIED);
 		User u2 = userManager.getUser(inv.getInvitee().getId());
 		assertEquals(u2.getStatus(), DELETED);
 	}
@@ -71,7 +71,7 @@ public class RequestManagerImplTest extends JpaTestBase {
 		SystemTestTime.TIME.set(10);
 		User u1 = userManager.createUser("kalle1", 32, LIVE);
 		User u2 = userManager.createUser("kalle2", 32, LIVE);
-		Request inv = inviteManager.challenge(u1, u2);
+		Request inv = inviteManager.challenge(u1, u2, "yyy");
 		inv = inviteManager.updateRequest(inv.getId(), ACCEPTED);
 		assertEquals(inv.getStatus(), ACCEPTED);
 		assertEquals(inv.getInviter().getGameStats().getSentChallengesAccepted(), 1);
@@ -83,7 +83,7 @@ public class RequestManagerImplTest extends JpaTestBase {
 		SystemTestTime.TIME.set(10);
 		User u1 = userManager.createUser("kalle1", 32, LIVE);
 		User u2 = userManager.createUser("kalle2", 32, LIVE);
-		Request inv = inviteManager.challenge(u1, u2);
+		Request inv = inviteManager.challenge(u1, u2, "yyy");
 		inv = inviteManager.updateRequest(inv.getId(), DENIED);
 		assertEquals(inv.getStatus(), DENIED);
 		assertEquals(inv.getInviter().getGameStats().getSentChallengesDeclined(), 1);

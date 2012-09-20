@@ -8,6 +8,8 @@ import static net.kalaha.data.entities.UserStatus.INVITED;
 import static net.kalaha.data.entities.UserStatus.LIVE;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 
 import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.Request;
@@ -37,10 +39,11 @@ public class RequestManagerImpl implements RequestManager {
 	
 	@Override
 	@Transactional
-	public Request challenge(User challenger, User challengee) {
+	public Request challenge(User challenger, User challengee, String extId) {
 		challenger.getGameStats().incrementSentChallenges();
 		challengee.getGameStats().incrementChallengesReceived();
 		Request inv = new Request();
+		inv.setExternalRequestId(extId);
 		inv.setType(CHALLENGE);
 		inv.setStatus(PENDING);
 		long now = time.utc();
@@ -54,12 +57,13 @@ public class RequestManagerImpl implements RequestManager {
 
 	@Override
 	@Transactional
-	public Request invite(User inviter, String extInvitedId, int operatorId) {
+	public Request invite(User inviter, String extInvitedId, int operatorId, String extId) {
 		User invitee = users.getUserByExternalId(extInvitedId, operatorId);
 		if(invitee == null) {
 			inviter.getGameStats().incrementSentInvites();
 			invitee = users.createUser(extInvitedId, operatorId, INVITED);
 			Request inv = new Request();
+			inv.setExternalRequestId(extId);
 			inv.setType(INVITATION);
 			inv.setStatus(PENDING);
 			long now = time.utc();
@@ -73,7 +77,33 @@ public class RequestManagerImpl implements RequestManager {
 			return null;
 		}
 	}
+	
+	@Override
+	public Request getRequestByExternalId(String extId) {
+		try {
+			Query q = em.get().createQuery("from Request q where q.externalRequestId = :extId");
+			q.setParameter("extId", extId);
+			return (Request) q.getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
 
+	@Override
+	@Transactional
+	public Request updateRequestByExternalId(String extId, RequestStatus status) {
+		Request req = getRequestByExternalId(extId);
+		if(req == null) {
+			log.debug("Attempt to update non-exising invite by extId: " + extId);
+		} else {
+			req.setLastModified(time.utc());
+			req.setStatus(status);
+			updateStats(status, req);
+			checkInviteeStatus(status, req);
+		}
+		return req;
+	}
+	
 	@Override
 	@Transactional
 	public Request updateRequest(long id, RequestStatus status) {

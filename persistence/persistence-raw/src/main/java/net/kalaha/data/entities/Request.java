@@ -15,6 +15,9 @@ public class Request {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
+	@Column(nullable=false)
+	private String externalRequestId;
+	
 	@ManyToOne
 	@JoinColumn(nullable=false)
 	private User inviter;
@@ -34,6 +37,14 @@ public class Request {
 	
 	@Column
 	private RequestType type;
+	
+	public String getExternalRequestId() {
+		return externalRequestId;
+	}
+	
+	public void setExternalRequestId(String externalRequestId) {
+		this.externalRequestId = externalRequestId;
+	}
 	
 	public User getInvitee() {
 		return invitee;
@@ -96,9 +107,12 @@ public class Request {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (created ^ (created >>> 32));
+		result = prime
+				* result
+				+ ((externalRequestId == null) ? 0 : externalRequestId
+						.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result
-				+ ((invitee == null) ? 0 : invitee.hashCode());
+		result = prime * result + ((invitee == null) ? 0 : invitee.hashCode());
 		result = prime * result + ((inviter == null) ? 0 : inviter.hashCode());
 		result = prime * result + (int) (lastModified ^ (lastModified >>> 32));
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -116,6 +130,11 @@ public class Request {
 			return false;
 		Request other = (Request) obj;
 		if (created != other.created)
+			return false;
+		if (externalRequestId == null) {
+			if (other.externalRequestId != null)
+				return false;
+		} else if (!externalRequestId.equals(other.externalRequestId))
 			return false;
 		if (id != other.id)
 			return false;
@@ -140,8 +159,9 @@ public class Request {
 
 	@Override
 	public String toString() {
-		return "Request [id=" + id + ", inviter=" + inviter + ", invitee="
-				+ invitee + ", created=" + created + ", lastModified="
-				+ lastModified + ", status=" + status + ", type=" + type + "]";
+		return "Request [id=" + id + ", externalRequestId=" + externalRequestId
+				+ ", inviter=" + inviter + ", invitee=" + invitee
+				+ ", created=" + created + ", lastModified=" + lastModified
+				+ ", status=" + status + ", type=" + type + "]";
 	}
 }

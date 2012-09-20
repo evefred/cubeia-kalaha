@@ -1,5 +1,6 @@
 package net.kalaha.web;
 
+import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.UserManager;
 
@@ -48,6 +49,10 @@ public class FacebookBasePage extends WebPage {
 	
 	public KalahaSession getKalahaSession() {
 		return (KalahaSession) getSession();
+	}
+	
+	public User getKalahaUser() {
+		return getKalahaSession().getUser();
 	}
 	
 	@Override

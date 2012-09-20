@@ -1,5 +1,7 @@
 package net.kalaha.web.facebook;
 
+import static net.kalaha.web.SiteApplication.REQUEST_IDS_ATTR;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -24,21 +26,29 @@ public class CanvasAuthFilter extends BaseFilter {
 	private static final String HMAC_SHA256 = "HMAC-SHA256";
 	private static final String SIGNED_REQUEST = "signed_request";
 
-
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		 HttpServletRequest req = (HttpServletRequest) request;
 	     HttpServletResponse res = (HttpServletResponse) response;
 	     log.trace("Request URI: " + req.getRequestURI());
-	     checkRequests(request);
-	     if(checkSignedRequest(req, res)) {
-	    	 chain.doFilter(request, response);
-	     } 
+	     checkRequests(req);
+	     try {
+		     if(checkSignedRequest(req, res)) {
+		    	 chain.doFilter(request, response);
+		     } 
+	     } finally {
+	    	 removeRequests(req);
+	     }
 	}
 	
 	
 	// --- PRIVATE METHODS --- //
 	
+	private void removeRequests(HttpServletRequest req) {
+		req.getSession().removeAttribute(REQUEST_IDS_ATTR);
+	}
+
+
 	private boolean checkSignedRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String param = request.getParameter(SIGNED_REQUEST);
 		if(param != null) {
@@ -90,12 +100,13 @@ public class CanvasAuthFilter extends BaseFilter {
 		}
 	}
 	
-	private void checkRequests(ServletRequest request) {
+	private void checkRequests(HttpServletRequest request) {
 		String tmp = request.getParameter("request_ids");
 		if(tmp != null) {
 			String[] arr = tmp.split(",");
 			for (String id : arr) {
 				log.info("GOT FILTER REQUEST: " + id);
+				request.getSession().setAttribute(REQUEST_IDS_ATTR, arr);
 			}
 		}
 	}
