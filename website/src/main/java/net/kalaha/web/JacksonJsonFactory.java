@@ -1,0 +1,37 @@
+package net.kalaha.web;
+
+import java.io.IOException;
+
+import javax.annotation.Signed;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.google.inject.Singleton;
+
+@Singleton
+public class JacksonJsonFactory implements JsonFactory {
+
+	private final ObjectMapper mapper = new ObjectMapper();
+	
+	@Override
+	public <T> T fromJson(String json, Class<T> type) {
+		try {
+			return mapper.readValue(json, type);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to parse JSON: " + json, e);
+		}
+	}
+	
+	@Override
+	public <T> String toJson(T value) {
+		try {
+			return mapper.writeValueAsString(value);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to write JSON", e);
+		}
+	}
+}

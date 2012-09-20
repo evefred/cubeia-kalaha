@@ -28,6 +28,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public class SiteApplication extends AuthenticatedWebApplication {
+	
+	public static final String REQUEST_IDS_ATTR = "_request_ids";
 
     @Inject
     @Named("facebook-operator-id")
@@ -121,7 +123,7 @@ public class SiteApplication extends AuthenticatedWebApplication {
 		mountBookmarkablePage("/login", Login.class);
 		mountBookmarkablePage("/facebook-web/index", FacebookIndex.class);
 		mountBookmarkablePage("/facebook-web/play", FacebookPlay.class);
-		mountBookmarkablePage("/facebook-web/request", FacebookRequest.class);
+		mountBookmarkablePage("/facebook-web/request", FacebookRequestCallback.class);
 		mountBookmarkablePage("/challenge", Challenge.class);
 		mountBookmarkablePage("/play", Play.class);
 	}
