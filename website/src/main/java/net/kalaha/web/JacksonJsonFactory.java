@@ -2,12 +2,6 @@ package net.kalaha.web;
 
 import java.io.IOException;
 
-import javax.annotation.Signed;
-
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.inject.Singleton;
