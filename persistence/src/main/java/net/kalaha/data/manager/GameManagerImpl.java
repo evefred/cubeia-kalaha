@@ -3,6 +3,8 @@ package net.kalaha.data.manager;
 import static net.kalaha.common.elo.EloCalculator.Result.DRAW;
 import static net.kalaha.common.elo.EloCalculator.Result.PLAYER_ONE;
 import static net.kalaha.common.elo.EloCalculator.Result.PLAYER_TWO;
+import static net.kalaha.data.entities.GameResult.TIMEOUT;
+import static net.kalaha.data.entities.GameStatus.ACTIVE;
 
 import java.util.List;
 
@@ -19,6 +21,8 @@ import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.GameStatus;
 import net.kalaha.data.entities.GameType;
 import net.kalaha.data.entities.User;
+
+import org.joda.time.Duration;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -37,6 +41,22 @@ public class GameManagerImpl implements GameManager {
 	@Inject
 	private EloCalculator eloCalculator;
 	
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public List<Game> reapGames(int maxAgeDays) {
+		long last = time.utc() - daysToMillis(maxAgeDays);
+		Query q = em.get().createQuery("select g from Game g where g.lastModified < :last and g.status = :status");
+		q.setParameter("last", last);
+		q.setParameter("status", ACTIVE);
+		List<Game> games = (List<Game>) q.getResultList();
+		for (Game g : games) {
+			User winner = (g.isOwnersMove() ? g.getOpponent() : g.getOwner());
+			finishGame(g.getId(), winner, TIMEOUT);
+		}
+		return games;
+	}
+
 	@Override
 	@Transactional
 	public Game createGame(GameType type, User owner, User opponent, long moveTimeout, int[] initState) {
@@ -65,20 +85,16 @@ public class GameManagerImpl implements GameManager {
 	
 	@Override
 	@Transactional
-	public Game finishGame(long gameId, User winner) {
+	public Game finishGame(long gameId, User winner, GameResult result) {
 		Game g = getGame(gameId);
 		if(g == null) throw new IllegalArgumentException("No such game: " + gameId);
 		g.setLastModified(System.currentTimeMillis());
 		g.setStatus(GameStatus.FINISHED);
-		GameResult res = null;
 		if(winner != null) {
-			res = GameResult.WIN;
 			g.setWinningUser(winner.getId());
-		} else {
-			res = GameResult.DRAW;
 		}
-		g.setResult(res);
-		updateStats(g, winner, res);
+		g.setResult(result);
+		updateStats(g, winner, result);
 		return g;
 	}
 
@@ -121,5 +137,9 @@ public class GameManagerImpl implements GameManager {
 			two.incrementGamesWon();
 			one.incrementGamesLost();
 		}
+	}
+	
+	private long daysToMillis(int maxAgeDays) {
+		return Duration.standardDays(maxAgeDays).getMillis();
 	}
 }

@@ -3,6 +3,7 @@ package net.kalaha.session.impl;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.joda.time.Duration;
 
 import net.kalaha.data.entities.Session;
 import net.kalaha.data.manager.SessionManager;
@@ -12,7 +13,7 @@ import com.google.inject.name.Named;
 
 public class ReaperTask implements Runnable {
 
-	private static final long DEF_MAX_AGE = 20 * 60000; // 20 * 1 min
+	private static final long DEF_MAX_AGE = Duration.standardMinutes(20).getMillis();
 
 	@Inject
 	private SessionManager sessions;

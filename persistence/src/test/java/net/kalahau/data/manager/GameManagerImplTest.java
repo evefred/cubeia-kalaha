@@ -1,5 +1,7 @@
 package net.kalahau.data.manager;
 
+import static net.kalaha.data.entities.GameResult.DRAW;
+import static net.kalaha.data.entities.GameResult.WIN;
 import static net.kalaha.data.entities.GameStatus.ACTIVE;
 import static net.kalaha.data.entities.GameStatus.FINISHED;
 import static org.testng.Assert.assertEquals;
@@ -43,7 +45,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		Game g1 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		assertEquals(g1.getStatus(), ACTIVE);
 		// finish game	
-		Game g2 = gameManager.finishGame(g1.getId(), me);
+		Game g2 = gameManager.finishGame(g1.getId(), me, WIN);
 		assertEquals(g2.getStatus(), FINISHED);
 		GameStats one = me.getGameStats();
 		GameStats two = kalle.getGameStats();
@@ -79,7 +81,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		}	
 		
 		// set me as winner on g1
-		gameManager.finishGame(g1.getId(), me);
+		gameManager.finishGame(g1.getId(), me, WIN);
 		
 		// get all my finished games
 		myGames = gameManager.getMyGames(me, GameStatus.FINISHED);
@@ -89,7 +91,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		}
 		
 		// set draw on g2
-		gameManager.finishGame(g2.getId(), null);
+		gameManager.finishGame(g2.getId(), null, DRAW);
 		
 		// get all my finished (1 win and one draw)
 		myGames = gameManager.getMyGames(me, GameStatus.FINISHED);

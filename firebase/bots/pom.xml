@@ -9,23 +9,5 @@
 	</parent>
 	<artifactId>bot</artifactId>
 	<dependencies>
-		<dependency>
-			<groupId>com.cubeia.firebase.bots</groupId>
-			<artifactId>firebase-bots</artifactId>
-			<version>1.8.0</version>
-		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.cubeia.firebase.bots</groupId>
-				<artifactId>firebase-bots-maven-plugin</artifactId>
-				<version>1.8.0</version>
-				<configuration>
-					<botControlFile>bot.html</botControlFile>
-					<botMenuName>Bot</botMenuName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
