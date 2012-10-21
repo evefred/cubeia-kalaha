@@ -44,7 +44,7 @@
 	</filter-mapping>
 
 	<resource-env-ref>
-		<resource-env-ref-name>jdbc/kalahaDs</resource-env-ref-name>
+		<resource-env-ref-name>jdbc/kalaha</resource-env-ref-name>
 		<resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
 	</resource-env-ref>
 

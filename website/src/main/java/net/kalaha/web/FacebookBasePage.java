@@ -1,8 +1,10 @@
 package net.kalaha.web;
 
+import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.GameManager;
 import net.kalaha.data.manager.UserManager;
 
+import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -37,6 +39,8 @@ public class FacebookBasePage extends WebPage {
     @Inject
     @Named("facebook-operator-id")
     protected int operatorId;
+    
+    protected transient final Logger log = Logger.getLogger(getClass());
 
 	protected FacebookBasePage(PageParameters p) {
 		super(p);
@@ -45,6 +49,10 @@ public class FacebookBasePage extends WebPage {
 	
 	public KalahaSession getKalahaSession() {
 		return (KalahaSession) getSession();
+	}
+	
+	public User getKalahaUser() {
+		return getKalahaSession().getUser();
 	}
 	
 	@Override

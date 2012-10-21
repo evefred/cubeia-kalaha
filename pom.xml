@@ -15,7 +15,7 @@
   </modules>
 
 	<properties>
-		<firebase-version>1.9.0-CE-RC.1</firebase-version>
+		<firebase-version>1.9.0-CE-RC.2</firebase-version>
 		<jetty.version>6.1.4</jetty.version>
 		<wicket.version>1.4.20</wicket.version>
 	</properties>
@@ -124,7 +124,7 @@
 			<dependency>
 				<groupId>com.restfb</groupId>
 				<artifactId>restfb</artifactId>
-				<version>1.6.9</version>
+				<version>1.6.11</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -157,6 +157,11 @@
 				<version>1.9.0</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-lgpl</artifactId>
+				<version>1.9.9</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -165,8 +170,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>

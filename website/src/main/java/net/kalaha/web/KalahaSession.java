@@ -13,6 +13,7 @@ import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
 
 import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
 
 public class KalahaSession extends AuthenticatedWebSession {
 
@@ -30,6 +31,7 @@ public class KalahaSession extends AuthenticatedWebSession {
 	private AuthToken externalToken;
 	
 	private String displayName;
+	private FacebookClient client;
 
 	public KalahaSession(Request request, UserManager userManager, SessionManager sessionManager, int operatorId) {
 		super(request);
@@ -48,10 +50,14 @@ public class KalahaSession extends AuthenticatedWebSession {
 		return user != null;
 	}
 	
+	public FacebookClient getClient() {
+		return client;
+	}
+	
 	public boolean signIn(AuthToken next) {
 		if(externalToken == null || !externalToken.token.equals(next.token)) {
 			log.debug("Creating new Facebook client for token: " + next.token);
-			DefaultFacebookClient client = new DefaultFacebookClient(next.token);
+			client = new DefaultFacebookClient(next.token);
 			// this.users.setClient(facebookClient);
 			FacebookUser fbuser = client.fetchObject("me", FacebookUser.class);
 			String facebookId = fbuser.getId();

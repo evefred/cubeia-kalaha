@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
+import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.web.facebook.AuthToken;
 
 import org.apache.wicket.Component;
@@ -27,6 +28,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 public class SiteApplication extends AuthenticatedWebApplication {
+	
+	public static final String REQUEST_IDS_ATTR = "_request_ids";
 
     @Inject
     @Named("facebook-operator-id")
@@ -39,6 +42,9 @@ public class SiteApplication extends AuthenticatedWebApplication {
     
     @Inject
     private SessionManager sessionManager;
+    
+    @Inject
+    private JpaInitializer jpaInit;
 	
 	@Override
 	protected void init() {
@@ -116,8 +122,8 @@ public class SiteApplication extends AuthenticatedWebApplication {
 		mountBookmarkablePage("/index", Index.class);
 		mountBookmarkablePage("/login", Login.class);
 		mountBookmarkablePage("/facebook-web/index", FacebookIndex.class);
-		mountBookmarkablePage("/facebook-web/challenge", FacebookChallenge.class);
 		mountBookmarkablePage("/facebook-web/play", FacebookPlay.class);
+		mountBookmarkablePage("/facebook-web/request", FacebookRequestCallback.class);
 		mountBookmarkablePage("/challenge", Challenge.class);
 		mountBookmarkablePage("/play", Play.class);
 	}

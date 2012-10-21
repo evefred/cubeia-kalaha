@@ -46,10 +46,16 @@
 			<artifactId>user-service</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>persistence-jta</artifactId>
+					<groupId>net.kalaha</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.kalaha</groupId>
-			<artifactId>persistence</artifactId>
+			<artifactId>persistence-nonjta</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
@@ -58,6 +64,12 @@
 			<artifactId>game</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>persistence-jta</artifactId>
+					<groupId>net.kalaha</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -126,6 +138,10 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-lgpl</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
