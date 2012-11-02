@@ -39,6 +39,7 @@ import com.cubeia.firebase.api.game.lobby.LobbyTableFilter;
 import com.cubeia.firebase.api.routing.ActivatorAction;
 import com.cubeia.firebase.api.routing.RoutableActivator;
 import com.cubeia.firebase.api.server.SystemException;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -81,13 +82,13 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	public void init(ActivatorContext context) throws SystemException {
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		tableManager = context.getServices().getServiceInstance(TableManager.class);
-		injector = Guice.createInjector(new ManagerModule(), new GameModule(), new JpaPersistModule("kalaha"));
+		injector = Guice.createInjector(createManagerModule(), new GameModule(), new JpaPersistModule("kalaha"));
 		injector.injectMembers(this);
 		this.context = context;
 	}
 	
 	@Override
-	public void onAction(ActivatorAction<?> action) {
+	public void onAction(final ActivatorAction<?> action) {
 		TableRequestAction q = (TableRequestAction) action.getData();
 		if(q instanceof GetTableRequest) {
 			handleGetTable((GetTableRequest)q);
@@ -116,6 +117,10 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	
 	GameManager getGameManager() {
 		return gameManager;
+	}
+	
+	AbstractModule createManagerModule() {
+		return new ManagerModule();
 	}
 	
 

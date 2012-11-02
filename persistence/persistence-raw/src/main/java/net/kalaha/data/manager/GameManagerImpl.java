@@ -27,7 +27,6 @@ import org.joda.time.Duration;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
  
 @Singleton
 public class GameManagerImpl implements GameManager {
@@ -42,7 +41,6 @@ public class GameManagerImpl implements GameManager {
 	private EloCalculator eloCalculator;
 	
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Game> reapGames(int maxAgeDays) {
 		long last = time.utc() - daysToMillis(maxAgeDays);
@@ -58,7 +56,6 @@ public class GameManagerImpl implements GameManager {
 	}
 
 	@Override
-	@Transactional
 	public Game createGame(GameType type, User owner, User opponent, long moveTimeout, int[] initState) {
 		long now = time.utc();
 		Game g = new Game();
@@ -78,13 +75,11 @@ public class GameManagerImpl implements GameManager {
 	}
 	
 	@Override
-	@Transactional
 	public Game getGame(long gameId) {
 		return em.get().find(Game.class, gameId);
 	}
 	
 	@Override
-	@Transactional
 	public Game finishGame(long gameId, User winner, GameResult result) {
 		Game g = getGame(gameId);
 		if(g == null) throw new IllegalArgumentException("No such game: " + gameId);
@@ -99,7 +94,6 @@ public class GameManagerImpl implements GameManager {
 	}
 
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Game> getMyGames(User user, GameStatus status) {
 		String tmp = "select g from Game g where (g.owner = :own or g.opponent = :opp)";

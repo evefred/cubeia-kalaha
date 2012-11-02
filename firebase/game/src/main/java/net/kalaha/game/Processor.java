@@ -5,7 +5,6 @@ import net.kalaha.common.json.AbstractAction;
 import net.kalaha.common.json.ActionTransformer;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.manager.GameManager;
-import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.game.action.Close;
 import net.kalaha.game.action.End;
 import net.kalaha.game.action.KalahaAction;
@@ -35,9 +34,6 @@ public class Processor implements GameProcessor {
 	
 	@Inject 
 	private GameManager gameManager;
-	
-	@Inject
-	private JpaInitializer jpaInit;
 	
 	public void handle(GameDataAction action, Table table) { 
 		Object act = trans.fromUTF8Data(action.getData().array());

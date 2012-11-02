@@ -1,6 +1,9 @@
 package net.kalaha.data.manager;
 
-import static net.kalaha.data.entities.RequestStatus.*;
+import static net.kalaha.data.entities.RequestStatus.ACCEPTED;
+import static net.kalaha.data.entities.RequestStatus.DENIED;
+import static net.kalaha.data.entities.RequestStatus.PENDING;
+import static net.kalaha.data.entities.RequestStatus.TIMED_OUT;
 import static net.kalaha.data.entities.RequestType.CHALLENGE;
 import static net.kalaha.data.entities.RequestType.INVITATION;
 import static net.kalaha.data.entities.UserStatus.DELETED;
@@ -21,7 +24,6 @@ import org.apache.log4j.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 
 @Singleton
 public class RequestManagerImpl implements RequestManager {
@@ -38,7 +40,6 @@ public class RequestManagerImpl implements RequestManager {
 	private UserManager users;
 	
 	@Override
-	@Transactional
 	public Request challenge(User challenger, User challengee, String extId) {
 		challenger.getGameStats().incrementSentChallenges();
 		challengee.getGameStats().incrementChallengesReceived();
@@ -56,7 +57,6 @@ public class RequestManagerImpl implements RequestManager {
 	}
 
 	@Override
-	@Transactional
 	public Request invite(User inviter, String extInvitedId, int operatorId, String extId) {
 		User invitee = users.getUserByExternalId(extInvitedId, operatorId);
 		if(invitee == null) {
@@ -90,7 +90,6 @@ public class RequestManagerImpl implements RequestManager {
 	}
 
 	@Override
-	@Transactional
 	public Request updateRequestByExternalId(String extId, RequestStatus status) {
 		Request req = getRequestByExternalId(extId);
 		if(req == null) {
@@ -105,7 +104,6 @@ public class RequestManagerImpl implements RequestManager {
 	}
 	
 	@Override
-	@Transactional
 	public Request updateRequest(long id, RequestStatus status) {
 		Request inv = em.get().find(Request.class, id);
 		if(inv == null) {
@@ -118,6 +116,9 @@ public class RequestManagerImpl implements RequestManager {
 		}
 		return inv;
 	}
+	
+	
+	// --- PRIVATE METHODS --- ///
 
 	private void checkInviteeStatus(RequestStatus status, Request inv) {
 		if(inv.getType() == INVITATION) {

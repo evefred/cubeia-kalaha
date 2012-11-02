@@ -16,7 +16,6 @@ import net.kalaha.data.entities.User;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 
 @Singleton
 public class SessionManagerImpl implements SessionManager {
@@ -55,7 +54,6 @@ public class SessionManagerImpl implements SessionManager {
 	}
 	
 	@Override
-	@Transactional
 	public Session getSessionByExternalId(String extId, int operatorId) {
 		Session s = doGetSessionByExternalId(extId, operatorId);
 		if(s != null) {
@@ -70,7 +68,6 @@ public class SessionManagerImpl implements SessionManager {
 	}
 	
 	@Override
-	@Transactional
 	public Session getSessionByUserId(long userId) {
 		Session s = doGetSessionByUserId(userId);
 		if(s != null) {
@@ -85,13 +82,11 @@ public class SessionManagerImpl implements SessionManager {
 	}
 	
 	@Override
-	@Transactional
 	public Session getSessionById(String id) {
 		return doGetSessionById(id);
 	}
 	
 	@Override
-	@Transactional
 	public User getUserBySession(String id) {
 		Session s = getSessionById(id);
 		if(s == null) {

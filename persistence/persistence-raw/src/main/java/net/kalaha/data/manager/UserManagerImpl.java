@@ -19,7 +19,6 @@ import net.kalaha.data.entities.UserStatus;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 
 @Singleton
 public class UserManagerImpl implements UserManager {
@@ -31,7 +30,6 @@ public class UserManagerImpl implements UserManager {
 	private SystemTime time;
 	
 	@Override
-	@Transactional
 	public void setDisplayName(long id, String displayName) {
 		User user = getUser(id);
 		if(user != null) {
@@ -41,7 +39,6 @@ public class UserManagerImpl implements UserManager {
 	
 	
 	@Override
-	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<User> listUserByStats(int limit, Field field, Set<Long> userGroup) {
 		StringBuilder b = new StringBuilder("select u from User u");
@@ -63,7 +60,6 @@ public class UserManagerImpl implements UserManager {
 	
 	
 	@Override
-	@Transactional
 	public User createUser(String extId, int operatorId, UserStatus st) {
 		User u = getUserByExternalId(extId, operatorId);
 		if(u == null) {
@@ -75,7 +71,6 @@ public class UserManagerImpl implements UserManager {
 	}
 	
 	@Override
-	@Transactional
 	public User createLocalUser(String localName, String password) {
 		User u = getUserByLocalName(localName);
 		if(u == null) {
@@ -85,31 +80,26 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	@Transactional
 	public User getUser(long id) {
 		return em.get().find(User.class, id);
 	}
 
 	@Override
-	@Transactional
 	public User getUserByExternalId(String extId, int operatorId) {
 		return doGetUserByExternalId(extId, operatorId);
 	}
 	
 	@Override
-	@Transactional
 	public User getUserByLocalName(String userName) {
 		return doGetUserByLocalName(userName, 0);
 	}
 	
 	@Override
-	@Transactional
 	public User authLocalUser(String localName, String passwd) {
 		return doAuthLocalUser(localName, passwd);
 	}
 	
 	@Override
-	@Transactional
 	public User authBot(String userName, int botId) {
 		return doAuthBot(userName, botId);
 	}

@@ -1,7 +1,6 @@
 package net.kalaha.textclient;
 
 import java.nio.ByteBuffer;
-import java.util.regex.Pattern;
 
 import net.kalaha.common.json.IllegalActionException;
 import net.kalaha.game.action.Sow;
@@ -54,7 +53,7 @@ public class Client extends SimpleTextClient {
 	}
 
 	public static void main(String[] args) {
-	    if (args.length < 1) {
+	    /*if (args.length < 1) {
 	    	System.err.println("Usage: java Client [port] host \nEx.: " +
             		"\n\t java Client localhost" +
             		"\n\t java Client 4123 localhost");
@@ -67,9 +66,9 @@ public class Client extends SimpleTextClient {
         if (Pattern.matches("[0-9]+", args[0])) {
             port = Integer.parseInt(args[0]);            
             hostIndex = 1;
-        }
+        }*/
        
-        Client client = new Client(args[hostIndex], port);
+        Client client = new Client("localhost", 4123);
         client.run();
 	
 	}

@@ -76,7 +76,7 @@
 			<type>firebase-sar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!-- dependency>
+		<dependency>
 			<artifactId>user-service</artifactId>
 			<groupId>net.kalaha</groupId>
 			<version>${project.version}</version>
@@ -89,6 +89,6 @@
 			<version>${project.version}</version>
 			<type>firebase-sar</type>
 			<scope>provided</scope>
-		</dependency -->
+		</dependency>
 	</dependencies>
 </project>
