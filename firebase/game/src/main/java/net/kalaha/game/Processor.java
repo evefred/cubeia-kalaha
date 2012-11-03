@@ -3,8 +3,9 @@ package net.kalaha.game;
 import static net.kalaha.common.TableState.CLOSED;
 import net.kalaha.common.json.AbstractAction;
 import net.kalaha.common.json.ActionTransformer;
-import net.kalaha.data.entities.Game;
+import net.kalaha.data.entities.GameResult;
 import net.kalaha.data.manager.GameManager;
+import net.kalaha.data.util.TransactionDispatch;
 import net.kalaha.game.action.Close;
 import net.kalaha.game.action.End;
 import net.kalaha.game.action.KalahaAction;
@@ -35,6 +36,9 @@ public class Processor implements GameProcessor {
 	@Inject 
 	private GameManager gameManager;
 	
+	@Inject
+	private TransactionDispatch transaction;
+	
 	public void handle(GameDataAction action, Table table) { 
 		Object act = trans.fromUTF8Data(action.getData().array());
 		log.debug("Got action: " + act);
@@ -55,12 +59,18 @@ public class Processor implements GameProcessor {
 	// --- PRIVATE METHODS --- //
 	
 	// scheduled or activator action 
-	private void handleInternalAction(AbstractAction act, Table table) {
-		if(act instanceof Close) {
-			tryClose(table);
-		} else {
-			log.warn("Unknown internal action: " + act);
-		}
+	private void handleInternalAction(final AbstractAction act, final Table table) {
+		transaction.doInUnitOfWork(new Runnable() {
+			
+			@Override
+			public void run() {
+				if(act instanceof Close) {
+					tryClose(table);
+				} else {
+					log.warn("Unknown internal action: " + act);
+				}
+			}
+		});
 	}
 	
 	private void tryClose(Table table) {
@@ -95,10 +105,16 @@ public class Processor implements GameProcessor {
 		table.getNotifier().notifyAllPlayersExceptOne(gda, action.getPlayerId());
 	}
 	
-	private void handleKalahaAction(GameDataAction action, Table table, KalahaAction act) {
-		try {
-			doKalahaAction(action, table, act);
-		} catch(IllegalMoveException e) { }
+	private void handleKalahaAction(final GameDataAction action, final Table table, final KalahaAction act) {
+		transaction.doInUnitOfWork(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					doKalahaAction(action, table, act);
+				} catch(IllegalMoveException e) { }	
+			}
+		});
 	}
 
 	private void doKalahaAction(GameDataAction action, Table table, KalahaAction act) {
@@ -107,10 +123,12 @@ public class Processor implements GameProcessor {
 		boolean end = board.isGameEnded();
 		sendStateToAll(action, table);
 		long gameId = board.getGameId();
-		Game game = gameManager.getGame(gameId);
-		board.updateGame(game);
+		// Game game = gameManager.getGame(gameId);
+		/// board.updateGame(game);
+		gameManager.updateGame(gameId, board.getState().getHouses(), board.isOwnersMove());
 		if(end) {
-			game.setWinningUser(board.getWinningPlayerId());
+			long winnerId = board.getWinningPlayerId();
+			gameManager.finishGame(gameId, winnerId, board.isDraw() ? GameResult.DRAW : GameResult.WIN);
 			sendEndToAll(action, table);
 		}
 	}

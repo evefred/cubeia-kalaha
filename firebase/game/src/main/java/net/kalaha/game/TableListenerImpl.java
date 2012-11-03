@@ -1,6 +1,7 @@
 package net.kalaha.game;
 
 import net.kalaha.data.manager.UserManager;
+import net.kalaha.data.util.TransactionDispatch;
 import net.kalaha.data.entities.User;
 import net.kalaha.game.action.Info;
 import net.kalaha.game.action.Player;
@@ -22,24 +23,27 @@ public class TableListenerImpl implements TableListener {
 	@Inject
 	private UserManager userManager;
 	
+	@Inject
+	private TransactionDispatch transaction;
+	
 	@Override
-	public void playerJoined(Table table, GenericPlayer player) { 
-		KalahaBoard s = (KalahaBoard)table.getGameState().getState();
-		Player south = getPlayer(s.getSouthPlayerId());
-		Player north = getPlayer(s.getNorthPlayerId());
-		Info info = new Info();
-		info.setNorthPlayer(north);
-		info.setSouthPlayer(south);
-		GameDataAction gda = util.toDataAction(player.getPlayerId(), table.getId(), s.getState());
-		table.getNotifier().sendToClient(player.getPlayerId(), gda);
-		gda = util.toDataAction(player.getPlayerId(), table.getId(), info);
-		table.getNotifier().sendToClient(player.getPlayerId(), gda);
-		/*int seatId = player.getSeatId();
-		if(seatId == 0) {
-			s.setSouthPlayerId(player.getPlayerId());
-		} else {
-			s.setNorthPlayerId(player.getPlayerId());
-		}*/
+	public void playerJoined(final Table table, final GenericPlayer player) { 
+		transaction.doInUnitOfWork(new Runnable() {
+			
+			@Override
+			public void run() {
+				KalahaBoard s = (KalahaBoard)table.getGameState().getState();
+				Player south = getPlayer(s.getSouthPlayerId());
+				Player north = getPlayer(s.getNorthPlayerId());
+				Info info = new Info();
+				info.setNorthPlayer(north);
+				info.setSouthPlayer(south);
+				GameDataAction gda = util.toDataAction(player.getPlayerId(), table.getId(), s.getState());
+				table.getNotifier().sendToClient(player.getPlayerId(), gda);
+				gda = util.toDataAction(player.getPlayerId(), table.getId(), info);
+				table.getNotifier().sendToClient(player.getPlayerId(), gda);
+			}
+		});
 	}
 
 	@Override

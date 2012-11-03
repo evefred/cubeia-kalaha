@@ -3,7 +3,7 @@ package net.kalaha.session.impl;
 import java.util.Properties;
 
 import net.kalaha.common.guice.PropertiesModule;
-import net.kalaha.data.manager.ManagerModule;
+import net.kalaha.data.manager.TransactionalManagerModule;
 import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.session.api.SessionManager;
 
@@ -47,7 +47,7 @@ public class SessionManagerImpl implements Service, SessionManager {
 	
 	protected void createInjector() {
 		ClusterConfigProviderContract serv = con.getParentRegistry().getServiceInstance(ClusterConfigProviderContract.class);
-		injector = Guice.createInjector(new ManagerModule(), new JpaPersistModule("kalaha"), new PropertiesModule(getConfigProperties(serv)));
+		injector = Guice.createInjector(new TransactionalManagerModule(), new JpaPersistModule("kalaha"), new PropertiesModule(getConfigProperties(serv)));
 		injector.injectMembers(this);
 	}
 

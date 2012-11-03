@@ -4,6 +4,8 @@ import static net.kalaha.common.Errors.ILLEGAL_PLAYER;
 import static net.kalaha.common.Errors.OK;
 import static net.kalaha.common.Errors.TABLE_CLOSED;
 import static net.kalaha.common.TableState.OPEN;
+import net.kalaha.data.util.TransactionDispatch;
+import net.kalaha.data.util.TransactionDispatch.Work;
 import net.kalaha.game.logic.KalahaBoard;
 
 import org.apache.log4j.Logger;
@@ -29,18 +31,19 @@ public class TableInterceptorImpl implements TableInterceptor {
 	@Log4j
 	private Logger log;
 	
+	@Inject
+	private TransactionDispatch transaction;
+	
 	@Override
-	public InterceptionResponse allowJoin(Table table, SeatRequest req) {
+	public InterceptionResponse allowJoin(Table table, final SeatRequest req) {
 		if(isOpen()) {
-			long gameId = board.getGameId();
-			int playerId = req.getPlayerId();
-			if(playerId == board.getSouthPlayerId() || playerId == board.getNorthPlayerId()) {
-				log.debug("Allowing seat for player " + playerId + " at game " + gameId);
-				return new InterceptionResponse(true, OK);
-			} else {
-				log.debug("Denying seat for player " + playerId + " at game " + gameId);
-				return new InterceptionResponse(false, ILLEGAL_PLAYER);
-			}
+			return transaction.doInUnitOfWork(new Work<InterceptionResponse>() {
+				
+				@Override
+				public InterceptionResponse execute() {
+					return checkRightPlayer(req);
+				}
+			});
 		} else {
 			log.debug("Denying join, table is closed");
 			return new InterceptionResponse(false, TABLE_CLOSED);
@@ -62,5 +65,17 @@ public class TableInterceptorImpl implements TableInterceptor {
 	
 	private boolean isOpen() {
 		return board.getTableState().equals(OPEN);
+	}
+	
+	private InterceptionResponse checkRightPlayer(SeatRequest req) {
+		long gameId = board.getGameId();
+		int playerId = req.getPlayerId();
+		if(playerId == board.getSouthPlayerId() || playerId == board.getNorthPlayerId()) {
+			log.debug("Allowing seat for player " + playerId + " at game " + gameId);
+			return new InterceptionResponse(true, OK);
+		} else {
+			log.debug("Denying seat for player " + playerId + " at game " + gameId);
+			return new InterceptionResponse(false, ILLEGAL_PLAYER);
+		}
 	}
 }

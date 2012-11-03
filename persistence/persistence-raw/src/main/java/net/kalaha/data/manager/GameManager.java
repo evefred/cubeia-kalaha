@@ -16,8 +16,10 @@ public interface GameManager {
 	
 	public Game createGame(GameType type, User owner, User opponent, long moveTimeout, int[] initState);
 	
-	public Game finishGame(long gameId, User winner, GameResult result);
+	public Game finishGame(long gameId, long winnerId, GameResult result);
 	
 	public List<Game> reapGames(int maxAgeDays);
+
+	public void updateGame(long gameId, int[] state, boolean ownersMove);
 	
 }

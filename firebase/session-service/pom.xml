@@ -34,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.kalaha</groupId>
-			<artifactId>persistence-jta</artifactId>
+			<artifactId>persistence-nonjta</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import net.kalaha.common.guice.PropertiesModule;
-import net.kalaha.data.manager.ManagerModule;
+import net.kalaha.data.manager.TransactionalManagerModule;
 import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.user.api.UserService;
 
@@ -66,7 +66,7 @@ public class ServiceImpl implements UserService, Service {
 		// list.add(new FirebaseModule(context.getParentRegistry()));
 		list.add(new JpaPersistModule("kalaha"));
 		list.add(new ServiceModule());
-		list.add(new ManagerModule());
+		list.add(new TransactionalManagerModule());
 		list.add(new PropertiesModule(getConfigProperties(serv)));
 		injector = Guice.createInjector(list);
 	}

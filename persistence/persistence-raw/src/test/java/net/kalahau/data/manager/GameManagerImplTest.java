@@ -46,7 +46,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		Game g1 = gameManager.createGame(GameType.KALAHA, me, kalle, 100, null);
 		assertEquals(g1.getStatus(), ACTIVE);
 		// finish game	
-		Game g2 = gameManager.finishGame(g1.getId(), me, WIN);
+		Game g2 = gameManager.finishGame(g1.getId(), me.getId(), WIN);
 		assertEquals(g2.getStatus(), FINISHED);
 		GameStats one = me.getGameStats();
 		GameStats two = kalle.getGameStats();
@@ -82,7 +82,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		}	
 		
 		// set me as winner on g1
-		gameManager.finishGame(g1.getId(), me, WIN);
+		gameManager.finishGame(g1.getId(), me.getId(), WIN);
 		
 		// get all my finished games
 		myGames = gameManager.getMyGames(me, GameStatus.FINISHED);
@@ -92,7 +92,7 @@ public class GameManagerImplTest extends JpaTestBase {
 		}
 		
 		// set draw on g2
-		gameManager.finishGame(g2.getId(), null, DRAW);
+		gameManager.finishGame(g2.getId(), -1, DRAW);
 		
 		// get all my finished (1 win and one draw)
 		myGames = gameManager.getMyGames(me, GameStatus.FINISHED);

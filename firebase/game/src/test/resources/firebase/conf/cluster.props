@@ -1,4 +1,4 @@
-service.jta-enabled=true 
+service.jta-enabled=false 
 service.sessions.max-age=300000
 service.sessions.reaper-interval=60000
 service.users.allow-local=true

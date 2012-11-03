@@ -10,7 +10,6 @@ import org.testng.annotations.Test;
 
 import com.cubeia.firebase.api.server.conf.ConfigProperty;
 import com.cubeia.firebase.api.server.conf.Configurable;
-import com.cubeia.firebase.api.server.conf.ConfigurationException;
 import com.cubeia.firebase.api.server.conf.Namespace;
 import com.cubeia.firebase.api.server.conf.PropertyKey;
 import com.cubeia.firebase.api.service.ServiceContextAdapter;
@@ -19,6 +18,7 @@ import com.cubeia.firebase.api.service.config.ClusterConfigProviderContract;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provider;
+import com.google.inject.persist.UnitOfWork;
 
 public class SessionManagerImplTest {
 
@@ -49,6 +49,7 @@ public class SessionManagerImplTest {
 		@Override
 		protected void configure() {
 			bind(SessionManager.class).toInstance(mock(SessionManager.class));
+			bind(UnitOfWork.class).toInstance(mock(UnitOfWork.class));
 		}
 	}
 	
@@ -65,7 +66,7 @@ public class SessionManagerImplTest {
 			super.addImplementation(ClusterConfigProviderContract.class, new ClusterConfigProviderContract() {
 				
 				@Override
-				public <T extends Configurable> T getConfiguration(Class<T> cl, Namespace ns) throws ConfigurationException {
+				public <T extends Configurable> T getConfiguration(Class<T> cl, Namespace ns) {
 					throw new UnsupportedOperationException();
 				}
 				

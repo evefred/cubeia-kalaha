@@ -24,7 +24,7 @@ public class WebGame {
 		status = game.isMyTurn(opp) ? "Waiting... " : "My Turn!";
 		long winId = game.getWinningUser();
 		if(winId > 0) {
-			this.winner = winId == opp.getId() ? opponent + " Won" : current.getUserDetails().getDisplayName() + " Won";
+			this.winner = winId == opp.getId() ? opponent : current.getUserDetails().getDisplayName();
 		} else {
 			this.winner = "N/A";
 		}

@@ -50,7 +50,7 @@ public class GameManagerImpl implements GameManager {
 		List<Game> games = (List<Game>) q.getResultList();
 		for (Game g : games) {
 			User winner = (g.isOwnersMove() ? g.getOpponent() : g.getOwner());
-			finishGame(g.getId(), winner, TIMEOUT);
+			finishGame(g.getId(), winner.getId(), TIMEOUT);
 		}
 		return games;
 	}
@@ -75,21 +75,29 @@ public class GameManagerImpl implements GameManager {
 	}
 	
 	@Override
+	public void updateGame(long gameId, int[] state, boolean ownersMove) {
+		Game game = getGame(gameId);
+		game.setLastModified(time.utc());
+		game.updateGameState(state);
+		game.setOwnersMove(ownersMove);
+	}
+	
+	@Override
 	public Game getGame(long gameId) {
 		return em.get().find(Game.class, gameId);
 	}
 	
 	@Override
-	public Game finishGame(long gameId, User winner, GameResult result) {
+	public Game finishGame(long gameId, long winnerId, GameResult result) {
 		Game g = getGame(gameId);
 		if(g == null) throw new IllegalArgumentException("No such game: " + gameId);
 		g.setLastModified(System.currentTimeMillis());
 		g.setStatus(GameStatus.FINISHED);
-		if(winner != null) {
-			g.setWinningUser(winner.getId());
+		if(winnerId != -1) {
+			g.setWinningUser(winnerId);
 		}
 		g.setResult(result);
-		updateStats(g, winner, result);
+		updateStats(g, winnerId, result);
 		return g;
 	}
 
@@ -112,10 +120,10 @@ public class GameManagerImpl implements GameManager {
 	
 	// -- PRIVATE METHODS --- //
 	
-	private void updateStats(Game g, User winner, GameResult res) {
+	private void updateStats(Game g, long winnerId, GameResult res) {
 		GameStats one = g.getOwner().getGameStats();
 		GameStats two = g.getOpponent().getGameStats();
-		Result result = (winner == null ? DRAW : (winner.getId() == g.getOwner().getId() ? PLAYER_ONE : PLAYER_TWO));
+		Result result = (winnerId == -1 ? DRAW : (winnerId == g.getOwner().getId() ? PLAYER_ONE : PLAYER_TWO));
 		Matchup m = eloCalculator.calculate(result, new Matchup(one.getEloRating(), two.getEloRating()));
 		one.setEloRating(m.playerOne);
 		two.setEloRating(m.playerTwo);
@@ -124,7 +132,7 @@ public class GameManagerImpl implements GameManager {
 		if(result == DRAW) {
 			one.incrementGamesDrawn();
 			two.incrementGamesDrawn();
-		} else if(winner.getId() == g.getOwner().getId()) {
+		} else if(winnerId == g.getOwner().getId()) {
 			one.incrementGamesWon();
 			two.incrementGamesLost();
 		} else {

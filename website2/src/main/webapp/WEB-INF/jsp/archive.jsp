@@ -31,7 +31,7 @@
 									<td>${game.created}</td>
 									<td>${game.lastMove}</td>
 									<td>${game.noMoves}</td>
-									<td>${game.winner}</td>
+									<td>Winner: ${game.winner}</td>
 								</tr>
 							
 							</c:forEach>

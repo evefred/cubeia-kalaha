@@ -14,9 +14,10 @@ import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.GameManager;
-import net.kalaha.data.manager.ManagerModule;
+import net.kalaha.data.manager.TransactionalManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.util.JpaInitializer;
+import net.kalaha.data.util.TransactionDispatch;
 import net.kalaha.game.action.Close;
 import net.kalaha.game.action.Transformer;
 import net.kalaha.game.logic.KalahaBoard;
@@ -67,6 +68,9 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	@Inject
 	private SystemTime time;
 	
+	@Inject
+	private TransactionDispatch transaction;
+	
 	// table to game and reverse
 	private ActivatorMapping mapping = new ActivatorMapping();
 	
@@ -89,12 +93,18 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	
 	@Override
 	public void onAction(final ActivatorAction<?> action) {
-		TableRequestAction q = (TableRequestAction) action.getData();
-		if(q instanceof GetTableRequest) {
-			handleGetTable((GetTableRequest)q);
-		} else if(q instanceof CreateGameRequest) {
-			handleCreateGame((CreateGameRequest)q);
-		}
+		transaction.doInUnitOfWork(new Runnable() {
+			
+			@Override
+			public void run() {
+				TableRequestAction q = (TableRequestAction) action.getData();
+				if(q instanceof GetTableRequest) {
+					handleGetTable((GetTableRequest)q);
+				} else if(q instanceof CreateGameRequest) {
+					handleCreateGame((CreateGameRequest)q);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -120,7 +130,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	}
 	
 	AbstractModule createManagerModule() {
-		return new ManagerModule();
+		return new TransactionalManagerModule();
 	}
 	
 
@@ -195,8 +205,14 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		@Override
 		public void run() {
 			log.debug("Table task running.");
-			destroyClosedTables();
-			closeOldEndEmpty();
+			transaction.doInUnitOfWork(new Runnable() {
+				
+				@Override
+				public void run() {
+					destroyClosedTables();
+					closeOldEndEmpty();
+				}
+			});
 		}
 
 		private void destroyClosedTables() {

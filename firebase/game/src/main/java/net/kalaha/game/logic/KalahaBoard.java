@@ -1,9 +1,6 @@
 package net.kalaha.game.logic;
 
 import static net.kalaha.common.TableState.OPEN;
-import static net.kalaha.data.entities.GameResult.DRAW;
-import static net.kalaha.data.entities.GameResult.WIN;
-import static net.kalaha.data.entities.GameStatus.FINISHED;
 import static net.kalaha.game.logic.KalahaPlayer.NORTH;
 import static net.kalaha.game.logic.KalahaPlayer.SOUTH;
 
@@ -103,19 +100,23 @@ public class KalahaBoard implements Serializable {
 		setStonesInKalaha(0, NORTH);
 	}
 	
-	public void updateGame(Game game) {
+	public boolean isOwnersMove() {
+		return playerToAct == SOUTH;
+	}
+	
+	/*public void updateGame(Game game) {
 		game.setLastModified(System.currentTimeMillis());
 		game.updateGameState(state.getHouses());
 		game.setOwnersMove(playerToAct == SOUTH);
 		if(gameEnded) {
-			game.setStatus(FINISHED);
+			game.setStatus(GameStatus.FINISHED);
 			if(isDraw()) {
-				game.setResult(DRAW);
+				game.setResult(GameResult.DRAW);
 			} else {
-				game.setResult(WIN);
+				game.setResult(GameResult.WIN);
 			}
 		}
-	}
+	}*/
 	
 	public long getGameId() {
 		return gameId;
