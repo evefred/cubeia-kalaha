@@ -30,7 +30,7 @@ function doCallback(response, type) {
 	map['type'] = type;
 	$.ajax({
 		type: 'POST',
-		url: '/Callback.action',
+		url: __contextPath + '/Callback.action',
 		data: map
 	});
 }

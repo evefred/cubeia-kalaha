@@ -1,5 +1,5 @@
 body {
-	background-image: url('/img/dark_bg_800x600.jpg');
+	background-image: url('/kalaha/img/dark_bg_800x600.jpg');
 	scroll: no;
 	overflow: hidden;
 	margin: 0;
@@ -13,7 +13,7 @@ body {
 
 .main-row {
 	// background-color: grey; 
-	background-image: url('/img/light_dark_bg_800x600.jpg');
+	background-image: url('/kalaha/img/light_dark_bg_800x600.jpg');
 }
 
 .fixed-height-100 {

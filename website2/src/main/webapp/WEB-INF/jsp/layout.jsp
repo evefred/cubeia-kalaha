@@ -8,9 +8,12 @@
 	<link rel="stylesheet" href="${contextPath}/css/main.css">
 	<script type="text/javascript" src="${contextPath}/js/jquery/jquery-1.7.1.js"></script>
 	<script type="text/javascript" src="${contextPath}/js/bootstrap/bootstrap-2.0.3.js"></script>
-	<script type="text/javascript" src="/js/fb.js"></script>
-	<script type="text/javascript" src="/js/json2.js"></script>
+	<script type="text/javascript" src="${contextPath}/js/fb.js"></script>
+	<script type="text/javascript" src="${contextPath}/js/json2.js"></script>
 	<s:layout-component name="head" />
+	<script type="text/javascript">
+		__contextPath = "${contextPath}";
+	</script>
 </head>
 <body>
 	<div class="container">
