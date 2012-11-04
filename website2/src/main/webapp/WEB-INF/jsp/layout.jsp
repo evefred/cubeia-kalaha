@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div id="fb-root"></div>
-	<script src="http://connect.facebook.net/en_US/all.js"></script>
+	<script src="//connect.facebook.net/en_US/all.js"></script>
 	<script type="text/javascript">
 		FB.init({
 			appId : ${actionBean.context.facebookAppId},
