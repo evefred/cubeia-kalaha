@@ -1,4 +1,4 @@
-package net.kalaha.web.auth;
+package net.kalaha.web;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -7,15 +7,18 @@ import java.util.Date;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.kalaha.data.entities.Session;
+import net.kalaha.data.entities.User;
+import net.kalaha.data.manager.SessionManager;
+import net.kalaha.data.manager.UserManager;
+import net.kalaha.web.action.FacebookUser;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -23,13 +26,18 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.name.Named;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
 
-public class AuthFilter implements Filter {
+public class AuthFilter extends BaseGuiceFilter {
 	
-	public static final String AUTH_TOKEN_ATTR = "_authToken";
+	// public static final String AUTH_TOKEN_ATTR = "_authToken";
+	
 	public static final String REQUEST_IDS_ATTR = "_request_ids";
+	public static final String USER_ATTR = "_user";
+	public static final String SESSION_ATTR = "_session";
+	public static final String CLIENT_ATTR = "_client";	
 
 	private static final String HMAC_SHA256 = "HMAC-SHA256";
 	private static final String SIGNED_REQUEST = "signed_request";
@@ -68,38 +76,40 @@ public class AuthFilter implements Filter {
     @Named("facebook-app-scope")
 	private String appScope;
 	
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		Injector injector = (Injector) filterConfig.getServletContext().getAttribute(Injector.class.getName());
-		injector.injectMembers(this);
-	}
+	@Inject
+    @Named("facebook-operator-id")
+    private int operatorId;
 	
-	
-	@Override
-	public void destroy() { }
+	@Inject
+	private UserManager userManager;
+
+	@Inject
+	private SessionManager sessionManager;
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		 HttpServletRequest req = (HttpServletRequest) request;
 	     HttpServletResponse res = (HttpServletResponse) response;
 	     log.trace("Request URI: " + req.getRequestURI());
-	     checkRequests(req);
-	     try {
-		     if(checkSignedRequest(req, res)) {
-		    	 chain.doFilter(request, response);
-		     } 
-	     } finally {
-	    	 removeRequests(req);
-	     }
+	     checkRequests((HttpServletRequest) request);
+	     if(checkSignedRequest(req, res)) {
+	    	 chain.doFilter(request, response);
+		 } 
 	}
 	
 	
 	// --- PRIVATE METHODS --- //
 	
-	private void removeRequests(HttpServletRequest req) {
-		req.getSession().removeAttribute(REQUEST_IDS_ATTR);
+	private void checkRequests(HttpServletRequest request) {
+		String tmp = request.getParameter("request_ids");
+		if(tmp != null) {
+			String[] arr = tmp.split(",");
+			for (String id : arr) {
+				log.info("GOT FILTER REQUEST: " + id);
+				request.getSession().setAttribute(REQUEST_IDS_ATTR, arr);
+			}
+		}
 	}
-
 
 	private boolean checkSignedRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String param = request.getParameter(SIGNED_REQUEST);
@@ -132,7 +142,7 @@ public class AuthFilter implements Filter {
                 log.debug("Found token: " + token);
                 log.trace("Found expiry date: " + exp + " (" + new Date(Long.parseLong(exp) * 1000L) + ")");
                 AuthToken tok = new AuthToken(token, Long.parseLong(exp) * 1000L);
-				request.getSession(true).setAttribute(AUTH_TOKEN_ATTR, tok);
+				createUserSessionDetails(request, tok);
 				return true;
             }
 		} else {
@@ -142,7 +152,7 @@ public class AuthFilter implements Filter {
 					log.trace("Param: " + e.getKey() + " = " + e.getValue());
 				}
 			}*/
-			if(isFacebookReq(request) && isOathResponse(request)) {
+			if(isOathResponse(request)) {
 				log.trace("This is a facebook canvas request, but without signed request, redirecting to facebook uri");
 				redirect(response, fbFinalredirectUri, false);
 				return false;
@@ -152,17 +162,27 @@ public class AuthFilter implements Filter {
 		}
 	}
 	
-	private void checkRequests(HttpServletRequest request) {
-		String tmp = request.getParameter("request_ids");
-		if(tmp != null) {
-			String[] arr = tmp.split(",");
-			for (String id : arr) {
-				log.info("GOT FILTER REQUEST: " + id);
-				request.getSession().setAttribute(REQUEST_IDS_ATTR, arr);
-			}
-		}
+	private void createUserSessionDetails(HttpServletRequest request, AuthToken token) {
+		// create client and get facebook user
+		log.debug("Creating new Facebook client for token: " + token);
+		FacebookClient client = new DefaultFacebookClient(token.getToken());
+		FacebookUser fbuser = client.fetchObject("me", FacebookUser.class);
+		// get current session and fetch user
+		Session session = sessionManager.getSessionByExternalId(fbuser.getId(), operatorId);
+		log.debug("Found session for client: " + session);
+		User user = userManager.getUser(session.getUserId());
+		// update display name
+		userManager.setDisplayName(user.getId(), fbuser.getName());
+		// store objects in session
+		setSessionAttribute(request, SESSION_ATTR, session);
+		setSessionAttribute(request, CLIENT_ATTR, client);
+		setSessionAttribute(request, USER_ATTR, user);	
 	}
-	
+
+	private void setSessionAttribute(HttpServletRequest request, String name, Object o) {
+		request.getSession(true).setAttribute(name, o);
+	}
+
 	private boolean isOathResponse(HttpServletRequest request) {
 		String code = request.getParameter("code");
 		if(code != null) return true;
@@ -200,11 +220,5 @@ public class AuthFilter implements Filter {
 		} else {
 			res.sendRedirect(url);
 		}
-	}
-	
-	private boolean isFacebookReq(HttpServletRequest req) {
-		// String test = req.getRequestURI();
-		// return test != null && test.startsWith(facebookContext);
-		return true;
 	}
 }

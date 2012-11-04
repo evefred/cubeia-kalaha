@@ -5,10 +5,12 @@ import static net.kalaha.common.elo.EloCalculator.Result.PLAYER_ONE;
 import static net.kalaha.common.elo.EloCalculator.Result.PLAYER_TWO;
 import static net.kalaha.data.entities.GameResult.TIMEOUT;
 import static net.kalaha.data.entities.GameStatus.ACTIVE;
+import static net.kalaha.data.entities.GameStatus.CANCELLED;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import net.kalaha.common.elo.EloCalculator;
@@ -20,6 +22,7 @@ import net.kalaha.data.entities.GameResult;
 import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.GameStatus;
 import net.kalaha.data.entities.GameType;
+import net.kalaha.data.entities.Request;
 import net.kalaha.data.entities.User;
 
 import org.joda.time.Duration;
@@ -27,8 +30,10 @@ import org.joda.time.Duration;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
  
 @Singleton
+@Transactional
 public class GameManagerImpl implements GameManager {
 
 	@Inject
@@ -54,6 +59,41 @@ public class GameManagerImpl implements GameManager {
 		}
 		return games;
 	}
+	
+	@Override
+	public Game getGame(Request request) {
+		Query q = em.get().createQuery("select g from Game g where g.request.id = :requestId");
+		q.setParameter("requestId", request.getId());
+		try {
+			return (Game) q.getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public Game updateGame(Request request, boolean accepted) {
+		Game g = getGame(request);
+		g.setStatus(accepted ? ACTIVE : CANCELLED);
+		return g;
+	}
+	
+	@Override
+	public Game createGame(GameType type, Request request) {
+		long now = time.utc();
+		Game g = new Game();
+		g.setRequest(request);
+		g.setCreated(now);
+		g.setLastModified(now);
+		g.setMoveTimeout(-1);
+		g.setOwner(request.getInviter());
+		g.setOpponent(request.getInvitee());
+		g.setOwnersMove(true);
+		g.setStatus(GameStatus.PENDING);
+		g.setType(type);
+		em.get().persist(g);
+		return g;
+	}
 
 	@Override
 	public Game createGame(GameType type, User owner, User opponent, long moveTimeout, int[] initState) {
@@ -65,7 +105,7 @@ public class GameManagerImpl implements GameManager {
 		g.setOwner(owner);
 		g.setOpponent(opponent);
 		g.setOwnersMove(true);
-		g.setStatus(GameStatus.ACTIVE);
+		g.setStatus(ACTIVE);
 		g.setType(type);
 		if(initState != null) {
 			g.updateGameState(initState);

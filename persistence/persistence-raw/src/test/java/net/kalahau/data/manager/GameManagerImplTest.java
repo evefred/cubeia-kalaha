@@ -3,7 +3,11 @@ package net.kalahau.data.manager;
 import static net.kalaha.data.entities.GameResult.DRAW;
 import static net.kalaha.data.entities.GameResult.WIN;
 import static net.kalaha.data.entities.GameStatus.ACTIVE;
+import static net.kalaha.data.entities.GameStatus.CANCELLED;
 import static net.kalaha.data.entities.GameStatus.FINISHED;
+import static net.kalaha.data.entities.GameStatus.PENDING;
+import static net.kalaha.data.entities.RequestStatus.ACCEPTED;
+import static net.kalaha.data.entities.RequestStatus.DENIED;
 import static net.kalaha.data.entities.UserStatus.LIVE;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
@@ -17,6 +21,7 @@ import net.kalaha.data.entities.GameResult;
 import net.kalaha.data.entities.GameStats;
 import net.kalaha.data.entities.GameStatus;
 import net.kalaha.data.entities.GameType;
+import net.kalaha.data.entities.Request;
 import net.kalaha.data.entities.User;
 
 import org.testng.Assert;
@@ -36,6 +41,32 @@ public class GameManagerImplTest extends JpaTestBase {
 		// check null on dummy id
 		Game g3 = gameManager.getGame(-1);
 		assertNull(g3);
+	}
+	
+	@Test
+	private void testInviteAndAccept() {
+		User me = userManager.createUser("larsan", 0, LIVE);
+		// User kalle = userManager.createUser("kalle", 0, LIVE);
+		Request invite = requestManager.invite(me, "666", 0, "1");
+		Game g = gameManager.getGame(invite);
+		assertEquals(g.getRequest(), invite);
+		assertEquals(g.getStatus(), PENDING);
+		requestManager.updateRequest(invite.getId(), ACCEPTED);
+		g = gameManager.getGame(invite);
+		assertEquals(g.getStatus(), ACTIVE);
+	}
+	
+	@Test
+	private void testInviteAndDecline() {
+		User me = userManager.createUser("larsan", 0, LIVE);
+		// User kalle = userManager.createUser("kalle", 0, LIVE);
+		Request invite = requestManager.invite(me, "666", 0, "1");
+		Game g = gameManager.getGame(invite);
+		assertEquals(g.getRequest(), invite);
+		assertEquals(g.getStatus(), PENDING);
+		requestManager.updateRequest(invite.getId(), DENIED);
+		g = gameManager.getGame(invite);
+		assertEquals(g.getStatus(), CANCELLED);
 	}
 	
 	@Test

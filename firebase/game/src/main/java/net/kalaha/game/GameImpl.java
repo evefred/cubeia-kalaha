@@ -2,7 +2,7 @@ package net.kalaha.game;
 
 import java.util.List;
 
-import net.kalaha.data.manager.TransactionalManagerModule;
+import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.util.JpaInitializer;
 
 import com.cubeia.firebase.guice.game.Configuration;
@@ -26,7 +26,7 @@ public class GameImpl extends GuiceGame {
 	protected void preInjectorCreation(List<Module> modules) {
 		modules.add(new KalahaModule());
 		modules.add(new JpaPersistModule("kalaha"));
-		modules.add(new TransactionalManagerModule());
+		modules.add(new ManagerModule());
 		modules.add(new GameModule());
 	}
 	

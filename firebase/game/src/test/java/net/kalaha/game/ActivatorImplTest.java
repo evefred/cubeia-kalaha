@@ -5,13 +5,11 @@ import static org.testng.Assert.assertEquals;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.GameType;
 import net.kalaha.data.entities.User;
-import net.kalaha.data.manager.TransactionalManagerModule;
 import net.kalaha.table.api.GetTableRequest;
 
 import org.testng.annotations.Test;
 
 import com.cubeia.firebase.api.routing.ActivatorAction;
-import com.google.inject.AbstractModule;
 
 public class ActivatorImplTest {
 
@@ -37,13 +35,7 @@ public class ActivatorImplTest {
 	@Test
 	public void testCreateExistingLive() throws Exception {
 		ActivatorContextImpl con = new ActivatorContextImpl();
-		ActivatorImpl i = new ActivatorImpl() {
-			
-			@Override
-			AbstractModule createManagerModule() {
-				return new TransactionalManagerModule();
-			}
-		};
+		ActivatorImpl i = new ActivatorImpl();
 		i.init(con);
 		i.start();
 		

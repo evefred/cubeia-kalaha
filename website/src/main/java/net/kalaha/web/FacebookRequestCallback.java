@@ -45,7 +45,7 @@ public class FacebookRequestCallback extends FacebookBasePage {
 				for (String to : req.getTo()) {
 					User receiver = userManager.getUserByExternalId(to, operatorId);
 					log.debug("User " + user.getId() + " challenges user " + receiver);
-					requestManager.challenge(user, receiver, req.getRequest());
+					// requestManager.challenge(user, receiver, req.getRequest());
 				}
 			}
 		} else {

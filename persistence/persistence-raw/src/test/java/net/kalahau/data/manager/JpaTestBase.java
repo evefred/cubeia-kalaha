@@ -34,7 +34,7 @@ public abstract class JpaTestBase {
 	protected SessionManager sessionManager;
 	
 	@Inject
-	protected RequestManager inviteManager;
+	protected RequestManager requestManager;
 	
 	@Inject
 	private UnitOfWork unit;

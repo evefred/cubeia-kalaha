@@ -51,5 +51,11 @@
 				<a href="/Archive.action">archive</a>!
 			</div>
 		</div>
+		<div class="row">
+			<div class="span10">
+				Of course, you also have sent a lot of invites and challenges? Right?! Of course 
+				you have, and <a href="/Pending.action">here</a> they are!
+			</div>
+		</div>
 	</s:layout-component>
 </s:layout-render>

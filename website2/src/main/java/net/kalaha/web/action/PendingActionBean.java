@@ -15,19 +15,19 @@ import net.sourceforge.stripes.action.UrlBinding;
 
 import com.google.inject.Inject;
 
-@UrlBinding("/Archive.action")
-public class ArchiveActionBean extends BaseActionBean {
+@UrlBinding("/Pending.action")
+public class PendingActionBean extends BaseActionBean {
 	
 	@Inject
 	private GameManager gameManager;
 	
     @DefaultHandler
     public Resolution view() {
-        return new ForwardResolution("/WEB-INF/jsp/archive.jsp");
+        return new ForwardResolution("/WEB-INF/jsp/pending.jsp");
     }
     
-    public List<WebGame> getFinishedGames() {
-		List<Game> list = gameManager.getMyGames(getCurrentUser(), GameStatus.FINISHED);
+    public List<WebGame> getPendingGames() {
+		List<Game> list = gameManager.getMyGames(getCurrentUser(), GameStatus.PENDING);
 		List<WebGame> next = new ArrayList<WebGame>(list.size());
 		User user = getCurrentUser();
 		for (Game g : list) {

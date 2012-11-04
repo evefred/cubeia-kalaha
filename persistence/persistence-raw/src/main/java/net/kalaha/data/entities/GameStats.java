@@ -29,14 +29,6 @@ public class GameStats {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
-	private int challengesReceived;
-	private int challengesAccepted;
-	private int challengesDeclined;
-	
-	private int sentChallenges;
-	private int sentChallengesAccepted;
-	private int sentChallengesDeclined;
-	
 	private int sentInvites;
 	private int sentInvitesAccepted;
 	
@@ -64,15 +56,10 @@ public class GameStats {
 	
 	@Override
 	public String toString() {
-		return "GameStats [id=" + id + ", challengesReceived="
-				+ challengesReceived + ", challengesAccepted="
-				+ challengesAccepted + ", challengesDeclined="
-				+ challengesDeclined + ", sentChallenges=" + sentChallenges
-				+ ", sentChallengesAccepted=" + sentChallengesAccepted
-				+ ", sentChallengesDeclined=" + sentChallengesDeclined
-				+ ", sentInvites=" + sentInvites + ", sentInvitesAccepted="
-				+ sentInvitesAccepted + ", gameWon=" + gamesWon + ", gameLost="
-				+ gamesLost + ", gameDrawn=" + gamesDrawn + ", gameTimedOut="
+		return "GameStats [id=" + id + ", sentInvites=" + sentInvites
+				+ ", sentInvitesAccepted=" + sentInvitesAccepted
+				+ ", gamesWon=" + gamesWon + ", gamesLost=" + gamesLost
+				+ ", gamesDrawn=" + gamesDrawn + ", gamesTimedOut="
 				+ gamesTimedOut + ", totalGames=" + totalGames + ", friends="
 				+ friends + ", eloRating=" + eloRating + "]";
 	}
@@ -87,54 +74,6 @@ public class GameStats {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public int getChallengesReceived() {
-		return challengesReceived;
-	}
-
-	public void setChallengesReceived(int challengesReceived) {
-		this.challengesReceived = challengesReceived;
-	}
-
-	public int getChallengesAccepted() {
-		return challengesAccepted;
-	}
-
-	public void setChallengesAccepted(int challengesAccepted) {
-		this.challengesAccepted = challengesAccepted;
-	}
-
-	public int getChallengesDeclined() {
-		return challengesDeclined;
-	}
-
-	public void setChallengesDeclined(int challengesDeclined) {
-		this.challengesDeclined = challengesDeclined;
-	}
-
-	public int getSentChallenges() {
-		return sentChallenges;
-	}
-
-	public void setSentChallenges(int sentChallenges) {
-		this.sentChallenges = sentChallenges;
-	}
-
-	public int getSentChallengesAccepted() {
-		return sentChallengesAccepted;
-	}
-
-	public void setSentChallengesAccepted(int sentChallengesAccepted) {
-		this.sentChallengesAccepted = sentChallengesAccepted;
-	}
-
-	public int getSentChallengesDeclined() {
-		return sentChallengesDeclined;
-	}
-
-	public void setSentChallengesDeclined(int sentChallengesDeclined) {
-		this.sentChallengesDeclined = sentChallengesDeclined;
 	}
 
 	public int getSentInvites() {
@@ -197,9 +136,6 @@ public class GameStats {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + challengesAccepted;
-		result = prime * result + challengesDeclined;
-		result = prime * result + challengesReceived;
 		long temp;
 		temp = Double.doubleToLongBits(eloRating);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -209,9 +145,6 @@ public class GameStats {
 		result = prime * result + gamesTimedOut;
 		result = prime * result + gamesWon;
 		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + sentChallenges;
-		result = prime * result + sentChallengesAccepted;
-		result = prime * result + sentChallengesDeclined;
 		result = prime * result + sentInvites;
 		result = prime * result + sentInvitesAccepted;
 		result = prime * result + totalGames;
@@ -227,12 +160,6 @@ public class GameStats {
 		if (getClass() != obj.getClass())
 			return false;
 		GameStats other = (GameStats) obj;
-		if (challengesAccepted != other.challengesAccepted)
-			return false;
-		if (challengesDeclined != other.challengesDeclined)
-			return false;
-		if (challengesReceived != other.challengesReceived)
-			return false;
 		if (Double.doubleToLongBits(eloRating) != Double
 				.doubleToLongBits(other.eloRating))
 			return false;
@@ -247,12 +174,6 @@ public class GameStats {
 		if (gamesWon != other.gamesWon)
 			return false;
 		if (id != other.id)
-			return false;
-		if (sentChallenges != other.sentChallenges)
-			return false;
-		if (sentChallengesAccepted != other.sentChallengesAccepted)
-			return false;
-		if (sentChallengesDeclined != other.sentChallengesDeclined)
 			return false;
 		if (sentInvites != other.sentInvites)
 			return false;
@@ -281,30 +202,6 @@ public class GameStats {
 
 	public void incrementSentInvites() {
 		sentInvites++;
-	}
-
-	public void incrementSentChallenges() {
-		sentChallenges++;
-	}
-
-	public void incrementChallengesReceived() {
-		challengesReceived++;
-	}
-
-	public void incrementSentChallengesAccepted() {
-		sentChallengesAccepted++;
-	}
-
-	public void incrementChallengesAccepted() {
-		challengesAccepted++;
-	}
-
-	public void incrementSentChallengesDenied() {
-		sentChallengesDeclined++;
-	}
-
-	public void incrementChallengesDenied() {
-		challengesDeclined++;
 	}
 
 	public void incrementSentInvitesAccepted() {

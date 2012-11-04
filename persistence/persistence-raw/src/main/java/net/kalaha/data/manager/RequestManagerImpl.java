@@ -1,5 +1,6 @@
 package net.kalaha.data.manager;
 
+import static net.kalaha.data.entities.GameType.KALAHA;
 import static net.kalaha.data.entities.RequestStatus.ACCEPTED;
 import static net.kalaha.data.entities.RequestStatus.DENIED;
 import static net.kalaha.data.entities.RequestStatus.PENDING;
@@ -24,8 +25,10 @@ import org.apache.log4j.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
+@Transactional
 public class RequestManagerImpl implements RequestManager {
 	
 	@Inject
@@ -39,10 +42,13 @@ public class RequestManagerImpl implements RequestManager {
 	@Inject
 	private UserManager users;
 	
+	@Inject
+	private GameManager games;
+	
 	@Override
 	public Request challenge(User challenger, User challengee, String extId) {
-		challenger.getGameStats().incrementSentChallenges();
-		challengee.getGameStats().incrementChallengesReceived();
+		// challenger.getGameStats().incrementSentChallenges();
+		// challengee.getGameStats().incrementChallengesReceived();
 		Request inv = new Request();
 		inv.setExternalRequestId(extId);
 		inv.setType(CHALLENGE);
@@ -53,6 +59,10 @@ public class RequestManagerImpl implements RequestManager {
 		inv.setInviter(challenger);
 		inv.setInvitee(challengee);
 		em.get().persist(inv);
+		
+		// create game
+		games.createGame(KALAHA, inv);
+		
 		return inv;
 	}
 
@@ -72,6 +82,10 @@ public class RequestManagerImpl implements RequestManager {
 			inv.setInviter(inviter);
 			inv.setInvitee(invitee);
 			em.get().persist(inv);
+			
+			// create game
+			games.createGame(KALAHA, inv);
+			
 			return inv;
 		} else {
 			return null;
@@ -95,10 +109,7 @@ public class RequestManagerImpl implements RequestManager {
 		if(req == null) {
 			log.debug("Attempt to update non-exising invite by extId: " + extId);
 		} else {
-			req.setLastModified(time.utc());
-			req.setStatus(status);
-			updateStats(status, req);
-			checkInviteeStatus(status, req);
+			req = updateRequest(req.getId(), status);
 		}
 		return req;
 	}
@@ -113,12 +124,17 @@ public class RequestManagerImpl implements RequestManager {
 			inv.setStatus(status);
 			updateStats(status, inv);
 			checkInviteeStatus(status, inv);
+			updateGame(inv);
 		}
 		return inv;
 	}
 	
 	
 	// --- PRIVATE METHODS --- ///
+
+	private void updateGame(Request inv) {
+		games.updateGame(inv, inv.getStatus() == ACCEPTED);
+	}
 
 	private void checkInviteeStatus(RequestStatus status, Request inv) {
 		if(inv.getType() == INVITATION) {
@@ -144,21 +160,21 @@ public class RequestManagerImpl implements RequestManager {
 
 	private void incrementAccepted(Request inv) {
 		User inviter = inv.getInviter();
-		User invitee = inv.getInvitee();
+		// User invitee = inv.getInvitee();
 		if(inv.getType() == CHALLENGE) {
-			inviter.getGameStats().incrementSentChallengesAccepted();
-			invitee.getGameStats().incrementChallengesAccepted();
+			// inviter.getGameStats().incrementSentChallengesAccepted();
+			// invitee.getGameStats().incrementChallengesAccepted();
 		} else {
 			inviter.getGameStats().incrementSentInvitesAccepted();
 		}
 	}
 
 	private void incrementDenied(Request inv) {
-		User inviter = inv.getInviter();
+		/*User inviter = inv.getInviter();
 		User invitee = inv.getInvitee();
 		if(inv.getType() == CHALLENGE) {
 			inviter.getGameStats().incrementSentChallengesDenied();
 			invitee.getGameStats().incrementChallengesDenied();
-		} 
+		} */
 	}
 }

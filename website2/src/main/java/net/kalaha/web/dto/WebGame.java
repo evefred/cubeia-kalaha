@@ -20,7 +20,11 @@ public class WebGame {
 		opponent = opp.getUserDetails().getDisplayName();
 		created = Dates.formatDate(game.getCreated());
 		lastMove = Dates.formatDate(game.getLastModified());
-		noMoves = String.valueOf(game.getStates().size());
+		int size = game.getStates().size();
+		if(size > 0) {
+			size -= 1; // first state is the initial board and not a move
+		}
+		noMoves = String.valueOf(size);
 		status = game.isMyTurn(opp) ? "Waiting... " : "My Turn!";
 		long winId = game.getWinningUser();
 		if(winId > 0) {

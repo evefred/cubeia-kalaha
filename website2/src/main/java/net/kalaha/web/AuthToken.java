@@ -1,4 +1,4 @@
-package net.kalaha.web.auth;
+package net.kalaha.web;
 
 import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 

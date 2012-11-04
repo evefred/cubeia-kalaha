@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
@@ -40,6 +41,10 @@ public class Game {
 	@JoinColumn(name="opponentId", nullable=true)
 	private User opponent;
 	
+	@OneToOne
+	@JoinColumn(name="requestId", nullable=true)
+	private Request request;
+	
 	@Column(nullable=false)
 	private long created;
 	
@@ -58,6 +63,14 @@ public class Game {
 	@OrderBy("id")
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="game", fetch=FetchType.EAGER)
 	private List<GameState> states = new LinkedList<GameState>();
+	
+	public Request getRequest() {
+		return request;
+	}
+	
+	public void setRequest(Request request) {
+		this.request = request;
+	}
 	
 	public List<GameState> getStates() {
 		return states;
@@ -195,6 +208,7 @@ public class Game {
 				+ ((opponent == null) ? 0 : opponent.hashCode());
 		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
 		result = prime * result + (ownersMove ? 1231 : 1237);
+		result = prime * result + ((request == null) ? 0 : request.hashCode());
 		result = prime * result
 				+ ((this.result == null) ? 0 : this.result.hashCode());
 		result = prime * result + ((states == null) ? 0 : states.hashCode());
@@ -233,6 +247,11 @@ public class Game {
 			return false;
 		if (ownersMove != other.ownersMove)
 			return false;
+		if (request == null) {
+			if (other.request != null)
+				return false;
+		} else if (!request.equals(other.request))
+			return false;
 		if (result != other.result)
 			return false;
 		if (states == null) {
@@ -251,11 +270,11 @@ public class Game {
 
 	@Override
 	public String toString() {
-		return "Game [created=" + created + ", id=" + id
+		return "Game [id=" + id + ", type=" + type + ", status=" + status
+				+ ", result=" + result + ", owner=" + owner + ", opponent="
+				+ opponent + ", request=" + request + ", created=" + created
 				+ ", lastModified=" + lastModified + ", moveTimeout="
-				+ moveTimeout + ", opponent=" + opponent + ", owner=" + owner
-				+ ", ownersMove=" + ownersMove + ", result=" + result + ", states=" + states + ", status="
-				+ status + ", type=" + type + ", winningUser=" + winningUser
-				+ "]";
+				+ moveTimeout + ", ownersMove=" + ownersMove + ", winningUser="
+				+ winningUser + ", states=" + states + "]";
 	}
 }

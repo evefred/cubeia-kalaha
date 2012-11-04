@@ -14,7 +14,7 @@ import net.kalaha.common.util.SystemTime;
 import net.kalaha.data.entities.Game;
 import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.GameManager;
-import net.kalaha.data.manager.TransactionalManagerModule;
+import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.data.util.TransactionDispatch;
@@ -130,7 +130,7 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 	}
 	
 	AbstractModule createManagerModule() {
-		return new TransactionalManagerModule();
+		return new ManagerModule();
 	}
 	
 
@@ -187,6 +187,9 @@ public class ActivatorImpl implements GameActivator, /*RequestAwareActivator,*/ 
 		if (game.getStatus() == FINISHED) {
 			log.fatal("Received request for game " + gameId + " which is ended!");
 			return -1; // EARLY RETURN
+		}
+		if (game.getStates().size() == 0) {
+			gameManager.updateGame(gameId, KalahaBoard.getInitState(6), true);
 		}
 		TableFactory fact = context.getTableFactory();
 		LobbyTable table = fact.createTable(2, new ActivatorParticipant(game));

@@ -19,8 +19,10 @@ import net.kalaha.data.entities.UserStatus;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
+@Transactional
 public class UserManagerImpl implements UserManager {
 		
 	@Inject

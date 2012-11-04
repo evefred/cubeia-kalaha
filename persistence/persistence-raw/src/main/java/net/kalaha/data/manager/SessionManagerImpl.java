@@ -16,8 +16,10 @@ import net.kalaha.data.entities.User;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
 
 @Singleton
+@Transactional
 public class SessionManagerImpl implements SessionManager {
 	
 	@Inject
