@@ -34,6 +34,7 @@ public class AuthFilter extends BaseGuiceFilter {
 	
 	// public static final String AUTH_TOKEN_ATTR = "_authToken";
 	
+	public static final String FIRST_ACC_ATTR = "_first_access";
 	public static final String REQUEST_IDS_ATTR = "_request_ids";
 	public static final String USER_ATTR = "_user";
 	public static final String SESSION_ATTR = "_session";
@@ -95,10 +96,19 @@ public class AuthFilter extends BaseGuiceFilter {
 	     if(checkSignedRequest(req, res)) {
 	    	 chain.doFilter(request, response);
 		 } 
+	     clearFirstAccess(req);
+	}
+
+
+	// --- PRIVATE METHODS --- //
+	
+	private void clearFirstAccess(HttpServletRequest req) {
+		req.getSession().removeAttribute(FIRST_ACC_ATTR);
 	}
 	
-	
-	// --- PRIVATE METHODS --- //
+	private void setFirstAccess(HttpServletRequest req) {
+		req.getSession().setAttribute(FIRST_ACC_ATTR, Boolean.TRUE);
+	}
 	
 	private void checkRequests(HttpServletRequest request) {
 		String tmp = request.getParameter("request_ids");
@@ -143,6 +153,7 @@ public class AuthFilter extends BaseGuiceFilter {
                 log.trace("Found expiry date: " + exp + " (" + new Date(Long.parseLong(exp) * 1000L) + ")");
                 AuthToken tok = new AuthToken(token, Long.parseLong(exp) * 1000L);
 				createUserSessionDetails(request, tok);
+				setFirstAccess(request);
 				return true;
             }
 		} else {
