@@ -10,6 +10,10 @@
 	<artifactId>common</artifactId>
 	<dependencies>
 		<dependency>
+			<groupId>com.cubeia.firebase</groupId>
+			<artifactId>firebase-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>

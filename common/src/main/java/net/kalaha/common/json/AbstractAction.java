@@ -1,5 +1,6 @@
 package net.kalaha.common.json;
 
+
 public abstract class AbstractAction {
 	
 	private String _action;

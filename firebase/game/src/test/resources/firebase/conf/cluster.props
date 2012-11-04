@@ -3,3 +3,6 @@ service.sessions.max-age=300000
 service.sessions.reaper-interval=60000
 service.users.allow-local=true
 service.users.allow-bots=true
+facebook-app-id=383635658348266
+facebook-app-secret=5ace09184d3a69c1774f687d0cf3a1df
+facebook-operator-id=1

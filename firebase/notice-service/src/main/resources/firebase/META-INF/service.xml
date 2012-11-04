@@ -1,0 +1,11 @@
+<service auto-start="true">
+    <name>notice</name>
+    <public-id>net.kalaha:notice</public-id>
+    <contract>net.kalaha.notice.api.NoticeManager</contract>
+    <service>net.kalaha.notice.impl.NoticeService</service>
+    <dependencies />
+    <description />
+    <exported>
+        <package>net.kalaha.notice.api.-</package>
+    </exported>
+</service>

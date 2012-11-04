@@ -1,5 +1,6 @@
 package net.kalaha.session.impl;
 
+import static net.kalaha.common.firebase.ConfigHelp.getClusterProperties;
 import static net.kalaha.common.util.Reflection.getPrivateDeclaredField;
 import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
@@ -29,8 +30,7 @@ public class SessionManagerImplTest {
 			
 			@Override
 			protected void createInjector() {
-				ClusterConfigProviderContract serv = con.getParentRegistry().getServiceInstance(ClusterConfigProviderContract.class);
-				injector = Guice.createInjector(new TestModule(), new PropertiesModule(getConfigProperties(serv)));
+				injector = Guice.createInjector(new TestModule(), new PropertiesModule(getClusterProperties(con.getParentRegistry())));
 				injector.injectMembers(this);
 			}
 		};

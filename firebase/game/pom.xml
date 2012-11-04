@@ -29,6 +29,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<artifactId>notice-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.cubeia.firebase</groupId>
 			<artifactId>firebase-api</artifactId>
 			<scope>provided</scope>
@@ -85,6 +91,13 @@
 		</dependency>
 		<dependency>
 			<artifactId>session-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<artifactId>notice-service</artifactId>
 			<groupId>net.kalaha</groupId>
 			<version>${project.version}</version>
 			<type>firebase-sar</type>

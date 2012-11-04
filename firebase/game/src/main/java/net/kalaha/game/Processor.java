@@ -11,13 +11,21 @@ import net.kalaha.game.action.End;
 import net.kalaha.game.action.KalahaAction;
 import net.kalaha.game.action.util.ActionUtil;
 import net.kalaha.game.logic.KalahaBoard;
+import net.kalaha.game.logic.KalahaPlayer;
+import net.kalaha.notice.api.NextMoveNotice;
+import net.kalaha.notice.api.NoticeManager;
 
 import org.apache.log4j.Logger;
 
 import com.cubeia.firebase.api.action.GameDataAction;
 import com.cubeia.firebase.api.action.GameObjectAction;
+import com.cubeia.firebase.api.action.service.ClientServiceAction;
 import com.cubeia.firebase.api.game.GameProcessor;
 import com.cubeia.firebase.api.game.table.Table;
+import com.cubeia.firebase.api.service.NoSuchRouteException;
+import com.cubeia.firebase.api.service.ServiceDiscriminator;
+import com.cubeia.firebase.api.service.router.RouterService;
+import com.cubeia.firebase.guice.inject.Service;
 import com.google.inject.Inject;
 
 public class Processor implements GameProcessor {
@@ -38,6 +46,12 @@ public class Processor implements GameProcessor {
 	
 	@Inject
 	private TransactionDispatch transaction;
+	
+	@Service
+	private RouterService router;
+	
+	@Inject
+	private NoticeTransformer noticeTransformer;
 	
 	public void handle(GameDataAction action, Table table) { 
 		Object act = trans.fromUTF8Data(action.getData().array());
@@ -130,6 +144,21 @@ public class Processor implements GameProcessor {
 			long winnerId = board.getWinningPlayerId();
 			gameManager.finishGame(gameId, winnerId, board.isDraw() ? GameResult.DRAW : GameResult.WIN);
 			sendEndToAll(action, table);
+		} else {
+			KalahaPlayer toact = board.getPlayerToAct();
+			KalahaPlayer sender = board.getPlayerForId(action.getPlayerId());
+			if(toact != sender) {
+				long playerId = (toact == KalahaPlayer.SOUTH ? board.getSouthPlayerId() : board.getNorthPlayerId());
+				log.debug("Attemting to send notice for player " + playerId);
+				NextMoveNotice notice = new NextMoveNotice(gameId, playerId);
+				byte[] data = noticeTransformer.toUTF8Data(notice);
+				ServiceDiscriminator disc = new ServiceDiscriminator(NoticeManager.class.getName(), true);
+				try {
+					router.getRouter().dispatchToService(disc, new ClientServiceAction(action.getPlayerId(), 0, data));
+				} catch (NoSuchRouteException e) {
+					log.error("Failed to notice player", e);
+				}
+			}
 		}
 	}
 }

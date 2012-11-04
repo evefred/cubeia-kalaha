@@ -17,5 +17,6 @@
 <module>persistence-jta</module>
     <module>bots</module>
     <module>game-service</module>
+<module>notice-service</module>
   </modules>
 </project>
