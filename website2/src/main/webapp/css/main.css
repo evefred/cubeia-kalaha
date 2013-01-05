@@ -1,5 +1,4 @@
 body {
-	background-image: url('/kalaha/img/dark_bg_800x600.jpg');
 	scroll: no;
 	overflow: hidden;
 	margin: 0;
@@ -11,9 +10,10 @@ body {
 	visibility: false;
 }
 
-.main-row {
-	// background-color: grey; 
-	background-image: url('/kalaha/img/light_dark_bg_800x600.jpg');
+.main-row { }
+
+.gamerow { 
+	margin-top: 10px;
 }
 
 .fixed-height-100 {
@@ -32,4 +32,31 @@ body {
 .bottom-aligned {
 	position:absolute; 
 	bottom: 0
+}
+
+.bottombox {
+	border: 1px solid #B0B0B0;
+	border-radius: 5px;
+}
+
+.boxtitle {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	border-bottom: 1px solid #B0B0B0;
+}
+
+.boxcontent {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+}
+
+.boxbottom {
+	border-top: 1px solid #B0B0B0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 10px;
 }

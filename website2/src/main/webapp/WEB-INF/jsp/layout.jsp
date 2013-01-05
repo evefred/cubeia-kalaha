@@ -4,7 +4,8 @@
 <html>
 <head>
 	<title>${title}</title>
-	<link rel="stylesheet" href="${contextPath}/css/bootstrap/bootstrap-2.0.3.css">
+	<link rel="stylesheet" href="${contextPath}/css/bootstrap-2.0.3.css">
+	<link rel="stylesheet" href="${contextPath}/css/bootstrap-responsive-2.0.3.css">
 	<link rel="stylesheet" href="${contextPath}/css/main.css">
 	<script type="text/javascript" src="${contextPath}/js/jquery/jquery-1.7.1.js"></script>
 	<script type="text/javascript" src="${contextPath}/js/bootstrap/bootstrap-2.0.3.js"></script>
@@ -23,7 +24,7 @@
 			
 				<div class="row fixed-height-100">
 					<div class="span10 bottom-aligned">
-						<h1>Kalaha With Friends</h1>
+						<h1>Play Kalaha!</h1>
 					</div>
 				</div>
 		
