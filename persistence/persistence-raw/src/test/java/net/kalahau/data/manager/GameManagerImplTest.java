@@ -44,7 +44,7 @@ public class GameManagerImplTest extends JpaTestBase {
 	}
 	
 	@Test
-	private void testInviteAndAccept() {
+	public void testInviteAndAccept() {
 		User me = userManager.createUser("larsan", 0, LIVE);
 		// User kalle = userManager.createUser("kalle", 0, LIVE);
 		Request invite = requestManager.invite(me, "666", 0, "1");
@@ -57,7 +57,7 @@ public class GameManagerImplTest extends JpaTestBase {
 	}
 	
 	@Test
-	private void testInviteAndDecline() {
+	public void testInviteAndDecline() {
 		User me = userManager.createUser("larsan", 0, LIVE);
 		// User kalle = userManager.createUser("kalle", 0, LIVE);
 		Request invite = requestManager.invite(me, "666", 0, "1");

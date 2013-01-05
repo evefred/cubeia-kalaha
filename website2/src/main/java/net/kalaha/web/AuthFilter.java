@@ -1,5 +1,7 @@
 package net.kalaha.web;
 
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -71,6 +73,7 @@ public class AuthFilter extends BaseGuiceFilter {
 	
 	@Inject
     @Named("facebook-app-redirect-uri")
+	@SuppressWarnings("unused")
 	private String appRedirectUri;
 
 	@Inject
@@ -95,7 +98,9 @@ public class AuthFilter extends BaseGuiceFilter {
 	     checkRequests((HttpServletRequest) request);
 	     if(checkSignedRequest(req, res)) {
 	    	 chain.doFilter(request, response);
-		 } 
+		 } else {
+			 res.sendError(SC_UNAUTHORIZED);
+		 }
 	     clearFirstAccess(req);
 	}
 
@@ -167,12 +172,40 @@ public class AuthFilter extends BaseGuiceFilter {
 				log.trace("This is a facebook canvas request, but without signed request, redirecting to facebook uri");
 				redirect(response, fbFinalredirectUri, false);
 				return false;
-			} else {
+			} else if(checkLocalSignIn(request)) {
 				return true;
+			} else {
+				return getSessionAttribute(request, USER_ATTR) != null;
 			}
 		}
 	}
 	
+	private Object getSessionAttribute(HttpServletRequest request, String name) {
+		return request.getSession(true).getAttribute(name);
+	}
+
+	private boolean checkLocalSignIn(HttpServletRequest request) {
+		if("true".equals(request.getParameter("local"))) {
+			String u = request.getParameter("u");
+			String p = request.getParameter("p");
+			log.debug("Local sign-in for user " + u);
+			User user = userManager.authLocalUser(u, p);
+			if(user != null) {
+				Session session = sessionManager.getSessionByUserId(user.getId());
+				log.debug("Found session for client: " + session);
+				setSessionAttribute(request, SESSION_ATTR, session);
+				setSessionAttribute(request, USER_ATTR, user);
+				return true;
+			} else {
+				log.debug("Login for user " + u + " failed");
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+
 	private void createUserSessionDetails(HttpServletRequest request, AuthToken token) {
 		// create client and get facebook user
 		log.debug("Creating new Facebook client for token: " + token);

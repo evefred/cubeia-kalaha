@@ -25,6 +25,14 @@ public class KalahaBeanContext extends ActionBeanContext {
 	@Inject
     @Named("facebook-operator-id")
     private int operatorId;
+	
+	public SessionManager getSessionManager() {
+		return sessionManager;
+	}
+	
+	public UserManager getUserManager() {
+		return userManager;
+	}
 
 	public String getFacebookAppId() {
 		return appId;

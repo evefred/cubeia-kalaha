@@ -14,6 +14,7 @@ import com.google.inject.Singleton;
 public class RoutableServiceImpl implements RoutableService {
 
 	@Inject
+	@SuppressWarnings("unused")
 	private UserManager manager;
 	
 	private final Logger log = Logger.getLogger(getClass());
@@ -29,6 +30,5 @@ public class RoutableServiceImpl implements RoutableService {
 	@Override
 	public void setRouter(ServiceRouter router) {
 		this.router = router;
-
 	}
 }

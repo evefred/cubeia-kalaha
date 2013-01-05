@@ -90,6 +90,13 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<artifactId>game-service</artifactId>
+			<groupId>net.kalaha</groupId>
+			<version>${project.version}</version>
+			<type>firebase-sar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<artifactId>session-service</artifactId>
 			<groupId>net.kalaha</groupId>
 			<version>${project.version}</version>

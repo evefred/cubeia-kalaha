@@ -5,10 +5,14 @@ import static net.kalaha.common.firebase.ConfigHelp.getClusterProperties;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
 import net.kalaha.common.guice.PropertiesModule;
 import net.kalaha.data.manager.ManagerModule;
 import net.kalaha.data.util.JpaInitializer;
 import net.kalaha.user.api.UserService;
+import net.kalaha.user.util.UserCreator;
 
 import com.cubeia.firebase.api.action.local.LoginRequestAction;
 import com.cubeia.firebase.api.login.LoginHandler;
@@ -29,8 +33,10 @@ public class ServiceImpl implements UserService, Service {
 	@Override
 	public void init(ServiceContext context) throws SystemException {
 		createInjector(context);
+		mountUserCreator(context);
 	}
 	
+
 	@Override
 	public void destroy() { }
 	
@@ -56,7 +62,19 @@ public class ServiceImpl implements UserService, Service {
 	}*/
 	
 	
-	// --- CONFIGURATION --- //
+	// --- PRIVATE METHODS --- //
+	
+	private void mountUserCreator(ServiceContext context) throws SystemException {
+		MBeanServer mbs = context.getMBeanServer();
+		try {
+			ObjectName name = new ObjectName("net.kalaha.user:type=UserCreator");
+			if(!mbs.isRegistered(name)) {
+				mbs.registerMBean(injector.getInstance(UserCreator.class), name);
+			}
+		} catch(Exception e) {
+			throw new SystemException("Failed to mount JMX bean", e);
+		}
+	}
 	
 	private void createInjector(ServiceContext context) {
 		List<Module> list = new ArrayList<Module>(5);

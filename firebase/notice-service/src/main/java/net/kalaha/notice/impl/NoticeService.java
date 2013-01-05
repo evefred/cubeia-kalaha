@@ -55,6 +55,7 @@ public class NoticeService implements Service, NoticeManager, RoutableService {
 	private String appSecret;
 	
 	@Inject
+	@SuppressWarnings("unused")
 	private JpaInitializer jpaInit;
 	
 	@Inject

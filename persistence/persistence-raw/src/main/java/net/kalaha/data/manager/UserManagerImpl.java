@@ -176,6 +176,7 @@ public class UserManagerImpl implements UserManager {
 		UserDetails det = new UserDetails();
 		det.setDisplayName(localName);
 		em.get().persist(det);
+		s.setExternalId(localName);
 		s.setGameStats(stats);
 		s.setUserDetails(det);
 		s.setOperatorId(operatorId);

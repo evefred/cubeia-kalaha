@@ -11,6 +11,7 @@ import com.google.inject.Injector;
 public class JpaInitListener implements ServletContextListener {
 
 	@Inject
+	@SuppressWarnings("unused")
 	private JpaInitializer jpaInit;
 	
 	@Override

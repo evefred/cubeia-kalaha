@@ -15,6 +15,7 @@ import com.google.inject.persist.jpa.JpaPersistModule;
 public class GameImpl extends GuiceGame {
 
 	@Inject
+	@SuppressWarnings("unused")
 	private JpaInitializer jpaInit;
 	
 	@Override
