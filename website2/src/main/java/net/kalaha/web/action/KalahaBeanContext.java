@@ -17,10 +17,10 @@ public class KalahaBeanContext extends ActionBeanContext {
 	private String appId;
 	
 	@Inject
-	private UserManager userManager;
+	protected UserManager userManager;
 
 	@Inject
-	private SessionManager sessionManager;
+	protected SessionManager sessionManager;
 	
 	@Inject
     @Named("facebook-operator-id")

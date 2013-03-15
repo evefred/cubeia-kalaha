@@ -21,6 +21,7 @@ import net.kalaha.data.entities.User;
 import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.web.action.FacebookUser;
+import net.kalaha.web.util.EventSink;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -71,10 +72,10 @@ public class AuthFilter extends BaseGuiceFilter {
     @Named("facebook-redirect-final")
 	private String fbFinalredirectUri;
 	
-	@Inject
-    @Named("facebook-app-redirect-uri")
-	@SuppressWarnings("unused")
-	private String appRedirectUri;
+
+	// @Inject
+    // @Named("facebook-app-redirect-uri")
+	// private String appRedirectUri;
 
 	@Inject
     @Named("facebook-app-scope")
@@ -89,6 +90,9 @@ public class AuthFilter extends BaseGuiceFilter {
 
 	@Inject
 	private SessionManager sessionManager;
+	
+	@Inject
+	private EventSink eventSink;
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -217,6 +221,9 @@ public class AuthFilter extends BaseGuiceFilter {
 		User user = userManager.getUser(session.getUserId());
 		// update display name
 		userManager.setDisplayName(user.getId(), fbuser.getName());
+		// fire event
+		fbuser.updateKalahDetails(user);
+		eventSink.userLoggedIn(user, fbuser);
 		// store objects in session
 		setSessionAttribute(request, SESSION_ATTR, session);
 		setSessionAttribute(request, CLIENT_ATTR, client);

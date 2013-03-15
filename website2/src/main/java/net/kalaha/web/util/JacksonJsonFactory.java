@@ -11,6 +11,10 @@ public class JacksonJsonFactory implements JsonFactory {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	
+	public ObjectMapper getMapper() {
+		return mapper;
+	}
+	
 	@Override
 	public <T> T fromJson(String json, Class<T> type) {
 		try {

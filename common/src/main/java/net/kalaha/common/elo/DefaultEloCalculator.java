@@ -25,6 +25,7 @@ public class DefaultEloCalculator implements EloCalculator {
 	  
 	    double SA = 0.5; // draw  
 	    double SB = 0.5; // draw  
+	    
 	    if (res == PLAYER_ONE) {  
 	        SA = 1;  
 	        SB = 0;  
