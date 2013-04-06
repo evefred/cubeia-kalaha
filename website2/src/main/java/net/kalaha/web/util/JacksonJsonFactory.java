@@ -2,18 +2,15 @@ package net.kalaha.web.util;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class JacksonJsonFactory implements JsonFactory {
 
-	private final ObjectMapper mapper = new ObjectMapper();
-	
-	public ObjectMapper getMapper() {
-		return mapper;
-	}
+	@Inject
+	private ObjectMapper mapper;
 	
 	@Override
 	public <T> T fromJson(String json, Class<T> type) {

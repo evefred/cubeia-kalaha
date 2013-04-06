@@ -2,34 +2,42 @@ package net.kalaha.common.json;
 
 import static net.kalaha.common.util.Strings.fromBytes;
 import static net.kalaha.common.util.Strings.toBytes;
-import net.sf.json.JSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 
 public abstract class JsonTransformer implements ActionTransformer {
 	
+	@Inject
+	protected ObjectMapper map;
+	
 	protected abstract String getActionPackage();
+	
+	protected ClassLoader getClassLoader() {
+		return getClass().getClassLoader();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractAction> T fromString(String json) throws IllegalActionException {
-		// JSONArray arr = JSONArray.fromObject(json);
-		JSONObject o = JSONObject.fromObject(json);
-		String pack = getActionPackage();
-		String cl = o.getString("_action");
 		try {
+			JsonNode node = map.readTree(json);
+			String pack = getActionPackage();
+			String cl = node.get("_action").asText();
 			String name = pack + "." + cl;
-			Class<?> clazz = JsonTransformer.class.getClassLoader().loadClass(name);
-			// JSONObject o = arr.getJSONObject(1);
-			return (T) JSONObject.toBean(o, clazz);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalActionException("Action '" + cl + "' not found in package '" + pack + "'");
+			Class<?> clazz = getClassLoader().loadClass(name);
+			return (T) map.treeToValue(node, clazz);
+		} catch (Exception e) {
+			throw new IllegalActionException("Failed to deserialize action", e);
 		}
 	}
 	
 	public <T extends AbstractAction> String toString(T action) {
-		/*String cl = action.getClass().getSimpleName();
-		List<Object> tmp = new ArrayList<Object>(2);
-		tmp.add(cl);
-		tmp.add(JSONObject.fromObject(action));*/
-		return JSONObject.fromObject(action).toString();
+		try {
+			return map.writeValueAsString(action);
+		} catch (Exception e) {
+			throw new IllegalActionException("Failed to serialize action", e);
+		}
 	}
 
 	public <T extends AbstractAction> byte[] toUTF8Data(T action) {

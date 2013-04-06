@@ -22,12 +22,12 @@ import net.kalaha.data.manager.SessionManager;
 import net.kalaha.data.manager.UserManager;
 import net.kalaha.web.action.FacebookUser;
 import net.kalaha.web.util.EventSink;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.restfb.DefaultFacebookClient;
@@ -55,6 +55,9 @@ public class AuthFilter extends BaseGuiceFilter {
 	/*private static final String CODE = "code";
 	private static final String ERROR = "error";
 	private static final String REDIRECT = "_redirect";*/
+	
+	@Inject
+	private ObjectMapper mapper;
 	
 	@Inject
 	@Named("facebook-app-id")
@@ -137,11 +140,11 @@ public class AuthFilter extends BaseGuiceFilter {
 			String[] split = param.split("\\.", 2);
 			Base64 base64 = new Base64(true);
 			byte[] sig = base64.decode(split[0].getBytes(UTF_8));
-			JSONObject data = (JSONObject)JSONSerializer.toJSON(new String(base64.decode(split[1].getBytes(UTF_8)), UTF_8));
+			JsonNode data = mapper.readTree(new String(base64.decode(split[1].getBytes(UTF_8)), UTF_8));
 			log.trace("Signature: " + split[0]);
 			log.trace("JSON: " + data);
-			if(!data.getString("algorithm").equals(HMAC_SHA256)) {
-				log.error("Dropping auth attempt; unknown algorithm: " + data.getString("algorithm"));
+			if(!data.get("algorithm").asText().equals(HMAC_SHA256)) {
+				log.error("Dropping auth attempt; unknown algorithm: " + data.get("algorithm").asText());
 				return false;
             }
 			byte[] hmac = hmac(split[1], appSecret);
@@ -156,8 +159,8 @@ public class AuthFilter extends BaseGuiceFilter {
                 return false;
             } else {
             	//this is authorized user, get their info from Graph API using received access token
-                String token = data.getString("oauth_token");
-                String exp = data.getString("expires");
+                String token = data.get("oauth_token").asText();
+                String exp = data.get("expires").asText();
                 log.debug("Found token: " + token);
                 log.trace("Found expiry date: " + exp + " (" + new Date(Long.parseLong(exp) * 1000L) + ")");
                 AuthToken tok = new AuthToken(token, Long.parseLong(exp) * 1000L);

@@ -12,9 +12,6 @@ import net.kalaha.web.action.FacebookUser;
 
 public class IndexerEventSink implements EventSink {
 	
-	@Inject
-	private JacksonJsonFactory jackson;
-	
 	@Inject(optional=true)
 	@Named("indexer-url")
 	private String indexUrl;
